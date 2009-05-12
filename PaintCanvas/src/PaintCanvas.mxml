@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	applicationComplete="init()" 
+	backgroundGradientColors="[0xEEEEEE 0xEEEEEE]" 
+	backgroundColor="0xEEEEEE" 
+	width="100%" height="100%" 
+	paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+	
+	<mx:VBox 
+		width="100%" height="100%" 
+		horizontalAlign="center" verticalAlign="middle"  
+		paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+		
+		<mx:Canvas backgroundColor="white" id="frame" width="100%" height="100%" />
+	</mx:VBox>	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			private static var  controller:Controller;
+			private static function init():void
+			{
+				if(Application.application !=  null){
+					controller = new Controller();
+					Application.application.frame.filters = [new DropShadowFilter()];
+					
+					Application.application.frame.width = Application.application.parameters.width;
+					Application.application.frame.height = Application.application.parameters.height;					
+				}
+			}
+		]]>
+	</mx:Script>
+
+	
+</mx:Application>
