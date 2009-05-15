@@ -106,18 +106,56 @@ public class SimpleGraphDemo extends Window {
 	 */
 	private void renderBarGraph(){			
 		
-		//Clear the earlier drawings
-		canvas.getGraphics().clear();
+		//Get the graphics object
+		PaintCanvas.Graphics gc = canvas.getGraphics();
 		
-		//Draw the bars to the component
+		//Clear the earlier drawings
+		gc.setBatchMode(true);
+		gc.clear();	
+		
+		//Draw the bars to the component in one batch
 		int counter = 0;
 		for(Object id : table.getItemIds()){			
 			Item item = table.getItem(id);
 			int value = Integer.valueOf((item.getItemProperty("Value").getValue().toString()));
-						
-			canvas.getGraphics().drawSquare(counter*55+20, 280-value*2, 50, value*2);
+			
+			//Draw the front of the bars
+			gc.drawSquare(counter*70+20, 280-value*2, 50, value*2,"00FF00","FF0000");
+			
+			//Draw the tops of the bars
+			int[] topX = new int[4];
+			int[] topY = new int[4];			
+			
+			topX[0] = counter*70+20;
+			topY[0] = 280-value*2;
+			topX[1] = topX[0]+10;
+			topY[1] = topY[0]-10;
+			topX[2] = topX[1]+50;
+			topY[2] = topY[1];
+			topX[3] = topX[0]+50;
+			topY[3] = topY[0];
+			
+			gc.drawPolygon(topX, topY, "00FF00", "FF0000");
+			
+			//Draw the sides of the bars
+			topX[0] = counter*70+70;
+			topY[0] = 280-value*2;
+			topX[1] = topX[0]+10;
+			topY[1] = topY[0]-10;
+			topX[2] = topX[1];
+			topY[2] = topY[1]+value*2;
+			topX[3] = topX[0];
+			topY[3] = topY[2]+10;
+			
+			gc.drawPolygon(topX, topY, "00FF00", "CC0000");
+			
 			counter++;
 		}		
+		
+
+				
+		//Send the draw intstructions to the client
+		gc.sendBatch();
 	}
 	
 

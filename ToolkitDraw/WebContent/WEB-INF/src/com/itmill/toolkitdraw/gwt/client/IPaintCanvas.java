@@ -79,7 +79,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	private native void setPaperHeight(String id, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
-			
+					
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setPaperHeight == 'function'){
 			canvas.setPaperHeight(height);	
@@ -92,7 +92,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	private native void setPaperWidth(String id, int width)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
-	
+		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setPaperWidth == 'function'){
 			canvas.setPaperWidth(width);
@@ -257,6 +257,20 @@ public class IPaintCanvas extends HTML implements Paintable {
 		}		
 	}-*/;
 	
+	private native void drawPolygon(String id, int[]x, int[]y)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.graphicsDrawPolygon == 'function'){
+			canvas.graphicsDrawPolygon(x.slice(), y.slice(), x.length);
+		}else{
+			var func = function() { canvas.graphicsDrawPolygon(x.slice(), y.slice(), x.length); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
+
+
 	 /**
     * This method must be implemented to update the client-side component from
     * UIDL data received from server.
@@ -278,64 +292,75 @@ public class IPaintCanvas extends HTML implements Paintable {
         
         // Save the UIDL identifier for the component        
         uidlId = uidl.getId();        
+     
+        String[] commands = uidl.getStringArrayVariable("commands");
+        String[] values = uidl.getStringArrayVariable("values");
         
-        //Execute the operations the server wants to do		
-		if(uidl.hasVariable("undo")) 
-			undo(this.id);
-		if(uidl.hasVariable("redo")) 
-			redo(this.id);
-		if(uidl.hasVariable("newlayer")) 
-			addLayer(this.id, uidl.getStringVariable("newlayer"));
-		if(uidl.hasVariable("width")) 
-			setWidth(uidl.getStringVariable("width"));
-		if(uidl.hasVariable("height")) 
-			setHeight( uidl.getStringVariable("height"));
-		if(uidl.hasVariable("paperWidth")) 
-			setPaperWidth(this.id, Integer.parseInt(uidl.getStringVariable("paperWidth")));
-		if(uidl.hasVariable("paperHeight"))
-			setPaperHeight(this.id, Integer.parseInt(uidl.getStringVariable("paperHeight")));
-		if(uidl.hasVariable("penSize"))
-			setPenSize(this.id, Double.parseDouble(uidl.getStringVariable("penSize")));
-		if(uidl.hasVariable("penColor"))
-			setPenColor(this.id, uidl.getStringVariable("penColor"));
-		if(uidl.hasVariable("brush"))
-			setBrush(this.id, uidl.getStringVariable("brush"));
-		if(uidl.hasVariable("fillColor"))
-			setFillColor(this.id, uidl.getStringVariable("fillColor"));		
-		if(uidl.hasVariable("showLayer"))
-			setLayerVisibility(this.id,uidl.getStringVariable("showLayer"), true);
-		if(uidl.hasVariable("hideLayer"))
-			setLayerVisibility(this.id,uidl.getStringVariable("hideLayer"), false);
-		if(uidl.hasVariable("activeLayer"))
-			selectLayer(this.id, uidl.getStringVariable("activeLayer"));
-		if(uidl.hasVariable("getImageXML")){			
-			//Feth the xml from the flash compoent
-			String xml = getImageXML(this.id);
-			
-			//Send the result back to the server
-			client.updateVariable(uidlId, "getImageXML", xml, true);			
-		}
-		if(uidl.hasVariable("interactive")){
-			boolean i = Boolean.valueOf(uidl.getStringVariable("interactive"));
-			setInteractive(this.id, i);
-		}
-		if(uidl.hasVariable("graphics-clear")){
-			clear(this.id);
-		}
-		if(uidl.hasVariable("graphics-line")){			
-			for(String line : uidl.getStringVariable("graphics-line").split(";")){
-				String[] values = line.split(",");		
-				drawLine(this.id, Integer.valueOf(values[0]), Integer.valueOf(values[1]), Integer.valueOf(values[2]), Integer.valueOf(values[3]));	
-			}								
-		}
-		if(uidl.hasVariable("graphics-square")){
-			for(String square : uidl.getStringVariable("graphics-square").split(";")){
-				String[] values = square.split(",");		
-				drawSquare(this.id, Integer.valueOf(values[0]), Integer.valueOf(values[1]), Integer.valueOf(values[2]), Integer.valueOf(values[3]));	
-			}			
-		}
-		
-			
+        if(commands.length != values.length){
+        	error("Transmission error!");
+        }
+        
+        for(int i=0; i<commands.length; i++)
+        {
+        	//Execute the operations the server wants to do		
+    		if(commands[i].equals("height"))			setHeight(values[i]);
+    		else if(commands[i].equals("width"))		setWidth(values[i]);
+    		else if(commands[i].equals("undo")) 		undo(this.id);
+    		else if(commands[i].equals("redo")) 		redo(this.id);
+    		else if(commands[i].equals("newlayer")) 	addLayer(this.id, values[i]);
+    		else if(commands[i].equals("paperWidth"))	setPaperWidth(this.id, Integer.parseInt(values[i]));
+    		else if(commands[i].equals("paperHeight"))	setPaperHeight(this.id, Integer.parseInt(values[i]));
+    		else if(commands[i].equals("penSize")){
+    			setPenSize(this.id, Double.parseDouble(values[i]));
+    		}
+    		else if(commands[i].equals("penColor"))		setPenColor(this.id, values[i]);
+    		else if(commands[i].equals("brush"))		setBrush(this.id, values[i]);
+    		else if(commands[i].equals("fillColor"))	setFillColor(this.id, values[i]);
+    		else if(commands[i].equals("showLayer"))	setLayerVisibility(this.id, values[i], true);
+    		else if(commands[i].equals("hideLayer"))	setLayerVisibility(this.id, values[i], false);
+    		else if(commands[i].equals("activeLayer"))	selectLayer(this.id, values[i]);
+    		else if(commands[i].equals("getImageXML")){
+    			//Feth the xml from the flash compoent
+    			String xml = getImageXML(this.id);
+    			
+    			//Send the result back to the server
+    			client.updateVariable(uidlId, "getImageXML", xml, true);		
+    		}
+    		else if(commands[i].equals("interactive"))	setInteractive(this.id, Boolean.valueOf(values[i]));
+    		else if(commands[i].equals("graphics-clear"))	clear(this.id);
+    		else if(commands[i].equals("graphics-line")){
+    			String[] coords = values[i].split(",");	
+    			drawLine(this.id, 	Integer.valueOf(coords[0]), 
+    								Integer.valueOf(coords[1]), 
+    								Integer.valueOf(coords[2]), 
+    								Integer.valueOf(coords[3]));    			
+    		}
+    		else if(commands[i].equals("graphics-square")){
+    			String[] coords = values[i].split(",");		
+				drawSquare(this.id, Integer.valueOf(coords[0]), 
+									Integer.valueOf(coords[1]), 
+									Integer.valueOf(coords[2]), 
+									Integer.valueOf(coords[3]));	
+    		}
+    		else if(commands[i].equals("graphics-polygon")){
+    			String[] coords = values[i].split(";");
+    			String[] x = coords[0].split(",");
+    			String[] y = coords[1].split(",");
+    			
+    			if(x.length == y.length && x.length > 0){
+    				int[]xi = new int[x.length];    			
+        			int[]yi = new int[y.length];
+        			
+        			for(int j=0; j<x.length; j++){
+        				xi[j] = Integer.parseInt(x[j]);
+        				yi[j] = Integer.parseInt(y[j]);
+        			}        		
+        			
+        			drawPolygon(this.id, xi, yi);
+    			}   			
+    		}
+    		else	error("No command \""+commands[i]+"\" found!");
+        }       
 	}
 	
 

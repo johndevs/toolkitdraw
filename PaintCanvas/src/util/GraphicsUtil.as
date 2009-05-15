@@ -1,18 +1,22 @@
 package util
 {
-	import brushes.Line;
-	
-	import mx.containers.Canvas;
-	
+	import mx.managers.CursorManager;
+   		
 	public class GraphicsUtil
 	{
-		public static function drawLine(canvas:Canvas, x1:int, y1:int, x2:int, y2:int){
-			
-			//Create a brush
-			var line:Line = new Line(canvas);
-			
-			
-		} 
-
+		[Embed("/assets/pen.png")]
+   		private static var penCursor:Class;	
+		
+		public static const PEN:String = "pen";	
+		public static const NONE:String = "none";	
+		
+		public static function showCursor(cursor:String):void
+   		{
+   			switch(cursor)
+   			{
+   				case PEN:	CursorManager.setCursor(penCursor, CursorManagerPriority.HIGH, 3, 2); break;
+   				default: CursorManager.removeAllCursors();
+   			}    		
+   		}	
 	}
 }

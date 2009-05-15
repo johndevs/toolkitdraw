@@ -72,7 +72,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		mainWindow.setSizeFull();
 		mainWindow.setStyleName("mainwindow");
 		setMainWindow(mainWindow);
-		
+			
 		VerticalLayout mainLayout = new VerticalLayout();
 		mainLayout.setStyleName("mainlayout");
 		mainLayout.setSizeFull();
@@ -115,6 +115,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		setImageToolsEnabled(false);
 	
 		mainWindow.setImmediate(true);
+		
 	}
 
 	private PaintCanvas addNewFile(){
@@ -224,6 +225,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			contentWindow.setSplitPosition(0, SplitPanel.UNITS_PERCENTAGE);
 			contentWindow.setLocked(true);
 		}
+		
 	}
 	
 	

@@ -244,5 +244,15 @@ package brushes
 		{
 			return this.strokes;
 		}
+		
+		public function getCursor():Class
+		{
+			return null;
+		}
+		
+		public function endTool():void
+		{
+			
+		}
 	}
 }

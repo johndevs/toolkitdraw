@@ -3,7 +3,6 @@ package brushes
 	import flash.geom.Point;
 	
 	import mx.containers.Canvas;
-	import mx.controls.Alert;
 	
 	public class Pen implements IBrush
 	{
@@ -15,6 +14,9 @@ package brushes
 		protected var current_width:Number = 1;
 		
 		protected var redo_history:Array = new Array;
+		
+		[Embed("/assets/pointer.png")]
+   		protected static var cursor:Class;	
 		
 		public function Pen(canvas:Canvas)
 		{
@@ -151,6 +153,16 @@ package brushes
 		public function getStrokes():Array
 		{
 			return this.strokes;
+		}
+		
+		public function getCursor():Class
+		{
+			return cursor;
+		}
+		
+		public function endTool():void
+		{
+			
 		}
 	}
 }

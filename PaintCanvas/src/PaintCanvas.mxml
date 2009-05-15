@@ -22,11 +22,11 @@
 			private static function init():void
 			{
 				if(Application.application !=  null){
-					controller = new Controller();
+					Application.application.frame.width = Application.application.parameters.width;
+					Application.application.frame.height = Application.application.parameters.height;	
 					Application.application.frame.filters = [new DropShadowFilter()];
 					
-					Application.application.frame.width = Application.application.parameters.width;
-					Application.application.frame.height = Application.application.parameters.height;					
+					controller = new Controller();					
 				}
 			}
 		]]>

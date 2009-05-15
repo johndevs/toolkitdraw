@@ -13,7 +13,7 @@ public abstract class Tool implements ValueChangeListener{
 		
 	protected Button button = new Button("Undefined");
 		
-	public static enum Type { NONE, PEN, SQUARE, ELLIPSE, LINE };
+	public static enum Type { NONE, PEN, SQUARE, ELLIPSE, LINE, POLYGON };
 	
 	public Layout createToolOptions(){
 		return new VerticalLayout();

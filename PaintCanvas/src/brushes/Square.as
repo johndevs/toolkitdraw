@@ -3,6 +3,7 @@ package brushes
 	import flash.geom.Point;
 	
 	import mx.containers.Canvas;
+	import mx.controls.Alert;
 
 	public class Square implements IBrush
 	{
@@ -74,6 +75,8 @@ package brushes
 		public function endStroke():void
 		{
 			canvas.removeChild(selection);		
+			
+		//	Alert.show("Fillcolor: "+fillColor);
 						
 			//Draw the background
 			backgroundPen.setColor(fillColor);
@@ -98,8 +101,9 @@ package brushes
 			//this.history.push(background);						
 			
 			//Draw the border			
+			//Alert.show("PenColor: "+color+", PenSize: "+width);
 			framePen.setColor(color);
-			framePen.setWidth(width);								
+			framePen.setWidth(this.width);								
 			framePen.startStroke();		
 	
 			framePen.processPoint(new Point(startPoint.x, startPoint.y));
@@ -214,6 +218,15 @@ package brushes
 			return backgroundPen.getStrokes();
 		}
 		
+		public function getCursor():Class
+		{
+			return null;
+		}
+		
+		public function endTool():void
+		{
+			
+		}
 		
 	}
 }

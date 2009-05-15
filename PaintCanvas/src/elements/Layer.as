@@ -34,6 +34,7 @@ package elements
 		}
 		
 		public function setCanvas(canvas:Canvas):void{
+			Alert.show("Changing layer canvas. This is not advicable!");
 			this.canvas = canvas;
 			this.canvas.id = this.name;
 			this.canvas.width = this.width;
@@ -53,7 +54,7 @@ package elements
 			this.height = height; 
 			this.canvas.height = height;
 		}
-		public function getHeight():int{ return width; }
+		public function getHeight():int{ return height; }
 		
 		public function setName(name:String):void{ this.name = name;}
 		public function getName():String{ return name; }

@@ -6,9 +6,11 @@ package brushes
 	
 	public interface IBrush
 	{	
-		function processPoint(p:Point):void;
-		function startStroke():void;
-		function endStroke():void;
+		function processPoint(p:Point):void;	//Mouse move
+		function startStroke():void;			//Mouse down
+		function endStroke():void;				//Mouse up
+		function endTool():void;				//CTRL+Mouse down
+		
 		function redraw():void;
 		function scale(x_ratio:Number, y_ratio:Number):void;
 		
@@ -24,5 +26,8 @@ package brushes
 		function getType():String;		
 		function getCanvas():Canvas;
 		function getStrokes():Array;
+		
+		function getCursor():Class;
+
 	}
 }

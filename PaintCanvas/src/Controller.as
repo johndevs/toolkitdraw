@@ -4,6 +4,7 @@ package
 	import brushes.IBrush;
 	import brushes.Line;
 	import brushes.Pen;
+	import brushes.Polygon;
 	import brushes.Square;
 	
 	import elements.Layer;
@@ -18,7 +19,7 @@ package
 	import mx.core.Application;
 	
 	import util.ArrayUtil;
-//	import util.ImageConverterUtil;
+	import util.ImageConverterUtil;
 	
 	public class Controller
 	{
@@ -38,11 +39,12 @@ package
 		public static const SQUARE:String = "Square";
 		public static const ELLIPSE:String = "Ellipse";
 		public static const LINE:String = "Line";
+		public static const POLYGON:String = "Polygon";
 	
 		public function Controller()
 		{											
 			//Create the default layer
-			var backgroundLayer:Layer = new Layer("Background",Application.application.frame.width, Application.application.frame.height);
+			var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
 			currentLayer = backgroundLayer;
 			layers.push(backgroundLayer);	
 			Application.application.frame.addChild(backgroundLayer.getCanvas());		
@@ -55,6 +57,7 @@ package
 			setInteractive(true);	
 			
 			Application.application.frame.filters = [new DropShadowFilter()];
+			Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
 													
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
@@ -86,6 +89,7 @@ package
 				ExternalInterface.addCallback("graphicsDrawLine",drawLine);
 				ExternalInterface.addCallback("graphicsDrawSquare",drawSquare);
 				ExternalInterface.addCallback("graphicsClear",clearCurrentLayer);
+				ExternalInterface.addCallback("graphicsDrawPolygon",drawPolygon);
 			}	
 			else
 			{
@@ -96,29 +100,32 @@ package
 			
 		//Brush functions			
 		private function setBrushColor(color:Number):void{ this.painter.setColor(color); }		
-		private function setBrushWidth(width:Number):void{ this.painter.setWidth(width); }		
+		private function setBrushWidth(width:Number):void
+		{ 
+			this.painter.setWidth(width); 
+		}
+				
 		private function setFillColor(color:Number):void{
 			if( this.painter.getType() == SQUARE ){
 				Square(this.painter).setFillColor(color);
 			} else if(this.painter.getType() == ELLIPSE){
 				Ellipse(this.painter).setFillColor(color);
-			}
-			
+			} else if(this.painter.getType() == POLYGON){
+				Polygon(this.painter).setFillColor(color);
+			}			
 		}			
 						
 		//Paper options
 		public function setPaperHeight(height:int):void
-		{ 
-				
+		{ 				
 			var ratio:Number = height/Application.application.frame.height;
 			for each(var brush:IBrush in history)
 			{
 				brush.scale(1.0,ratio);
 			}	
-			
+						
 			Application.application.frame.height=height; 						
-			currentLayer.setHeight(height);		
-				
+			currentLayer.setHeight(height);			
 				
 			redraw();
 		}		
@@ -130,9 +137,10 @@ package
 			{
 				brush.scale(ratio,1.0);
 			}				
-			
+						
 			Application.application.frame.width=width; 
 			currentLayer.setWidth(width);	
+			
 			redraw();
 		}							
 						
@@ -141,7 +149,11 @@ package
 		{
 			if(currentLayer == null) Alert.show("No layer selected!");
 			
-			if(e.localX < currentLayer.getWidth() && e.localY < currentLayer.getHeight())
+			if(e.ctrlKey){
+				painter.endTool();		
+			}
+												
+			else if(e.localX < currentLayer.getWidth() && e.localY < currentLayer.getHeight())
 			{
 				mouse_is_down = true;
 				painter.startStroke();
@@ -151,21 +163,22 @@ package
 		private function mouseMove(e:MouseEvent):void
 		{
 			if(currentLayer == null) Alert.show("No layer selected!");			
-			
+		
 			Application.application.stage.focus = currentLayer.getCanvas();
 			
+			//Only draw when the mouse is down and on the paper
 			if(mouse_is_down && e.localX < currentLayer.getWidth() && e.localY < currentLayer.getHeight())
 			{
 				painter.processPoint(new Point(e.localX, e.localY));
-			}			
+			}					
 		}
 		
 		private function mouseUp(e:MouseEvent):void
 		{
-			mouse_is_down = false;
-			painter.endStroke();
+			if(mouse_is_down) painter.endStroke();				
+			mouse_is_down = false;			
 		}
-		
+				
 		private function keyboard(k:KeyboardEvent):void
 		{
 			if(k.ctrlKey && String.fromCharCode(k.charCode) != "")
@@ -186,6 +199,7 @@ package
 					case "b":	painter.setWidth(painter.getWidth()+1); break;
 					case "x":	Alert.show("XML"+getImageXML().toString()); break;
 					case "f":	setPaperHeight(-1); break;
+					case "p":	setBrush(POLYGON);
 					
 					default:	trace("Warning: "+String.fromCharCode(k.charCode)+" unassigned.");
 				}
@@ -237,7 +251,7 @@ package
 		
 		//Set the brush
 		public function setBrush(type:String):void
-		{							
+		{				
 			switch(type)
 			{
 				case PEN:
@@ -266,6 +280,13 @@ package
 					this.history.push(new Line(currentLayer.getCanvas()));
 					this.painter  = this.history[this.history.length-1];		
 					break;					
+				}
+				
+				case POLYGON:
+				{
+					this.history.push(new Polygon(currentLayer.getCanvas()));
+					this.painter = this.history[this.history.length-1];
+					break;
 				}
 				
 				default:{
@@ -396,8 +417,7 @@ package
 		
 		public function getImageXML():String
 		{
-			//return ImageConverterUtil.convertToXML(history, layers).toXMLString();			
-			return "";
+			return ImageConverterUtil.convertToXML(history, layers).toXMLString();			
 		}
 		
 		public function setInteractive(interactive:Boolean):void
@@ -432,9 +452,16 @@ package
 		}
 		
 		public function drawSquare(x:int, y:int, width:int, height:int):void
-		{
-			setBrush(SQUARE);
-			
+		{			
+			if(this.painter.getType() != SQUARE){
+				var color:Number = new Number(this.painter.getColor());
+				var w:Number = new Number(this.painter.getWidth());
+				
+				setBrush(SQUARE);
+				this.painter.setColor(color);
+				this.painter.setWidth(w);				
+			}				
+						
 			painter.startStroke();
 			painter.processPoint(new Point(x,y));
 			painter.processPoint(new Point(x+width,y+height));
@@ -454,6 +481,27 @@ package
 			this.history = newHistory;
 			redraw();
 		}
-	
+						
+		public function drawPolygon(xa:Object, ya:Object, length:int):void
+		{
+			if(this.painter.getType() != POLYGON)
+			{
+				var color:Number = new Number(this.painter.getColor());
+				var w:Number = new Number(this.painter.getWidth());	
+				
+				setBrush(POLYGON);
+				this.painter.setColor(color);
+				this.painter.setWidth(w);					
+			}		
+			
+			for(var i:int=0; i<length; i++)
+			{
+				painter.startStroke();							
+				painter.processPoint(new Point(xa[i],ya[i]));				
+				painter.endStroke();
+			}
+			
+			painter.endTool();		
+		}	
 	}
 }

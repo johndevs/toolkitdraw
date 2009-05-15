@@ -109,5 +109,14 @@ package brushes
 			return pen.getStrokes();
 		}
 		
+		public function getCursor():Class
+		{
+			return null;
+		}
+		
+		public function endTool():void
+		{
+			
+		}
 	}
 }

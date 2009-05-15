@@ -23,6 +23,7 @@ import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.tools.Ellipse;
 import com.itmill.toolkitdraw.tools.Line;
 import com.itmill.toolkitdraw.tools.Pen;
+import com.itmill.toolkitdraw.tools.Polygon;
 import com.itmill.toolkitdraw.tools.Square;
 import com.itmill.toolkitdraw.tools.Tool;
 
@@ -43,8 +44,8 @@ public class LeftPanel extends Accordion implements ClickListener {
 		tools = createToolset(canvas);
 	
 		//Create the tools tab
-		tab1 = new GridLayout(5,5);
-		tab1.setSizeFull();
+		tab1 = new GridLayout(4,4);
+		//tab1.setSizeFull();
 		tab1.setCaption("Tools");				
 		addComponent(tab1);		
 		
@@ -59,6 +60,14 @@ public class LeftPanel extends Accordion implements ClickListener {
 		addComponent(tab2);										
 	}	
 	
+	/**
+	 * This function creates the available tools
+	 * 
+	 * @param canvas
+	 * 		The paintcanvas component these tools draw on
+	 * @return
+	 * 		List of tools
+	 */
 	private List<Tool> createToolset(PaintCanvas canvas){
 		List<Tool> toolset = new ArrayList<Tool>();
 	
@@ -77,6 +86,10 @@ public class LeftPanel extends Accordion implements ClickListener {
 		Ellipse ellipse = new Ellipse(canvas);
 		ellipse.getButton().addListener((ClickListener)this);
 		toolset.add(ellipse);
+		
+		Polygon poly = new Polygon(canvas);
+		poly.getButton().addListener((ClickListener)this);
+		toolset.add(poly);
 		
 		return toolset;
 	}
@@ -99,43 +112,57 @@ public class LeftPanel extends Accordion implements ClickListener {
 		
 		tab2.removeAllComponents();
 		
+				
 		switch(selected.getType()){
 		
 			case PEN: 		tab2.addComponent(selected.createToolOptions()); 
-							this.canvas.setBrush("Pen");
+							this.canvas.setBrush(PaintCanvas.BrushType.PEN);
 			break;
 							
 			case SQUARE:	tab2.addComponent(selected.createToolOptions()); 
-							this.canvas.setBrush("Square");			
+							this.canvas.setBrush(PaintCanvas.BrushType.SQUARE);			
 			break;
 			
 			case ELLIPSE:	tab2.addComponent(selected.createToolOptions());
-							this.canvas.setBrush("Ellipse");
+							this.canvas.setBrush(PaintCanvas.BrushType.ELLIPSE);
 			break;			
 			
 			case LINE:		tab2.addComponent(selected.createToolOptions());
-							this.canvas.setBrush("Line");
+							this.canvas.setBrush(PaintCanvas.BrushType.LINE);
 			break;			
+			
+			case POLYGON:	tab2.addComponent(selected.createToolOptions());
+							this.canvas.setBrush(PaintCanvas.BrushType.POLYGON);
+			break;
+				
+			default:		System.out.println("No tool with the id could be selected");
 		}
 	}
 	
 	@Override
 	public void buttonClick(ClickEvent event) {
 		
+		//Tool button events
 		if(event.getButton().getData() == Tool.Type.PEN){
 			setTool(Tool.Type.PEN);			
 		}
 		
-		if(event.getButton().getData() == Tool.Type.SQUARE){
+		else if(event.getButton().getData() == Tool.Type.SQUARE){
 			setTool(Tool.Type.SQUARE);			
 		}
 		
-		if(event.getButton().getData() == Tool.Type.ELLIPSE){
+		else if(event.getButton().getData() == Tool.Type.ELLIPSE){
 			setTool(Tool.Type.ELLIPSE);
 		}
 		
-		if(event.getButton().getData() == Tool.Type.LINE){
+		else if(event.getButton().getData() == Tool.Type.LINE){
 			setTool(Tool.Type.LINE);
+		}
+		
+		else if(event.getButton().getData() == Tool.Type.POLYGON){
+		
+			System.out.println("POLY selecter");
+			setTool(Tool.Type.POLYGON);
 		}
 	}
 	
