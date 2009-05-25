@@ -26,7 +26,13 @@
 					Application.application.frame.height = Application.application.parameters.height;	
 					Application.application.frame.filters = [new DropShadowFilter()];
 					
-					controller = new Controller();					
+					controller = new Controller();	
+					
+					if(Application.application.parameters.bgcolor != null)
+					{
+						controller.setApplicationColor(Application.application.parameters.bgcolor);
+					}
+									
 				}
 			}
 		]]>

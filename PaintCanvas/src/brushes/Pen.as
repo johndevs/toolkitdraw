@@ -15,9 +15,7 @@ package brushes
 		
 		protected var redo_history:Array = new Array;
 		
-		[Embed("/assets/pointer.png")]
-   		protected static var cursor:Class;	
-		
+				
 		public function Pen(canvas:Canvas)
 		{
 			this.canvas = canvas;
@@ -157,7 +155,7 @@ package brushes
 		
 		public function getCursor():Class
 		{
-			return cursor;
+			return null;
 		}
 		
 		public function endTool():void

@@ -67,6 +67,7 @@ package
 				ExternalInterface.addCallback("redo", redo);
 				ExternalInterface.addCallback("getImageXML",getImageXML);
 				ExternalInterface.addCallback("setInteractive",setInteractive);
+				ExternalInterface.addCallback("setComponentBackgroundColor", setApplicationColor);
 				
 				//Brush functions
 				ExternalInterface.addCallback("setBrush", setBrush);
@@ -502,6 +503,12 @@ package
 			}
 			
 			painter.endTool();		
+		}
+		
+		public function setApplicationColor(color:String):void
+		{
+			Application.application.setStyle("backgroundColor", color);
+			Application.application.setStyle("backgroundGradientColors",[color,color]);
 		}	
 	}
 }
