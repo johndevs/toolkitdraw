@@ -8,6 +8,8 @@ import com.itmill.toolkit.ui.TextField;
 import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.tools.Tool.Type;
+import com.itmill.toolkitdraw.util.IconFactory;
+import com.itmill.toolkitdraw.util.IconFactory.Icons;
 
 public class Square extends Tool implements ValueChangeListener{
 	
@@ -23,8 +25,9 @@ public class Square extends Tool implements ValueChangeListener{
 			
 			this.canvas = canvas;
 			
-			button = new Button("Square");
+			button = new Button();
 			button.setData(Type.SQUARE);
+			button.setIcon(IconFactory.getIcon(Icons.ICON_SQUARE));
 			
 			size = new TextField("Size");
 			size.addListener(this);

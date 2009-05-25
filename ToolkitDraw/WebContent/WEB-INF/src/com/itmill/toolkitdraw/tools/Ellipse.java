@@ -8,6 +8,8 @@ import com.itmill.toolkit.ui.TextField;
 import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.tools.Tool.Type;
+import com.itmill.toolkitdraw.util.IconFactory;
+import com.itmill.toolkitdraw.util.IconFactory.Icons;
 
 public class Ellipse extends Tool implements ValueChangeListener {
 	
@@ -23,8 +25,9 @@ public class Ellipse extends Tool implements ValueChangeListener {
 		
 		this.canvas = canvas;
 		
-		button = new Button("Ellipse");
+		button = new Button();
 		button.setData(Type.ELLIPSE);
+		button.setIcon(IconFactory.getIcon(Icons.ICON_ELLIPSE));
 		
 		size = new TextField("Size");
 		size.addListener(this);

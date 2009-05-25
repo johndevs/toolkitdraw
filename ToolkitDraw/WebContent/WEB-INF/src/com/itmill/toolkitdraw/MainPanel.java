@@ -29,6 +29,8 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 	
 	public MainPanel(){
 		
+		setStyleName("menu");
+		
 		//Map menuitem with a type
 		typeMap.put("New", Type.NEW);
 		typeMap.put("Save", Type.SAVE);

@@ -64,8 +64,7 @@ public class PaintCanvas extends AbstractField implements Component{
 			
 			if(isImmediate()) requestRepaint();
 		}
-		
-		
+				
 		/**
 		 * This method draws a line between two points. The coordinates are
 		 * from the top-left corner.
@@ -237,6 +236,8 @@ public class PaintCanvas extends AbstractField implements Component{
 	private String height = "100%";
 	
 	private Graphics graphics = new Graphics();
+	
+	private String backgroundColor = "FFFFFF";
 
 	public static enum BrushType{
 		PEN("Pen"),
@@ -302,6 +303,29 @@ public class PaintCanvas extends AbstractField implements Component{
 		requestRepaint();		
 	}
 	
+	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, String color){
+		
+		/* Create the background layer which cannot be removed
+		 * When creating a new layer it is automatically added the its canvas
+		 */
+		Layer background = new Layer("Background", this);
+		layers.add(background);
+		
+		//Set the height and width of the component
+		setHeight(width);
+		setWidth(height);	
+		
+		//Set the paper height and width(layer size)
+		setPaperHeight(paperHeight);
+		setPaperWidth(paperWidth);		
+		
+		//Set the background color
+		backgroundColor = color;
+		
+		setImmediate(true);
+		requestRepaint();	
+	}
+	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
 				
 		/* Create the background layer which cannot be removed
@@ -328,7 +352,7 @@ public class PaintCanvas extends AbstractField implements Component{
 		requestRepaint();
 	}	
 	
-	
+		
 	/**
 	 * Adds an element to the changed variables sent to the client
 	 * 
@@ -381,6 +405,7 @@ public class PaintCanvas extends AbstractField implements Component{
         commands.add("width");
         values.add(width);
         
+        
         while(!changedValues.isEmpty()){
         	Map<String, String> entry = changedValues.poll();
         	for(String command : entry.keySet()){
@@ -390,7 +415,10 @@ public class PaintCanvas extends AbstractField implements Component{
         }
         
         target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
-        target.addVariable(this, "values", values.toArray(new String[values.size()]));       
+        target.addVariable(this, "values", values.toArray(new String[values.size()]));
+        
+        //Sent the background color as separate variable
+        target.addVariable(this,"componentColor", backgroundColor);
     }
     
     /** Deserialize changes received from client. */
@@ -593,6 +621,19 @@ public class PaintCanvas extends AbstractField implements Component{
     
     public void setInteractive(boolean interactive){
     	addToQueue("interactive", String.valueOf(interactive));
+    	if(isImmediate()) requestRepaint();
+    }
+    
+    public void setComponentBackgroundColor(String color){
+    	if(color.contains("#")){
+    		color.replaceAll("#", "0x");
+    	}
+    	
+    	if(!color.contains("x")){
+    		color = "0x"+color;
+    	}
+    	
+    	addToQueue("componentColor", color);
     	if(isImmediate()) requestRepaint();
     }
     

@@ -2,13 +2,19 @@ package com.itmill.toolkitdraw.tools;
 
 import java.text.Format;
 
+import com.itmill.toolkit.Application;
 import com.itmill.toolkit.data.Property.ValueChangeEvent;
 import com.itmill.toolkit.data.Property.ValueChangeListener;
+import com.itmill.toolkit.terminal.Resource;
+import com.itmill.toolkit.terminal.StreamResource;
+import com.itmill.toolkit.terminal.gwt.client.ui.Icon;
 import com.itmill.toolkit.ui.Button;
 import com.itmill.toolkit.ui.Layout;
 import com.itmill.toolkit.ui.TextField;
 import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkitdraw.components.PaintCanvas;
+import com.itmill.toolkitdraw.util.IconFactory;
+import com.itmill.toolkitdraw.util.IconFactory.Icons;
 
 public class Pen extends Tool implements ValueChangeListener{
 	
@@ -17,14 +23,14 @@ public class Pen extends Tool implements ValueChangeListener{
 	private TextField size;
 	
 	private TextField color;
-	
-	
+		
 	public Pen(PaintCanvas canvas){
 		
 		this.canvas = canvas;
-		
-		button = new Button("Pen");
+	
+		button = new Button();
 		button.setData(Type.PEN);
+		button.setIcon(IconFactory.getIcon(Icons.ICON_PEN));
 		
 		size = new TextField("Size");
 		size.addListener(this);
@@ -36,8 +42,7 @@ public class Pen extends Tool implements ValueChangeListener{
 		color.addListener(this);
 		color.setImmediate(true);
 		color.setValue("000000");
-		layout.addComponent(color);
-		
+		layout.addComponent(color);		
 	}
 	
 	public Layout createToolOptions(){	

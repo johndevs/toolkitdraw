@@ -61,6 +61,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	
 	private RightPanel rightPanel;
 	
+	private HorizontalLayout statusbar;
+	
 	private Map<String,PaintCanvas> openFiles = new HashMap<String, PaintCanvas>();	
 	private Map<String, Boolean> savedStatusFiles = new HashMap<String, Boolean>();
 	
@@ -68,10 +70,13 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	
 	@Override
 	public void init() {
+		
+		setTheme("toolkitdraw");
+		
 		mainWindow = new Window("IT Mill Toolkit - ToolkitDraw");
 		mainWindow.setSizeFull();
 		mainWindow.setStyleName("mainwindow");
-		setMainWindow(mainWindow);
+		setMainWindow(mainWindow);		
 			
 		VerticalLayout mainLayout = new VerticalLayout();
 		mainLayout.setStyleName("mainlayout");
@@ -79,38 +84,46 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		mainWindow.setLayout(mainLayout);
 				
 		mainPanel = new MainPanel();		
+		mainPanel.setWidth("100%");
 		mainPanel.addListener(this);
 		mainLayout.addComponent(mainPanel);
 		
-		//Create the Sub content window
-		subContentWindow = new SplitPanel(SplitPanel.ORIENTATION_HORIZONTAL);
-		subContentWindow.setSizeFull();					
-			
+		HorizontalLayout center = new HorizontalLayout();
+		center.setSizeFull();
+				
 		//Create the open file tabsheet	
 		openFilesTabs = new TabSheet();
+		openFilesTabs.setStyleName("openfiles");
 		openFilesTabs.setSizeFull();
 		openFilesTabs.setStyleName("openfiletabsheet");
 		openFilesTabs.addListener(this);
 		openFilesTabs.setImmediate(true);
-		subContentWindow.addComponent(openFilesTabs);
-		
+	
 		currentCanvas = null;
 				
 		rightPanel = new RightPanel(currentCanvas);
-		rightPanel.setSizeFull();
-		subContentWindow.addComponent(rightPanel);
-	    
-		//Create the main content widnow	
-		contentWindow = new SplitPanel(SplitPanel.ORIENTATION_HORIZONTAL);
-		contentWindow.setSizeFull();
-		mainLayout.addComponent(contentWindow);
-		mainLayout.setExpandRatio(contentWindow, 1);
+		rightPanel.setWidth("250px");
+		rightPanel.setHeight("100%");
+				
+		leftPanel = new LeftPanel(currentCanvas,Tool.Type.PEN, this);
+		leftPanel.setWidth("250px");
+		leftPanel.setHeight("100%");
+			
+		center.addComponent(leftPanel);
+		center.addComponent(openFilesTabs);
+		center.setExpandRatio(openFilesTabs, 1);
+		center.addComponent(rightPanel);
 		
-		leftPanel = new LeftPanel(currentCanvas,Tool.Type.PEN);
-		leftPanel.setSizeFull();
-		contentWindow.addComponent(leftPanel);
+		mainLayout.addComponent(center);		
+		mainLayout.setExpandRatio(center, 1);		
 		
-		contentWindow.addComponent(subContentWindow);
+		statusbar = new HorizontalLayout();
+		statusbar.setStyleName("statusbar");
+		statusbar.setHeight("30px");
+		statusbar.setWidth("100%");
+		Label statusText = new Label("Application started");
+		statusbar.addComponent(statusText);
+		mainLayout.addComponent(statusbar);
 		
 		setImageToolsEnabled(false);
 	
@@ -121,6 +134,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private PaintCanvas addNewFile(){
 		
 		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400);
+		canvas.setComponentBackgroundColor("515151");		
 			
 		//Calculate next unsaved filename
 		int unsaved_counter=1;
@@ -136,7 +150,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		return canvas;
 	}
 	
-	private void closeCurrentFile(){
+	private boolean closeCurrentFile(){
 		final PaintCanvas canvas = (PaintCanvas)openFilesTabs.getSelectedTab();
 		final String filename = openFilesTabs.getTabCaption(canvas);		
 		
@@ -205,27 +219,15 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			
 			confirm.show();
 		}		
+	
+		return status;
 	}
 	
 	private void setImageToolsEnabled(boolean enabled){
 		leftPanel.setEnabled(enabled);
 		rightPanel.setEnabled(enabled);
-		mainPanel.setImageToolsEnabled(enabled);
-		
-		if(enabled){
-			subContentWindow.setSplitPosition(70, SplitPanel.UNITS_PERCENTAGE);
-			subContentWindow.setLocked(false);
-			
-			contentWindow.setSplitPosition(20, SplitPanel.UNITS_PERCENTAGE);
-			contentWindow.setLocked(false);
-		}else{
-			subContentWindow.setSplitPosition(100, SplitPanel.UNITS_PERCENTAGE);
-			subContentWindow.setLocked(true);
-			
-			contentWindow.setSplitPosition(0, SplitPanel.UNITS_PERCENTAGE);
-			contentWindow.setLocked(true);
-		}
-		
+		mainPanel.setImageToolsEnabled(enabled);		
+		openFilesTabs.setEnabled(enabled);
 	}
 	
 	
@@ -241,15 +243,26 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				
 		if(value instanceof MainPanel.Type){			
 			switch((MainPanel.Type)value){
-				case UNDO: 	currentCanvas.undo(); break;
+				case UNDO: 	currentCanvas.undo(); 
+							setStatusbarText("Undo operation done");
+				break;
 				
-				case REDO: 	currentCanvas.redo(); break;
+				case REDO: 	currentCanvas.redo(); 
+							setStatusbarText("Redo operation done");
+				break;
 				
 				case NEW: 	openFilesTabs.setSelectedTab(addNewFile());						
 							setImageToolsEnabled(true);
-							break;
+							leftPanel.setTool(Tool.Type.PEN);
+							setStatusbarText("New file opened");
+				break;
 							
-				case CLOSE:	closeCurrentFile(); break;
+				case CLOSE:{
+					boolean unsaved = closeCurrentFile();
+					if(unsaved) setStatusbarText("Closing unsaved image?");
+					else setStatusbarText("Image closed");					
+					break;
+				}
 				
 				case SAVE:	currentCanvas.addListener(new ValueChangeListener(){
 								public void valueChange(ValueChangeEvent event) {									
@@ -270,6 +283,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				case DEMO1:{
 						SimpleGraphDemo demo = new SimpleGraphDemo();
 						mainWindow.addWindow(demo);
+						setStatusbarText("Opening bar graph demo");
 				}
 			}
 		}		
@@ -287,6 +301,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		leftPanel.setCanvas(canvas);
 	}
 	
-	
-
+	public void setStatusbarText(String text){
+		Object label = statusbar.getComponentIterator().next();
+		((Label)label).setValue(text);
+	}
 }

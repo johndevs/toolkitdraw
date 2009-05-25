@@ -33,7 +33,7 @@ import com.itmill.toolkit.ui.Button.ClickListener;
 import com.itmill.toolkitdraw.components.Layer;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 
-public class RightPanel extends Accordion implements Property.ValueChangeListener, ClickListener, ItemClickListener{
+public class RightPanel extends VerticalLayout implements Property.ValueChangeListener, ClickListener, ItemClickListener{
 
 	private PaintCanvas canvas;	
 	
@@ -49,6 +49,11 @@ public class RightPanel extends Accordion implements Property.ValueChangeListene
 	private Button upLayer;
 	private Button downLayer;
 	
+	private Accordion tabs;
+	
+	private TabSheet histograms;
+	private Map<String, PaintCanvas> histogramCanvases = new HashMap<String, PaintCanvas>();
+	
 	public RightPanel(PaintCanvas canvas){
 		
 		super();
@@ -56,7 +61,52 @@ public class RightPanel extends Accordion implements Property.ValueChangeListene
 		
 		this.canvas = canvas;
 		
+		//Add the histograms
+		createHistograms();
+		createHistogramsTab();
+		
+		//Add the tabs
+		this.tabs = new Accordion();
+		this.tabs.setSizeFull();
+		addComponent(this.tabs);
+		setExpandRatio(this.tabs, 2);
+		
+		//Create the layers tab
+		createLayersTab();
+		
 		//Create the paper options
+		createPaperOptionsTab();
+	}
+	
+	private void createHistograms()
+	{
+		//Create RGB channel histogram
+		PaintCanvas rgb = new PaintCanvas("300px","250px");
+		String caption = "Histogram";
+		histogramCanvases.put(caption, rgb);		
+	}
+	
+	private void createHistogramsTab()
+	{
+		histograms = new TabSheet();
+		histograms.setSizeFull();		
+		
+		for(String caption : histogramCanvases.keySet()){			
+			PaintCanvas c = histogramCanvases.get(caption);
+						
+			VerticalLayout layout = new VerticalLayout();
+			layout.setSizeFull();
+			layout.addComponent(c);
+			layout.setCaption(caption);
+			
+			histograms.addTab(layout);
+		}
+		
+		addComponent(histograms);
+		setExpandRatio(histograms, 1);
+	}
+	
+	private void createPaperOptionsTab(){
 		GridLayout grid = new GridLayout(4,1);
 		grid.setCaption("Paper Options");	
 		
@@ -81,9 +131,11 @@ public class RightPanel extends Accordion implements Property.ValueChangeListene
 		grid.addComponent(paperHeight,3,0);
 		
 		tab1 = grid;
-		addComponent(tab1);	
-		
-		//Create the layers tab
+		tabs.addComponent(tab1);	
+	}
+	
+	private void createLayersTab()
+	{
 		tab2 = new VerticalLayout();		
 		tab2.setCaption("Layers");	
 			
@@ -105,22 +157,24 @@ public class RightPanel extends Accordion implements Property.ValueChangeListene
 		downLayer.addListener((ClickListener)this);
 		layerTools.addComponent(downLayer);
 		
-		tab2.addComponent(layerTools);
-		
+		tab2.addComponent(layerTools);		
 		
 		layerTable = new Table();
-		layerTable.setSizeFull();
+		layerTable.setStyleName("layer-table");
+		layerTable.setHeight("300px");
+		layerTable.setWidth("100%");
 		layerTable.setSelectable(true);
 		layerTable.addListener((ItemClickListener)this);
 		layerTable.addContainerProperty("Visible", CheckBox.class, null);		
 		layerTable.setColumnWidth("Visible", 30);
 		layerTable.setColumnHeader("Visible", "");
-		layerTable.addContainerProperty("Name",String.class, "");		
+		layerTable.addContainerProperty("Name",String.class, "");
+		
+		
 		
 		tab2.addComponent(layerTable);		
-		addComponent(tab2);			
+		tabs.addComponent(tab2);			
 	}
-	
 	
 	private void refreshLayers(){
 		

@@ -24,7 +24,7 @@ public class IPaintCanvas extends HTML implements Paintable {
     /** Reference to the server connection object. */
     private ApplicationConnection client;	
 	   
-	public IPaintCanvas(int pageWidth, int pageHeight){		
+	public IPaintCanvas(int pageWidth, int pageHeight, String bgColor){		
 		super();		
 				
 		id = DOM.createUniqueId();
@@ -42,11 +42,11 @@ public class IPaintCanvas extends HTML implements Paintable {
 				"	<param name='allowScriptAccess' value='always'/>"+	
 				"	<param name='flashvars' value=\"width="+w+"&height="+h+"\" />"+
 				"   <param name='wmode' value='transparent' />"+
-				"	<embed id='"+id+"' width='100%' height='100%' flashvars='width="+w+"&height="+h+"' src='"+IPaintCanvas.LOCATION+"/PaintCanvas.swf' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='#FFFFFF'>"+
+				"	<embed id='"+id+"' width='100%' height='98%' flashvars='width="+w+"&height="+h+"&bgcolor="+bgColor+"' src='"+IPaintCanvas.LOCATION+"/PaintCanvas.swf' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='#FFFFFF'>"+
 				"	</embed>"+
 				"</object>"	)	;
 		
-		setSize("100%", "99%");
+		setSize("100%", "100%");
 		setStyleName("paintcanvas");			
 	}
 		
@@ -270,6 +270,19 @@ public class IPaintCanvas extends HTML implements Paintable {
 		}		
 	}-*/;
 
+	private native void setComponentBackground(String id, String color)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setComponentBackgroundColor == 'function'){
+			canvas.setComponentBackgroundColor(color);
+		}else{
+			var func = function() { canvas.setComponentBackgroundColor(color); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
+
 
 	 /**
     * This method must be implemented to update the client-side component from
@@ -359,6 +372,9 @@ public class IPaintCanvas extends HTML implements Paintable {
         			drawPolygon(this.id, xi, yi);
     			}   			
     		}
+    		else if(commands[i].equals("componentColor")){
+    			setComponentBackground(this.id, values[i]);
+    		}    		
     		else	error("No command \""+commands[i]+"\" found!");
         }       
 	}

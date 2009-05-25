@@ -7,13 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.catalina.startup.SetAllPropertiesRule;
+
+import com.itmill.toolkit.Application;
 import com.itmill.toolkit.data.Property.ValueChangeEvent;
 import com.itmill.toolkit.data.Property.ValueChangeListener;
+import com.itmill.toolkit.terminal.gwt.client.ui.Icon;
 import com.itmill.toolkit.ui.Accordion;
 import com.itmill.toolkit.ui.Button;
 import com.itmill.toolkit.ui.GridLayout;
 import com.itmill.toolkit.ui.Label;
 import com.itmill.toolkit.ui.Layout;
+import com.itmill.toolkit.ui.Panel;
 import com.itmill.toolkit.ui.TextField;
 import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkit.ui.Button.ClickEvent;
@@ -35,12 +40,14 @@ public class LeftPanel extends Accordion implements ClickListener {
 	private List<Tool>  tools = new ArrayList<Tool>();			
 	private PaintCanvas canvas;
 	
+	private Application application;
 	
-	public LeftPanel(PaintCanvas canvas, Tool.Type selectedTool) {
+	public LeftPanel(PaintCanvas canvas, Tool.Type selectedTool, Application app) {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
 		
+		application = app;
 		tools = createToolset(canvas);
 	
 		//Create the tools tab
@@ -73,7 +80,7 @@ public class LeftPanel extends Accordion implements ClickListener {
 	
 		Pen pen = new Pen(canvas);
 		pen.getButton().addListener((ClickListener)this);
-		toolset.add(pen);
+		toolset.add(pen);	
 		
 		Line line = new Line(canvas);
 		line.getButton().addListener((ClickListener)this);	
@@ -98,12 +105,15 @@ public class LeftPanel extends Accordion implements ClickListener {
 		
 		if(canvas == null) return;
 		
-		//Get the tool from the toolset
+		//Get the tool from the toolset and deselect all tools
 		Tool selected = null;
 		for(Tool t : tools){
 			if(t.getType() == tool){
 				selected = t;
-				break;
+				t.getButton().setStyleName("tool-selected");
+			} else {
+				
+				t.getButton().setStyleName("tool-unselected");
 			}
 		}
 		
@@ -112,7 +122,7 @@ public class LeftPanel extends Accordion implements ClickListener {
 		
 		tab2.removeAllComponents();
 		
-				
+						
 		switch(selected.getType()){
 		
 			case PEN: 		tab2.addComponent(selected.createToolOptions()); 
@@ -143,7 +153,7 @@ public class LeftPanel extends Accordion implements ClickListener {
 	public void buttonClick(ClickEvent event) {
 		
 		//Tool button events
-		if(event.getButton().getData() == Tool.Type.PEN){
+		if(event.getButton().getData() == Tool.Type.PEN){			
 			setTool(Tool.Type.PEN);			
 		}
 		
@@ -160,8 +170,6 @@ public class LeftPanel extends Accordion implements ClickListener {
 		}
 		
 		else if(event.getButton().getData() == Tool.Type.POLYGON){
-		
-			System.out.println("POLY selecter");
 			setTool(Tool.Type.POLYGON);
 		}
 	}

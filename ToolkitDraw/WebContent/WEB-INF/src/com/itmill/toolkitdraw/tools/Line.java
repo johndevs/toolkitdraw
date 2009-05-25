@@ -7,6 +7,8 @@ import com.itmill.toolkit.ui.TextField;
 import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.tools.Tool.Type;
+import com.itmill.toolkitdraw.util.IconFactory;
+import com.itmill.toolkitdraw.util.IconFactory.Icons;
 
 public class Line extends Tool {
 			
@@ -19,8 +21,9 @@ public class Line extends Tool {
 	public Line(PaintCanvas canvas){		
 		this.canvas = canvas;
 		
-		button = new Button("Line");
+		button = new Button();
 		button.setData(Type.LINE);
+		button.setIcon(IconFactory.getIcon(Icons.ICON_LINE));
 		
 		size = new TextField("Size");
 		size.addListener(this);
