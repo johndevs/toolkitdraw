@@ -223,6 +223,8 @@ public class PaintCanvas extends AbstractField implements Component{
 			
 			if(isImmediate() && !batchMode) requestRepaint();	
 		}
+		
+		
 	}
 		
 	private Queue<Map<String, String>> changedValues = new ArrayBlockingQueue<Map<String,String>>(1000);
@@ -636,5 +638,21 @@ public class PaintCanvas extends AbstractField implements Component{
     	addToQueue("componentColor", color);
     	if(isImmediate()) requestRepaint();
     }
+    
+    public void setLayerBackground(Layer layer, String color, double alpha){
+		if(layer == null || color == null || alpha < 0 || alpha > 1.0) return;
+		
+		//Do some color string checks
+    	if(color.contains("#")) color = color.replaceAll("#", "0x");	    	
+    	if(!color.contains("x")) color = "0x"+color;
+    	
+    	//Select the layer
+    	setActiveLayer(layer);
+    	
+    	//Set the color
+    	addToQueue("layercolor", color);
+    	
+    	if(isImmediate()) requestRepaint();
+	}
     
 }

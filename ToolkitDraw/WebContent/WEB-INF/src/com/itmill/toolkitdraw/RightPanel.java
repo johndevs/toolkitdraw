@@ -82,6 +82,11 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	{
 		//Create RGB channel histogram
 		PaintCanvas rgb = new PaintCanvas("300px","250px");
+		
+		//Set all layer backgrounds
+		for(Layer layer : rgb.getLayers())
+			rgb.setLayerBackground(layer,"0x414141", 0);	
+		
 		String caption = "Histogram";
 		histogramCanvases.put(caption, rgb);		
 	}
@@ -93,6 +98,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		for(String caption : histogramCanvases.keySet()){			
 			PaintCanvas c = histogramCanvases.get(caption);
+			c.setVisible(false);
 						
 			VerticalLayout layout = new VerticalLayout();
 			layout.setSizeFull();
@@ -179,6 +185,12 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	private void refreshLayers(){
 		
 		if(this.canvas == null) return;
+		
+		//Show the histogram
+		for(String caption : histogramCanvases.keySet()){			
+			PaintCanvas c = histogramCanvases.get(caption);
+			c.setVisible(true);
+		}
 		
 		List<Layer> layers = this.canvas.getLayers();
 		

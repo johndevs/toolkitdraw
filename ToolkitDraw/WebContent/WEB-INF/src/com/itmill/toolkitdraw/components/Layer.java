@@ -7,6 +7,9 @@ import com.itmill.toolkit.ui.OrderedLayout;
 public class Layer {
 
 	private boolean visible;
+	private String color;
+	private double alpha;
+	
 	private String name;
 	private PaintCanvas canvas;
 	
@@ -22,11 +25,25 @@ public class Layer {
 		this.name = name;
 		visible = true;
 		this.canvas = canvas;
+		
+		this.visible = true;
+		this.color = "0xFFFFFF";
+		this.alpha = 0;
 	}
 	
 	public void setVisible(boolean visible){	
 		this.visible = visible;
 		this.canvas.setLayerVisibility(name, visible);
+	}
+	
+	public void setColor(String color){
+		this.color = color;
+		this.canvas.setLayerBackground(this, color, alpha);
+	}
+	
+	public void setAlpha(double alpha){
+		this.alpha = alpha;
+		this.canvas.setLayerBackground(this, color, alpha);
 	}
 	
 	public boolean getVisible(){

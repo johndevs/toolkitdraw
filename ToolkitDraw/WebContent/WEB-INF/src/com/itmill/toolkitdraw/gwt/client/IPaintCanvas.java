@@ -198,6 +198,32 @@ public class IPaintCanvas extends HTML implements Paintable {
 		}			
 	}-*/;
 	
+	private native void setLayerColor(String id, String color)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setLayerBackgroundColor == 'function'){
+			canvas.setLayerBackgroundColor(color);
+		}else{
+			var func = function() { canvas.setLayerBackgroundColor(color); };		
+			setTimeout(func,1000);
+		}			
+	}-*/;
+	
+	private native void setLayerAlpha(String id, double alpha)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setLayerBackgroundAlpha == 'function'){
+			canvas.setLayerBackgroundAlpha(alpha);
+		}else{
+			var func = function() { canvas.setLayerBackgroundAlpha(alpha); };		
+			setTimeout(func,1000);
+		}			
+	}-*/;
+	
 	private native String getImageXML(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
@@ -375,6 +401,13 @@ public class IPaintCanvas extends HTML implements Paintable {
     		else if(commands[i].equals("componentColor")){
     			setComponentBackground(this.id, values[i]);
     		}    		
+    		else if(commands[i].equals("layercolor")){    		
+    			setLayerColor(this.id, values[i]); 
+    		}
+    		else if(commands[i].equals("layeralpha")){
+    			setLayerAlpha(this.id, Double.parseDouble(values[i]));
+    		}    		
+    		
     		else	error("No command \""+commands[i]+"\" found!");
         }       
 	}

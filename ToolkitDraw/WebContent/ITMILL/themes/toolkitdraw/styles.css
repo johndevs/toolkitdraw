@@ -171,6 +171,37 @@
 
 }
 
+.i-window{
+	color:#EEEEEE;
+	background:#717171;	
+}
+
+.i-window-wrap{
+	background:none;	
+}
+
+.i-window-outerheader{
+	background:#515151;
+	margin-left:0px;		
+}
+
+.i-window-contents{
+	background:#717171;
+	border:0px solid #717171;	
+}
+
+.i-window-footer{
+	background:#717171;		
+}
+
+.i-window-resizebox{
+	background:none;	
+}
+
+.popupContent{
+	border:1px solid black;	
+}
+
 
 
 
