@@ -42,7 +42,7 @@ package
 		public static const POLYGON:String = "Polygon";
 	
 		public function Controller()
-		{											
+		{														
 			//Create the default layer
 			var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
 			currentLayer = backgroundLayer;
@@ -63,34 +63,37 @@ package
 			if(ExternalInterface != null && ExternalInterface.available)
 			{
 				//Controller functions
-				ExternalInterface.addCallback("undo", undo);
-				ExternalInterface.addCallback("redo", redo);
-				ExternalInterface.addCallback("getImageXML",getImageXML);
-				ExternalInterface.addCallback("setInteractive",setInteractive);
-				ExternalInterface.addCallback("setComponentBackgroundColor", setApplicationColor);
+				ExternalInterface.addCallback("undo", 							undo);
+				ExternalInterface.addCallback("redo", 							redo);
+				ExternalInterface.addCallback("getImageXML",					getImageXML);
+				ExternalInterface.addCallback("setInteractive",					setInteractive);
+				ExternalInterface.addCallback("setComponentBackgroundColor", 	setApplicationColor);
 				
 				//Brush functions
-				ExternalInterface.addCallback("setBrush", setBrush);
-				ExternalInterface.addCallback("setBrushColor", setBrushColor);
-				ExternalInterface.addCallback("setBrushWidth", setBrushWidth);													   
-				ExternalInterface.addCallback("setPaperHeight", setPaperHeight);
-				ExternalInterface.addCallback("setPaperWidth", setPaperWidth);				
-				ExternalInterface.addCallback("setFillColor", setFillColor);
+				ExternalInterface.addCallback("setBrush", 						setBrush);
+				ExternalInterface.addCallback("setBrushColor", 					setBrushColor);
+				ExternalInterface.addCallback("setBrushWidth", 					setBrushWidth);													   
+				ExternalInterface.addCallback("setPaperHeight",	 				setPaperHeight);
+				ExternalInterface.addCallback("setPaperWidth", 					setPaperWidth);				
+				ExternalInterface.addCallback("setFillColor", 					setFillColor);
 				
 				//Layer functions
-				ExternalInterface.addCallback("addNewLayer", addNewLayer);
-				ExternalInterface.addCallback("removeLayer", removeLayer);
-				ExternalInterface.addCallback("selectLayer", selectLayer);
-				ExternalInterface.addCallback("moveLayerUp", moveLayerUp);
-				ExternalInterface.addCallback("moveLayerDown", moveLayerDown);
-				ExternalInterface.addCallback("getLayerNames",getLayerNames);
-				ExternalInterface.addCallback("setLayerVisibility", setLayerVisibility);					
+				ExternalInterface.addCallback("addNewLayer", 					addNewLayer);
+				ExternalInterface.addCallback("removeLayer", 					removeLayer);
+				ExternalInterface.addCallback("selectLayer", 					selectLayer);
+				ExternalInterface.addCallback("moveLayerUp", 					moveLayerUp);
+				ExternalInterface.addCallback("moveLayerDown", 					moveLayerDown);
+				ExternalInterface.addCallback("getLayerNames",					getLayerNames);
+				ExternalInterface.addCallback("setLayerVisibility", 			setLayerVisibility);	
+				ExternalInterface.addCallback("setLayerBackgroundColor", 		setLayerBackgroundColor);
+				ExternalInterface.addCallback("setLayerBackgroundAlpha", 		setLayerBackgroundAlpha);
+								
 				
 				//Graphics functions
-				ExternalInterface.addCallback("graphicsDrawLine",drawLine);
-				ExternalInterface.addCallback("graphicsDrawSquare",drawSquare);
-				ExternalInterface.addCallback("graphicsClear",clearCurrentLayer);
-				ExternalInterface.addCallback("graphicsDrawPolygon",drawPolygon);
+				ExternalInterface.addCallback("graphicsDrawLine",				drawLine);
+				ExternalInterface.addCallback("graphicsDrawSquare",				drawSquare);
+				ExternalInterface.addCallback("graphicsClear",					clearCurrentLayer);
+				ExternalInterface.addCallback("graphicsDrawPolygon",			drawPolygon);
 			}	
 			else
 			{
@@ -200,8 +203,8 @@ package
 					case "b":	painter.setWidth(painter.getWidth()+1); break;
 					case "x":	Alert.show("XML"+getImageXML().toString()); break;
 					case "f":	setPaperHeight(-1); break;
-					case "p":	setBrush(POLYGON);
-					
+					case "p":	setBrush(POLYGON); break;
+									
 					default:	trace("Warning: "+String.fromCharCode(k.charCode)+" unassigned.");
 				}
 			}		
@@ -405,7 +408,7 @@ package
 			//Layer was NOT found
 			Alert.show("Layer "+name+" was not found!");
 		}
-		
+				
 		public function getLayerNames():Array
 		{	
 			var names:Array = new Array;
@@ -510,5 +513,24 @@ package
 			Application.application.setStyle("backgroundColor", color);
 			Application.application.setStyle("backgroundGradientColors",[color,color]);
 		}	
+		
+		public function setLayerBackgroundColor(color:String):void
+		{
+			if(currentLayer != null){
+				currentLayer.setBackgroundColor(color);
+			} else {
+				Alert.show("Current layer not available");
+			}
+		}
+		
+		public function setLayerBackgroundAlpha(alpha:Number):void
+		{
+			if(currentLayer != null){
+				currentLayer.setAlpha(alpha);
+			} else {
+				Alert.show("Current layer not available");
+			}
+		}
+				
 	}
 }

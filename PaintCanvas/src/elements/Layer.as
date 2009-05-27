@@ -21,11 +21,16 @@ package elements
 			}else{
 				this.name = name;
 			}
-			
+									
 			this.canvas = new Canvas();
 			this.canvas.id = this.name;
-			this.canvas.width = width;
-			this.canvas.height = height;
+			
+			if(width > 0) this.canvas.width = width;
+			else this.canvas.percentWidth = 100;
+			
+			if(height > 0) this.canvas.height = height;
+			else this.canvas.percentHeight = 100;			
+						
 			this.width = width;
 			this.height = height;
 			this.visible = true; 
@@ -66,10 +71,18 @@ package elements
 		}
 		public function getVisible():Boolean{return visible; }
 		
-		public function setBackgroundColor(color:Number):void{ this.backgroundColor = color;}
+		public function setBackgroundColor(color:String):void
+		{ 
+			this.backgroundColor = new Number(color);
+			this.canvas.setStyle("backgroundColor",color);
+		}
 		public function getBackgroundColor():Number{ return backgroundColor; }
 		
-		public function setAlpha(alpha:Number):void{this.alpha = alpha;}
+		public function setAlpha(alpha:Number):void
+		{
+			this.alpha = alpha;
+			this.canvas.alpha = alpha;
+		}
 		public function getAlpha():Number{ return alpha; }
 	}
 }
