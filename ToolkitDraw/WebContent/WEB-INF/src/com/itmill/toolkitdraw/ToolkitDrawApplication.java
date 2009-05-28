@@ -1,5 +1,6 @@
 package com.itmill.toolkitdraw;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import com.itmill.toolkit.Application;
 import com.itmill.toolkit.data.Item;
 import com.itmill.toolkit.data.Property.ValueChangeEvent;
 import com.itmill.toolkit.data.Property.ValueChangeListener;
+import com.itmill.toolkit.terminal.DownloadStream;
+import com.itmill.toolkit.terminal.Resource;
+import com.itmill.toolkit.terminal.StreamResource;
 import com.itmill.toolkit.terminal.gwt.client.RenderInformation.Size;
 import com.itmill.toolkit.terminal.gwt.client.ui.IFilterSelect.SuggestionPopup;
 import com.itmill.toolkit.ui.Accordion;
@@ -35,12 +39,15 @@ import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkit.ui.Window;
 import com.itmill.toolkit.ui.Button.ClickEvent;
 import com.itmill.toolkit.ui.Button.ClickListener;
+import com.itmill.toolkit.ui.Component.Listener;
 import com.itmill.toolkit.ui.PopupView.Content;
 import com.itmill.toolkit.ui.TabSheet.SelectedTabChangeEvent;
 import com.itmill.toolkit.ui.TabSheet.SelectedTabChangeListener;
 import com.itmill.toolkitdraw.components.ConfirmPopup;
 import com.itmill.toolkitdraw.components.PaintCanvas;
+import com.itmill.toolkitdraw.components.SavePopup;
 import com.itmill.toolkitdraw.demos.SimpleGraphDemo;
+import com.itmill.toolkitdraw.events.ImagePNGRecievedEvent;
 import com.itmill.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.itmill.toolkitdraw.tools.Tool;
 import com.sun.org.apache.bcel.internal.generic.NEW;
@@ -67,6 +74,10 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private Map<String, Boolean> savedStatusFiles = new HashMap<String, Boolean>();
 	
 	private PaintCanvas currentCanvas;
+	
+	public enum FileType{
+		XML, JPG, PNG
+	}
 	
 	@Override
 	public void init() {
@@ -264,21 +275,19 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 					break;
 				}
 				
-				case SAVE:	currentCanvas.addListener(new ValueChangeListener(){
-								public void valueChange(ValueChangeEvent event) {									
-									if(event instanceof ImageXMLRecievedEvent){
-										ImageXMLRecievedEvent evnt = (ImageXMLRecievedEvent)event;
-										
-										System.out.println(evnt.getXML());
-										mainWindow.showNotification("Image saved");
-									}									
-								}					
-							});
+				case SAVE:{
+					final SavePopup pop = new SavePopup("Select filetype","", mainWindow);
+					pop.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							if((Boolean)event.getButton().getData()){
+								saveFile(pop.getValue());
+							}
+						}						
+					});
+					pop.show();
+					break;
+				}
 					
-							currentCanvas.getImageXML(); 
-							break;
-				
-				
 				//Demos
 				case DEMO1:{
 						SimpleGraphDemo demo = new SimpleGraphDemo();
@@ -305,4 +314,79 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		Object label = statusbar.getComponentIterator().next();
 		((Label)label).setValue(text);
 	}
+	
+	public void saveFile(FileType type){
+		
+		if(currentCanvas == null) return;
+		
+		switch(type){
+			case XML:{
+				//Listen for the result
+				currentCanvas.addListener(new ValueChangeListener(){
+					public void valueChange(ValueChangeEvent event) {						
+						if(event instanceof ImageXMLRecievedEvent){							
+							currentCanvas.removeListener(this);							
+							ImageXMLRecievedEvent evnt = (ImageXMLRecievedEvent)event;
+							processSavedFile(evnt);
+						}									
+					}					
+				});	
+				
+				//Request XML image 
+				currentCanvas.getImageXML(); 
+				break;
+			}	
+			
+			case PNG:{
+				//Listen for the result
+				currentCanvas.addListener(new ValueChangeListener(){
+					public void valueChange(ValueChangeEvent event) {						
+						if(event instanceof ImagePNGRecievedEvent){							
+							currentCanvas.removeListener(this);							
+							ImagePNGRecievedEvent evnt = (ImagePNGRecievedEvent)event;							
+							processSavedFile(evnt);
+						}									
+					}					
+				});	
+				
+				//Request XML image 
+				currentCanvas.getImagePNG(); 
+				break;				
+			}
+		}
+		
+	}
+		
+	public void processSavedFile(ValueChangeEvent event){
+		
+		DownloadStream stream = null;
+		
+		if(event instanceof ImageXMLRecievedEvent){
+			System.out.println("XML");
+		}
+		else if(event instanceof ImagePNGRecievedEvent){			
+			ImagePNGRecievedEvent evnt = (ImagePNGRecievedEvent)event;
+			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());
+			stream = new DownloadStream(iStream,"Image/PNG","image.png");
+		}
+				
+		if(stream != null){
+			mainWindow.showNotification("Image saved");		
+			
+			final DownloadStream str = stream;
+			Resource res = new StreamResource(new StreamResource.StreamSource(){			
+				public InputStream getStream() {
+					return str.getStream();
+				}				
+			}, str.getFileName(), this);
+			
+			mainWindow.open(res);			
+		}
+		else	
+			mainWindow.showNotification("Saving image failed");
+		
+		
+		
+	}
+	
 }

@@ -198,8 +198,16 @@
 	background:none;	
 }
 
+.i-window-modalitycurtain{
+	background:black;	
+}
+
 .popupContent{
 	border:1px solid black;	
+}
+
+.file-select-layout{
+	margin-top:10px;
 }
 
 

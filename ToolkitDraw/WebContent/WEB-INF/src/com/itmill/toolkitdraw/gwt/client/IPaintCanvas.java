@@ -231,6 +231,13 @@ public class IPaintCanvas extends HTML implements Paintable {
 		return canvas.getImageXML();
 	}-*/;
 	
+	private native String getImagePNG(String id)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		return canvas.getImagePNG();
+	}-*/;
+	
 	private native String setInteractive(String id, boolean interactive)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
@@ -365,6 +372,14 @@ public class IPaintCanvas extends HTML implements Paintable {
     			//Send the result back to the server
     			client.updateVariable(uidlId, "getImageXML", xml, true);		
     		}
+    		else if(commands[i].equals("getImagePNG")){
+    			//Fetch the base64 png image from the component
+    			String base64 = getImagePNG(this.id);
+    			
+    			//Send the result back to the server
+    			client.updateVariable(uidlId, "getImagePNG", base64, true);
+    		}    		
+    		
     		else if(commands[i].equals("interactive"))	setInteractive(this.id, Boolean.valueOf(values[i]));
     		else if(commands[i].equals("graphics-clear"))	clear(this.id);
     		else if(commands[i].equals("graphics-line")){

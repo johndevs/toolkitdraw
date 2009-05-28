@@ -1,5 +1,6 @@
 package com.itmill.toolkitdraw.components;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import com.itmill.toolkit.terminal.PaintException;
 import com.itmill.toolkit.terminal.PaintTarget;
 import com.itmill.toolkit.ui.AbstractField;
 import com.itmill.toolkit.ui.Component;
+import com.itmill.toolkitdraw.events.ImagePNGRecievedEvent;
 import com.itmill.toolkitdraw.events.ImageXMLRecievedEvent;
 
 public class PaintCanvas extends AbstractField implements Component{
@@ -426,6 +428,7 @@ public class PaintCanvas extends AbstractField implements Component{
     /** Deserialize changes received from client. */
     public void changeVariables(Object source, Map variables) {
         
+    	//XML image recieved
     	if(variables.containsKey("getImageXML")){
     		String xml = variables.get("getImageXML").toString();    		
     		
@@ -433,7 +436,26 @@ public class PaintCanvas extends AbstractField implements Component{
     		for(ValueChangeListener listener : valueGetters){
     			listener.valueChange(event);
     		}    		
-    	}    
+    	}
+    	
+    	//PNG image recieved
+    	if(variables.containsKey("getImagePNG")){
+    		String base64 = variables.get("getImagePNG").toString();
+    		byte[] data = null;
+    		
+    		try{
+    			data = new sun.misc.BASE64Decoder().decodeBuffer(base64);
+    		}catch(IOException io){
+    			System.out.println("Failure converting image from base64 to byte[]");
+    		}
+    		
+    		ImagePNGRecievedEvent event = new ImagePNGRecievedEvent(this,data);
+    		for(ValueChangeListener listener : valueGetters){
+    			listener.valueChange(event);
+    		}    	
+    	}
+    	
+    	
     }
     
     /**
@@ -610,6 +632,11 @@ public class PaintCanvas extends AbstractField implements Component{
     
     public void getImageXML(){
     	addToQueue("getImageXML", "");
+    	if(isImmediate()) requestRepaint();
+    }
+    
+    public void getImagePNG(){
+    	addToQueue("getImagePNG", "");
     	if(isImmediate()) requestRepaint();
     }
 
