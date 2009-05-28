@@ -17,6 +17,10 @@ package
 	
 	import mx.controls.Alert;
 	import mx.core.Application;
+	import mx.graphics.ImageSnapshot;
+	import mx.graphics.codec.IImageEncoder;
+	import mx.graphics.codec.JPEGEncoder;
+	import mx.graphics.codec.PNGEncoder;
 	
 	import util.ArrayUtil;
 	import util.ImageConverterUtil;
@@ -64,10 +68,14 @@ package
 			{
 				//Controller functions
 				ExternalInterface.addCallback("undo", 							undo);
-				ExternalInterface.addCallback("redo", 							redo);
-				ExternalInterface.addCallback("getImageXML",					getImageXML);
+				ExternalInterface.addCallback("redo", 							redo);				
 				ExternalInterface.addCallback("setInteractive",					setInteractive);
 				ExternalInterface.addCallback("setComponentBackgroundColor", 	setApplicationColor);
+				
+				//Filetypes
+				ExternalInterface.addCallback("getImageXML",					getImageXML);
+				ExternalInterface.addCallback("getImagePNG",					getPNG);
+				ExternalInterface.addCallback("getImageJPG",					getJPG);
 				
 				//Brush functions
 				ExternalInterface.addCallback("setBrush", 						setBrush);
@@ -531,6 +539,35 @@ package
 				Alert.show("Current layer not available");
 			}
 		}
+		
+		//returns a PNG image in base64 encoding
+		public function getPNG():String{
+			var dpi:Number = 0;
+			var encoder:IImageEncoder = new PNGEncoder();
+			
+			//Take the snapshot
+			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
+
+			//Convert image to base 64
+			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
+
+			return b64String;			
+		}
+		
+		public function getJPG():String{
+			var dpi:Number = 0;
+			var encoder:IImageEncoder = new JPEGEncoder();
+			
+			//Take the snapshot
+			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
+
+			//Convert image to base 64
+			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
+
+			return b64String;			
+		}
+		
+		
 				
 	}
 }
