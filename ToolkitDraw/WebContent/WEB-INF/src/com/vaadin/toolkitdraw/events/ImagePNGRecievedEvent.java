@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.events;
+package com.vaadin.toolkitdraw.events;
 
 import com.vaadin.ui.Field.ValueChangeEvent;
 

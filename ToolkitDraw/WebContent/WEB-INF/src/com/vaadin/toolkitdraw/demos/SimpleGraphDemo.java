@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.demos;
+package com.vaadin.toolkitdraw.demos;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +8,8 @@ import com.google.gwt.core.ext.typeinfo.HasMetaData;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
 
-import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.vaadin.data.Item;
+import com.vaadin.toolkitdraw.components.PaintCanvas;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Table;

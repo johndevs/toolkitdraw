@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw;
+package com.vaadin.toolkitdraw;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.itmill.toolkitdraw.components.Layer;
-import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.toolkitdraw.components.Layer;
+import com.vaadin.toolkitdraw.components.PaintCanvas;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;

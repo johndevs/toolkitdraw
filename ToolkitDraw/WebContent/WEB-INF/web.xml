@@ -6,15 +6,15 @@
 
     <servlet>
         <servlet-name>ToolkitDraw</servlet-name>
-        <servlet-class>com.itmill.toolkit.terminal.gwt.server.ApplicationServlet
+        <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet
         </servlet-class>
         <init-param>
             <param-name>application</param-name>
-            <param-value>com.itmill.toolkitdraw.ToolkitDrawApplication</param-value>
+            <param-value>com.vaadin.toolkitdraw.ToolkitDrawApplication</param-value>
         </init-param>
          <init-param>
             <param-name>widgetset</param-name>
-            <param-value>com.itmill.toolkitdraw.gwt.PaintCanvasWidgetSet</param-value>
+            <param-value>com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet</param-value>
         </init-param>
     
         

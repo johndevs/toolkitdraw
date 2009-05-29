@@ -1,6 +1,6 @@
-package com.itmill.toolkitdraw.tools;
+package com.vaadin.toolkitdraw.tools;
 
-import com.itmill.toolkitdraw.components.PaintCanvas;
+import com.vaadin.toolkitdraw.components.PaintCanvas;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;

@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw;
+package com.vaadin.toolkitdraw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,15 +9,15 @@ import java.util.Set;
 
 import org.apache.catalina.startup.SetAllPropertiesRule;
 
-import com.itmill.toolkitdraw.MainPanel.Type;
-import com.itmill.toolkitdraw.components.PaintCanvas;
-import com.itmill.toolkitdraw.tools.Ellipse;
-import com.itmill.toolkitdraw.tools.Line;
-import com.itmill.toolkitdraw.tools.Pen;
-import com.itmill.toolkitdraw.tools.Polygon;
-import com.itmill.toolkitdraw.tools.Square;
-import com.itmill.toolkitdraw.tools.Tool;
 import com.vaadin.Application;
+import com.vaadin.toolkitdraw.MainPanel.Type;
+import com.vaadin.toolkitdraw.components.PaintCanvas;
+import com.vaadin.toolkitdraw.tools.Ellipse;
+import com.vaadin.toolkitdraw.tools.Line;
+import com.vaadin.toolkitdraw.tools.Pen;
+import com.vaadin.toolkitdraw.tools.Polygon;
+import com.vaadin.toolkitdraw.tools.Square;
+import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Layout;

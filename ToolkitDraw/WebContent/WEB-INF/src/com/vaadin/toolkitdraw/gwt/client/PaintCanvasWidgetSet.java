@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.gwt.client;
+package com.vaadin.toolkitdraw.gwt.client;
 
 import com.vaadin.terminal.gwt.client.DefaultWidgetSet;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -12,7 +12,7 @@ public class PaintCanvasWidgetSet extends DefaultWidgetSet {
     {
         final String className = resolveWidgetTypeName(uidl);
         
-        if ("com.itmill.toolkitdraw.gwt.client.IPaintCanvas".equals(className)) 
+        if ("com.vaadin.toolkitdraw.gwt.client.IPaintCanvas".equals(className)) 
         {        	
         	//Default width and height of paper is fullsize
         	String width = "-1";
@@ -42,7 +42,7 @@ public class PaintCanvasWidgetSet extends DefaultWidgetSet {
         
         if ("paintcanvas".equals(tag)) 
         {
-            return "com.itmill.toolkitdraw.gwt.client.IPaintCanvas";
+            return "com.vaadin.toolkitdraw.gwt.client.IPaintCanvas";
         }
     
         // Let the DefaultWidgetSet handle resolution of default widgets

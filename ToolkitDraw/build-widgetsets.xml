@@ -70,7 +70,7 @@ See configure target to adjust this buildfile.
 		<java classname="com.google.gwt.dev.GWTCompiler" failonerror="yes" fork="yes" maxmemory="512m">
 			<arg value="-out" />
 			<arg value="${client-side-destination}" />			
-			<arg value="com.itmill.toolkitdraw.gwt.PaintCanvasWidgetSet" />
+			<arg value="com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet" />
 			<classpath>
 				<path refid="compile.classpath"/>
 			</classpath>

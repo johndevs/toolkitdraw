@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw;
+package com.vaadin.toolkitdraw;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -9,19 +9,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.itmill.toolkitdraw.components.ConfirmPopup;
-import com.itmill.toolkitdraw.components.PaintCanvas;
-import com.itmill.toolkitdraw.components.SavePopup;
-import com.itmill.toolkitdraw.demos.SimpleGraphDemo;
-import com.itmill.toolkitdraw.events.ImagePNGRecievedEvent;
-import com.itmill.toolkitdraw.events.ImageXMLRecievedEvent;
-import com.itmill.toolkitdraw.tools.Tool;
 import com.vaadin.Application;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.toolkitdraw.components.ConfirmPopup;
+import com.vaadin.toolkitdraw.components.PaintCanvas;
+import com.vaadin.toolkitdraw.components.SavePopup;
+import com.vaadin.toolkitdraw.demos.SimpleGraphDemo;
+import com.vaadin.toolkitdraw.events.ImagePNGRecievedEvent;
+import com.vaadin.toolkitdraw.events.ImageXMLRecievedEvent;
+import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -64,14 +64,14 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	}
 	
 	@Override
-	public void init() {
+	public void init() {	
 		
 		setTheme("toolkitdraw");
 		
 		mainWindow = new Window("IT Mill Toolkit - ToolkitDraw");
 		mainWindow.setSizeFull();
 		mainWindow.setStyleName("mainwindow");
-		setMainWindow(mainWindow);		
+		setMainWindow(mainWindow);			
 			
 		VerticalLayout mainLayout = new VerticalLayout();
 		mainLayout.setStyleName("mainlayout");

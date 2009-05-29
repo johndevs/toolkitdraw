@@ -1,25 +1,25 @@
-@import "../default/styles.css";
+@import "../runo/styles.css"; 
 
-.i-app{
+.v-app{
 	background-color: #515151;
 	color: #EEEEEE;	
 }
 
-.i-menubar{
+.v-menubar{
 	background-color: #222222;
 	height:24px;
 }
 
-.i-menubar TABLE{
+.v-menubar TABLE{
 	background-color: #222222;
 	border:0px
 }
 
-.i-menubar .menuitem {
+.v-menubar .menuitem {
 	background-color: #222222;	
 }
 
-.i-menubar-submenu{
+.v-menubar-submenu{
 	background-color: #222222;
 	border:1px ridge #515151;
 	border-top-width:0px;
@@ -28,16 +28,16 @@
 	filter: alpha(opacity=90); 	/* IE */
 }
 
-.i-menubar-submenu TABLE{
+.v-menubar-submenu TABLE{
 	background-color: #222222;
 }
 
-.i-menubar-submenu .menuitem {
+.v-menubar-submenu .menuitem {
 	background-color: #222222;	
 	color: #EEEEEE;	
 }
 
-.i-accordion-item-open .i-accordion-item-caption{
+.v-accordion-item-open .v-accordion-item-caption{
 	background: #2b2b2b;
 	color: #EEEEEE;	
 	border-top-color:#222222;	
@@ -45,37 +45,37 @@
 	height:29px
 }
 
-.i-accordion-item-first .i-accordion-item-caption{
+.v-accordion-item-first .v-accordion-item-caption{
 	border-top-width:0px;
 	height: 31px;
 }
 
-.i-accordion-item-caption{
+.v-accordion-item-caption{
 	background: #515151;
 	border-top:2px solid #222222;	
 	background: #2b2b2b;
 	height:29px;
 }
 
-.i-accordion-item{
+.v-accordion-item{
 	background:none;	
 }
 
-.i-tabsheet-tabs{
+.v-tabsheet-tabs{
 	height:22px;	
 }
 
-.i-tabsheet-tabitemcell-first{
+.v-tabsheet-tabitemcell-first{
 	margin-left:5px;	
 }
 
-.i-tabsheet-deco{
+.v-tabsheet-deco{
 	background:none;	
 	margin:0px;
 	border-bottom:1px solid #2b2b2b;
 }
 
-.i-tabsheet-tabitem{
+.v-tabsheet-tabitem{
 	font-size:12px;
 	line-height:14px;
 	height:20px;
@@ -84,18 +84,18 @@
 	border:1px solid #222222;
 }
 
-.i-tabsheet-tabitem .i-caption{
+.v-tabsheet-tabitem .v-caption{
 	height:17px;
 	padding:3px 10px 1px;
 	background:#2b2b2b;		
 }
 
-.i-tabsheet-tabitem-selected{
+.v-tabsheet-tabitem-selected{
 	color: #EEEEEE;
 	font-weight:bold;		
 }
 
-.i-tabsheet-tabitem-selected .i-caption{
+.v-tabsheet-tabitem-selected .v-caption{
 	padding:3px 10px 0;
 	height:17px;
 	margin:0px;
@@ -103,18 +103,18 @@
 	background:black;
 }
 
-.i-tabsheet-spacertd DIV{
+.v-tabsheet-spacertd DIV{
 	height:21px;
 	background:none;	
 	border:none;
 }
 
-.i-tabsheet-content{
+.v-tabsheet-content{
 	background:none;
 	border:none;	
 }
 
-.i-tabsheet-tabcontainer{
+.v-tabsheet-tabcontainer{
 	border-bottom:1px solid #222222;	
 	background:#2b2b2b;
 }
@@ -125,20 +125,20 @@
 	background:#414141;
 }
 
-.i-table-header-wrap{
+.v-table-header-wrap{
 	height:0px;
 }
 
-.i-table-body{
+.v-table-body{
 	background:none;	
 	border:0px solid silver;
 }
 
-.i-table-row, .i-table-row-odd{
+.v-table-row, .v-table-row-odd{
 	background: none;	
 }
 
-.i-table-row-odd{
+.v-table-row-odd{
 	background: #515151;	
 }
 
@@ -171,34 +171,34 @@
 
 }
 
-.i-window{
+.v-window{
 	color:#EEEEEE;
 	background:#717171;	
 }
 
-.i-window-wrap{
+.v-window-wrap{
 	background:none;	
 }
 
-.i-window-outerheader{
+.v-window-outerheader{
 	background:#515151;
 	margin-left:0px;		
 }
 
-.i-window-contents{
+.v-window-contents{
 	background:#717171;
 	border:0px solid #717171;	
 }
 
-.i-window-footer{
+.v-window-footer{
 	background:#717171;		
 }
 
-.i-window-resizebox{
+.v-window-resizebox{
 	background:none;	
 }
 
-.i-window-modalitycurtain{
+.v-window-modalitycurtain{
 	background:black;	
 }
 

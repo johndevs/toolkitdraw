@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.components;
+package com.vaadin.toolkitdraw.components;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,10 +14,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.apache.commons.collections.PriorityQueue;
 
 
-import com.itmill.toolkitdraw.events.ImagePNGRecievedEvent;
-import com.itmill.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
+import com.vaadin.toolkitdraw.events.ImagePNGRecievedEvent;
+import com.vaadin.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 

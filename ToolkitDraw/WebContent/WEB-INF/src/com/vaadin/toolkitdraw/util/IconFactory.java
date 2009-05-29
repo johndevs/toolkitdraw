@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.util;
+package com.vaadin.toolkitdraw.util;
 
 import java.io.File;
 import java.io.FileInputStream;

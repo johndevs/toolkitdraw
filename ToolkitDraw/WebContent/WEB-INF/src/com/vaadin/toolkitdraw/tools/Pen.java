@@ -1,33 +1,32 @@
-package com.itmill.toolkitdraw.tools;
+package com.vaadin.toolkitdraw.tools;
 
-import com.itmill.toolkitdraw.components.PaintCanvas;
-import com.itmill.toolkitdraw.tools.Tool.Type;
-import com.itmill.toolkitdraw.util.IconFactory;
-import com.itmill.toolkitdraw.util.IconFactory.Icons;
+import java.text.Format;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.toolkitdraw.components.PaintCanvas;
+import com.vaadin.toolkitdraw.util.IconFactory;
+import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-public class Ellipse extends Tool implements ValueChangeListener {
+public class Pen extends Tool implements ValueChangeListener{
 	
 	private Layout layout = new VerticalLayout();
 	
 	private TextField size;
 	
 	private TextField color;
-	
-	private TextField fillColor;
-	
-	public Ellipse(PaintCanvas canvas){
+		
+	public Pen(PaintCanvas canvas){
 		
 		this.canvas = canvas;
-		
+	
 		button = new Button();
-		button.setData(Type.ELLIPSE);
-		button.setIcon(IconFactory.getIcon(Icons.ICON_ELLIPSE));
+		button.setData(Type.PEN);
+		button.setIcon(IconFactory.getIcon(Icons.ICON_PEN));
 		
 		size = new TextField("Size");
 		size.addListener(this);
@@ -39,14 +38,7 @@ public class Ellipse extends Tool implements ValueChangeListener {
 		color.addListener(this);
 		color.setImmediate(true);
 		color.setValue("000000");
-		layout.addComponent(color);
-		
-		fillColor = new TextField("Fill Color");
-		fillColor.addListener(this);
-		fillColor.setImmediate(true);
-		fillColor.setValue("");
-		layout.addComponent(fillColor);
-		
+		layout.addComponent(color);		
 	}
 	
 	public Layout createToolOptions(){	
@@ -54,12 +46,12 @@ public class Ellipse extends Tool implements ValueChangeListener {
 	}	
 		
 	public Type getType(){
-		return Type.ELLIPSE;
-	}	
-	
-	@Override
-	public void valueChange(ValueChangeEvent event) {
-		if(canvas == null) return;		
+		return Type.PEN;
+	}
+
+	public void valueChange(ValueChangeEvent event) {		
+		
+		if(canvas == null) return;
 		
 		if(event.getProperty() == size){							
 			canvas.setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
@@ -67,9 +59,7 @@ public class Ellipse extends Tool implements ValueChangeListener {
 		else if(event.getProperty() == color){
 			canvas.setColor(String.valueOf(event.getProperty().getValue()));
 		}		
-		else if(event.getProperty() == fillColor){
-			canvas.setFillColor(String.valueOf(event.getProperty().getValue()));
-		}
 	}
-
+	
+	
 }

@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.gwt.client;
+package com.vaadin.toolkitdraw.gwt.client;
 
 
 import com.google.gwt.dom.client.Element;
@@ -11,10 +11,9 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 
 
-
 public class IPaintCanvas extends HTML implements Paintable {
 
-	private static String LOCATION = "ToolkitDraw/ITMILL/widgetsets/com.itmill.toolkitdraw.gwt.PaintCanvasWidgetSet/paintcanvas";
+	private static String LOCATION = "ToolkitDraw/VAADIN/widgetsets/com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet/paintcanvas";
 	private String id = "";
 	
 	/** Component identifier in UIDL communications. */   

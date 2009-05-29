@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw.components;
+package com.vaadin.toolkitdraw.components;
 
 
 

@@ -1,4 +1,4 @@
-package com.itmill.toolkitdraw;
+package com.vaadin.toolkitdraw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
