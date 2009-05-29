@@ -7,17 +7,14 @@ import java.util.Map;
 import com.google.gwt.core.ext.typeinfo.HasMetaData;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
-import com.itmill.toolkit.data.Item;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.Component;
-import com.itmill.toolkit.ui.GridLayout;
-import com.itmill.toolkit.ui.HorizontalLayout;
-import com.itmill.toolkit.ui.Layout;
-import com.itmill.toolkit.ui.Table;
-import com.itmill.toolkit.ui.VerticalLayout;
-import com.itmill.toolkit.ui.Window;
-import com.itmill.toolkit.ui.Button.ClickEvent;
+
 import com.itmill.toolkitdraw.components.PaintCanvas;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
 
 public class SimpleGraphDemo extends Window {
 	

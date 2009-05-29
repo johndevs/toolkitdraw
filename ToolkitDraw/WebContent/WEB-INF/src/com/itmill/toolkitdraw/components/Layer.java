@@ -1,8 +1,6 @@
 package com.itmill.toolkitdraw.components;
 
-import com.itmill.toolkit.ui.CheckBox;
-import com.itmill.toolkit.ui.Label;
-import com.itmill.toolkit.ui.OrderedLayout;
+
 
 public class Layer {
 

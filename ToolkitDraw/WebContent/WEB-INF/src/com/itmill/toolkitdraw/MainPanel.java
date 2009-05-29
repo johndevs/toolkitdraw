@@ -5,17 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.itmill.toolkit.data.Property;
-import com.itmill.toolkit.data.Property.ValueChangeEvent;
-import com.itmill.toolkit.data.Property.ValueChangeListener;
-import com.itmill.toolkit.data.util.ObjectProperty;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.CustomComponent;
-import com.itmill.toolkit.ui.HorizontalLayout;
-import com.itmill.toolkit.ui.MenuBar;
-import com.itmill.toolkit.ui.Button.ClickEvent;
-import com.itmill.toolkit.ui.Button.ClickListener;
-import com.itmill.toolkit.ui.MenuBar.Command;
+import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.MenuBar.Command;
 
 public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		

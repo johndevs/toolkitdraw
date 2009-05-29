@@ -1,14 +1,15 @@
 package com.itmill.toolkitdraw.components;
 
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.HorizontalLayout;
-import com.itmill.toolkit.ui.Label;
-import com.itmill.toolkit.ui.Select;
-import com.itmill.toolkit.ui.VerticalLayout;
-import com.itmill.toolkit.ui.Window;
-import com.itmill.toolkit.ui.Button.ClickEvent;
-import com.itmill.toolkit.ui.Button.ClickListener;
+
 import com.itmill.toolkitdraw.ToolkitDrawApplication.FileType;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 public class SavePopup extends Window implements ClickListener{
 

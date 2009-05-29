@@ -1,13 +1,12 @@
 package com.itmill.toolkitdraw.tools;
 
-import com.itmill.toolkit.data.Property.ValueChangeListener;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.Layout;
-import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkitdraw.components.PaintCanvas;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.VerticalLayout;
 
 
-public abstract class Tool implements ValueChangeListener{
+public abstract class Tool implements com.vaadin.data.Property.ValueChangeListener{
 
 	protected PaintCanvas canvas;
 		

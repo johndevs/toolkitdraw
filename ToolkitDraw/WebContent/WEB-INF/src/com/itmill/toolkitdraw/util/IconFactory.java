@@ -6,11 +6,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.itmill.toolkit.Application;
-import com.itmill.toolkit.terminal.ExternalResource;
-import com.itmill.toolkit.terminal.Resource;
-import com.itmill.toolkit.terminal.StreamResource;
-import com.itmill.toolkit.terminal.ThemeResource;
+import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.ThemeResource;
+
 
 public class IconFactory {
 	

@@ -1,7 +1,8 @@
 package com.itmill.toolkitdraw.events;
 
-import com.itmill.toolkit.ui.Field;
-import com.itmill.toolkit.ui.Field.ValueChangeEvent;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Field.ValueChangeEvent;
+
 
 public class ImageXMLRecievedEvent extends ValueChangeEvent {
 

@@ -1,15 +1,15 @@
 package com.itmill.toolkitdraw.tools;
 
-import com.itmill.toolkit.data.Property.ValueChangeEvent;
-import com.itmill.toolkit.data.Property.ValueChangeListener;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.Layout;
-import com.itmill.toolkit.ui.TextField;
-import com.itmill.toolkit.ui.VerticalLayout;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.tools.Tool.Type;
 import com.itmill.toolkitdraw.util.IconFactory;
 import com.itmill.toolkitdraw.util.IconFactory.Icons;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 public class Ellipse extends Tool implements ValueChangeListener {
 	

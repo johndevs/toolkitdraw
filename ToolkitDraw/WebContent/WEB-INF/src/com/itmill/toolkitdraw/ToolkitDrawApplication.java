@@ -9,40 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.modeler.Main;
-import org.apache.tools.ant.taskdefs.Sleep;
-
-import com.itmill.toolkit.Application;
-import com.itmill.toolkit.data.Item;
-import com.itmill.toolkit.data.Property.ValueChangeEvent;
-import com.itmill.toolkit.data.Property.ValueChangeListener;
-import com.itmill.toolkit.terminal.DownloadStream;
-import com.itmill.toolkit.terminal.Resource;
-import com.itmill.toolkit.terminal.StreamResource;
-import com.itmill.toolkit.terminal.gwt.client.RenderInformation.Size;
-import com.itmill.toolkit.terminal.gwt.client.ui.IFilterSelect.SuggestionPopup;
-import com.itmill.toolkit.ui.Accordion;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.Component;
-import com.itmill.toolkit.ui.CustomLayout;
-import com.itmill.toolkit.ui.ExpandLayout;
-import com.itmill.toolkit.ui.GridLayout;
-import com.itmill.toolkit.ui.HorizontalLayout;
-import com.itmill.toolkit.ui.Label;
-import com.itmill.toolkit.ui.Layout;
-import com.itmill.toolkit.ui.OrderedLayout;
-import com.itmill.toolkit.ui.Panel;
-import com.itmill.toolkit.ui.PopupView;
-import com.itmill.toolkit.ui.SplitPanel;
-import com.itmill.toolkit.ui.TabSheet;
-import com.itmill.toolkit.ui.VerticalLayout;
-import com.itmill.toolkit.ui.Window;
-import com.itmill.toolkit.ui.Button.ClickEvent;
-import com.itmill.toolkit.ui.Button.ClickListener;
-import com.itmill.toolkit.ui.Component.Listener;
-import com.itmill.toolkit.ui.PopupView.Content;
-import com.itmill.toolkit.ui.TabSheet.SelectedTabChangeEvent;
-import com.itmill.toolkit.ui.TabSheet.SelectedTabChangeListener;
 import com.itmill.toolkitdraw.components.ConfirmPopup;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.components.SavePopup;
@@ -50,7 +16,25 @@ import com.itmill.toolkitdraw.demos.SimpleGraphDemo;
 import com.itmill.toolkitdraw.events.ImagePNGRecievedEvent;
 import com.itmill.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.itmill.toolkitdraw.tools.Tool;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.vaadin.Application;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.SplitPanel;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+
 
 public class ToolkitDrawApplication extends Application implements ClickListener, ValueChangeListener, SelectedTabChangeListener {
 

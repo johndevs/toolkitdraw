@@ -1,8 +1,9 @@
 package com.itmill.toolkitdraw.gwt.client;
 
-import com.itmill.toolkit.terminal.gwt.client.DefaultWidgetSet;
-import com.itmill.toolkit.terminal.gwt.client.Paintable;
-import com.itmill.toolkit.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.DefaultWidgetSet;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.UIDL;
+
 
 public class PaintCanvasWidgetSet extends DefaultWidgetSet {
 

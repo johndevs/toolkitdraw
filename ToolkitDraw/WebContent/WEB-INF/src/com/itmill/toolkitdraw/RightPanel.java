@@ -7,31 +7,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import sun.awt.ModalityEvent;
-
-import com.itmill.toolkit.data.Item;
-import com.itmill.toolkit.data.Property;
-import com.itmill.toolkit.data.Property.ValueChangeEvent;
-import com.itmill.toolkit.event.ItemClickEvent;
-import com.itmill.toolkit.event.ItemClickEvent.ItemClickListener;
-import com.itmill.toolkit.ui.Accordion;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.CheckBox;
-import com.itmill.toolkit.ui.GridLayout;
-import com.itmill.toolkit.ui.HorizontalLayout;
-import com.itmill.toolkit.ui.Label;
-import com.itmill.toolkit.ui.Layout;
-import com.itmill.toolkit.ui.Panel;
-import com.itmill.toolkit.ui.Select;
-import com.itmill.toolkit.ui.TabSheet;
-import com.itmill.toolkit.ui.Table;
-import com.itmill.toolkit.ui.TextField;
-import com.itmill.toolkit.ui.VerticalLayout;
-import com.itmill.toolkit.ui.Button.ClickEvent;
-import com.itmill.toolkit.ui.Button.ClickListener;
-
 import com.itmill.toolkitdraw.components.Layer;
 import com.itmill.toolkitdraw.components.PaintCanvas;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 public class RightPanel extends VerticalLayout implements Property.ValueChangeListener, ClickListener, ItemClickListener{
 

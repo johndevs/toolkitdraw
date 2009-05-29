@@ -13,12 +13,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.collections.PriorityQueue;
 
-import com.itmill.toolkit.terminal.PaintException;
-import com.itmill.toolkit.terminal.PaintTarget;
-import com.itmill.toolkit.ui.AbstractField;
-import com.itmill.toolkit.ui.Component;
+
 import com.itmill.toolkitdraw.events.ImagePNGRecievedEvent;
 import com.itmill.toolkitdraw.events.ImageXMLRecievedEvent;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.Component;
 
 public class PaintCanvas extends AbstractField implements Component{
 		
@@ -437,7 +438,7 @@ public class PaintCanvas extends AbstractField implements Component{
     			listener.valueChange(event);
     		}    		
     	}
-    	
+    	    	
     	//PNG image recieved
     	if(variables.containsKey("getImagePNG")){
     		String base64 = variables.get("getImagePNG").toString();

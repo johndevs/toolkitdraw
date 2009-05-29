@@ -9,20 +9,6 @@ import java.util.Set;
 
 import org.apache.catalina.startup.SetAllPropertiesRule;
 
-import com.itmill.toolkit.Application;
-import com.itmill.toolkit.data.Property.ValueChangeEvent;
-import com.itmill.toolkit.data.Property.ValueChangeListener;
-import com.itmill.toolkit.terminal.gwt.client.ui.Icon;
-import com.itmill.toolkit.ui.Accordion;
-import com.itmill.toolkit.ui.Button;
-import com.itmill.toolkit.ui.GridLayout;
-import com.itmill.toolkit.ui.Label;
-import com.itmill.toolkit.ui.Layout;
-import com.itmill.toolkit.ui.Panel;
-import com.itmill.toolkit.ui.TextField;
-import com.itmill.toolkit.ui.VerticalLayout;
-import com.itmill.toolkit.ui.Button.ClickEvent;
-import com.itmill.toolkit.ui.Button.ClickListener;
 import com.itmill.toolkitdraw.MainPanel.Type;
 import com.itmill.toolkitdraw.components.PaintCanvas;
 import com.itmill.toolkitdraw.tools.Ellipse;
@@ -31,6 +17,13 @@ import com.itmill.toolkitdraw.tools.Pen;
 import com.itmill.toolkitdraw.tools.Polygon;
 import com.itmill.toolkitdraw.tools.Square;
 import com.itmill.toolkitdraw.tools.Tool;
+import com.vaadin.Application;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 public class LeftPanel extends Accordion implements ClickListener {
 
