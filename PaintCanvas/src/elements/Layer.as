@@ -23,6 +23,7 @@ package elements
 			}
 									
 			this.canvas = new Canvas();
+			this.canvas.cacheAsBitmap = true;
 			this.canvas.id = this.name;
 			
 			if(width > 0) this.canvas.width = width;

@@ -212,7 +212,7 @@ package
 					case "x":	Alert.show("XML"+getImageXML().toString()); break;
 					case "f":	setPaperHeight(-1); break;
 					case "p":	setBrush(POLYGON); break;
-									
+													
 					default:	trace("Warning: "+String.fromCharCode(k.charCode)+" unassigned.");
 				}
 			}		
@@ -541,8 +541,7 @@ package
 		}
 		
 		//returns a PNG image in base64 encoding
-		public function getPNG():String{
-			var dpi:Number = 0;
+		public function getPNG(dpi:int):String{										
 			var encoder:IImageEncoder = new PNGEncoder();
 			
 			//Take the snapshot
@@ -551,11 +550,11 @@ package
 			//Convert image to base 64
 			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
 
-			return b64String;			
+			return b64String;							
 		}
-		
-		public function getJPG():String{
-			var dpi:Number = 0;
+				
+		//returns a JPEG image in base64 encoding
+		public function getJPG(dpi:int):String{
 			var encoder:IImageEncoder = new JPEGEncoder();
 			
 			//Take the snapshot
@@ -564,7 +563,7 @@ package
 			//Convert image to base 64
 			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
 
-			return b64String;			
+			return b64String;							
 		}
 		
 		
