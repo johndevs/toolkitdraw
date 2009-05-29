@@ -188,6 +188,7 @@
 .v-window-outerheader{
 	background:#515151;
 	margin-left:0px;		
+	border-bottom:1px solid black;
 }
 
 .v-window-contents{
