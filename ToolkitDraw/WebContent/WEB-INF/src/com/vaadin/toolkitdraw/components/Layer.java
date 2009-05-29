@@ -1,8 +1,10 @@
 package com.vaadin.toolkitdraw.components;
 
+import java.io.Serializable;
 
 
-public class Layer {
+
+public class Layer implements Serializable {
 
 	private boolean visible;
 	private String color;

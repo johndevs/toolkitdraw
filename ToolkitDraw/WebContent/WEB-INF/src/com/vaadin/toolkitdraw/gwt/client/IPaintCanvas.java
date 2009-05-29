@@ -136,7 +136,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setBrush == 'function'){
-			canvas.setBrush(brush);	
+			canvas.setBrush(brush);				
 		}else{
 			var func = function() { canvas.setBrush(brush);	 };		
 			setTimeout(func,1000);
@@ -229,11 +229,18 @@ public class IPaintCanvas extends HTML implements Paintable {
 		return canvas.getImageXML();
 	}-*/;
 	
-	private native String getImagePNG(String id)/*-{
+	private native String getImagePNG(String id, int dpi)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
-		return canvas.getImagePNG();
+		return canvas.getImagePNG(dpi);
+	}-*/;
+	
+	private native String getImageJPG(String id, int dpi)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		return canvas.getImageJPG(dpi);
 	}-*/;
 	
 	private native String setInteractive(String id, boolean interactive)/*-{
@@ -372,11 +379,19 @@ public class IPaintCanvas extends HTML implements Paintable {
     		}
     		else if(commands[i].equals("getImagePNG")){
     			//Fetch the base64 png image from the component
-    			String base64 = getImagePNG(this.id);
+    			String base64 = getImagePNG(this.id, Integer.valueOf(values[i]));
     			
     			//Send the result back to the server
     			client.updateVariable(uidlId, "getImagePNG", base64, true);
-    		}    		
+    		}    	
+    		
+    		else if(commands[i].equals("getImageJPG")){
+    			//Fetch the base64 png image from the component
+    			String base64 = getImageJPG(this.id, Integer.valueOf(values[i]));
+    			
+    			//Send the result back to the server
+    			client.updateVariable(uidlId, "getImageJPG", base64, true);
+    		}    	
     		
     		else if(commands[i].equals("interactive"))	setInteractive(this.id, Boolean.valueOf(values[i]));
     		else if(commands[i].equals("graphics-clear"))	clear(this.id);

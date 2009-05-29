@@ -1,5 +1,7 @@
 package com.vaadin.toolkitdraw.tools;
 
+import java.io.Serializable;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.toolkitdraw.components.PaintCanvas;

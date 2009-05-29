@@ -1,6 +1,7 @@
 package com.vaadin.toolkitdraw.components;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,19 +17,20 @@ import org.apache.commons.collections.PriorityQueue;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
+import com.vaadin.toolkitdraw.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 
-public class PaintCanvas extends AbstractField implements Component{
+public class PaintCanvas extends AbstractField implements Component, Serializable{
 		
 	/**
 	 * The graphics class is used to draw on the canvas from the server side
 	 * This is mostly used when we want to present some information on the drawing
 	 * component.
 	 */
-	public class Graphics{				
+	public class Graphics implements Serializable{				
 		
 		//Are we using the batch mode?
 		private boolean batchMode = false;		
@@ -288,6 +290,25 @@ public class PaintCanvas extends AbstractField implements Component{
 		requestRepaint();
 	}
 	
+	public PaintCanvas(String width, String height, String color){				
+		
+		/* Create the background layer which cannot be removed
+		 * When creating a new layer it is automatically added the its canvas
+		 */
+		Layer background = new Layer("Background", this);
+		layers.add(background);
+		
+		//Set the height and width of the component
+		setHeight(width);
+		setWidth(height);	
+		
+		//Set the background color
+		backgroundColor = color;
+		
+		setImmediate(true);
+		requestRepaint();
+	}
+	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight){
 				
 		/* Create the background layer which cannot be removed
@@ -423,7 +444,7 @@ public class PaintCanvas extends AbstractField implements Component{
         target.addVariable(this, "values", values.toArray(new String[values.size()]));
         
         //Sent the background color as separate variable
-        target.addVariable(this,"componentColor", backgroundColor);
+        target.addVariable(this,"componentColor", backgroundColor);           
     }
     
     /** Deserialize changes received from client. */
@@ -439,8 +460,8 @@ public class PaintCanvas extends AbstractField implements Component{
     		}    		
     	}
     	    	
-    	//PNG image recieved
-    	if(variables.containsKey("getImagePNG")){
+    	 //PNG image recieved
+    	if(variables.containsKey("getImagePNG")){    		
     		String base64 = variables.get("getImagePNG").toString();
     		byte[] data = null;
     		
@@ -454,9 +475,25 @@ public class PaintCanvas extends AbstractField implements Component{
     		for(ValueChangeListener listener : valueGetters){
     			listener.valueChange(event);
     		}    	
-    	}
+    	}    	
     	
-    	
+    	//JPG image recieved
+    	if(variables.containsKey("getImageJPG")){ 
+    		        		
+    		String base64 = variables.get("getImageJPG").toString();
+    		byte[] data = null;
+    		
+    		try{
+    			data = new sun.misc.BASE64Decoder().decodeBuffer(base64);
+    		}catch(IOException io){
+    			System.out.println("Failure converting image from base64 to byte[]");
+    		}
+    		
+    		ImageJPGRecievedEvent event = new ImageJPGRecievedEvent(this,data);
+    		for(ValueChangeListener listener : valueGetters){
+    			listener.valueChange(event);
+    		}    	
+    	}    	
     }
     
     /**
@@ -565,7 +602,9 @@ public class PaintCanvas extends AbstractField implements Component{
      */
     public void setBrush(BrushType brush){
     	addToQueue("brush", brush.toString());
-    	if(isImmediate()) requestRepaint();
+    	if(isImmediate()){    	
+    		requestRepaint();
+    	}
     }
     
     public void addLayer(Layer layer){
@@ -636,8 +675,13 @@ public class PaintCanvas extends AbstractField implements Component{
     	if(isImmediate()) requestRepaint();
     }
     
-    public void getImagePNG(){
-    	addToQueue("getImagePNG", "");
+    public void getImagePNG(int dpi){
+    	addToQueue("getImagePNG", String.valueOf(dpi));
+    	if(isImmediate()) requestRepaint();
+    }
+    
+    public void getImageJPG(int dpi){
+    	addToQueue("getImageJPG", String.valueOf(dpi));
     	if(isImmediate()) requestRepaint();
     }
 

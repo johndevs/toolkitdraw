@@ -2,12 +2,16 @@ package com.vaadin.toolkitdraw;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.StringBufferInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.catalina.startup.SetContextPropertiesRule;
 
 import com.vaadin.Application;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -19,6 +23,7 @@ import com.vaadin.toolkitdraw.components.ConfirmPopup;
 import com.vaadin.toolkitdraw.components.PaintCanvas;
 import com.vaadin.toolkitdraw.components.SavePopup;
 import com.vaadin.toolkitdraw.demos.SimpleGraphDemo;
+import com.vaadin.toolkitdraw.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.vaadin.toolkitdraw.tools.Tool;
@@ -36,8 +41,10 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 
 
-public class ToolkitDrawApplication extends Application implements ClickListener, ValueChangeListener, SelectedTabChangeListener {
+public class ToolkitDrawApplication extends Application implements ClickListener, ValueChangeListener, SelectedTabChangeListener, Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Window mainWindow;
 	
 	private SplitPanel contentWindow;
@@ -128,8 +135,18 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 
 	private PaintCanvas addNewFile(){
 		
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400);
-		canvas.setComponentBackgroundColor("515151");		
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");		
+					
+		if(canvas == null){
+			System.err.println("Creating canvas failed!");			
+		}
+		
+		canvas.setComponentBackgroundColor("515151");			
+		
+		//Set the canvas as the current canvas
+		leftPanel.setCanvas(canvas);
+		rightPanel.setCanvas(canvas);
+		this.currentCanvas = canvas;
 			
 		//Calculate next unsaved filename
 		int unsaved_counter=1;
@@ -137,6 +154,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			if(filename.startsWith("Unsaved")) unsaved_counter++;
 		}
 		
+		//Set the caption for the tab (This is used when saving..
+		canvas.setCaption("Unsaved"+unsaved_counter);
+			
 		//Put the canvas in the map and create a tab for it
 		openFiles.put("Unsaved"+unsaved_counter, canvas);		
 		savedStatusFiles.put("Unsaved"+unsaved_counter, false);		
@@ -146,8 +166,20 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	}
 	
 	private boolean closeCurrentFile(){
+						
 		final PaintCanvas canvas = (PaintCanvas)openFilesTabs.getSelectedTab();
-		final String filename = openFilesTabs.getTabCaption(canvas);		
+	
+		if(canvas == null){
+			System.err.println("No canvas");
+			return false;
+		}		
+		
+		final String filename = openFilesTabs.getTabCaption(canvas);	
+		
+		if(filename == null){
+			System.err.println("No filename");
+			return false;
+		}
 		
 		//Check if file has not been saved
 		Boolean status = savedStatusFiles.get(filename);
@@ -172,7 +204,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			
 			if(openFilesTabs.getSelectedTab() != null){
 				currentCanvas = (PaintCanvas)openFilesTabs.getSelectedTab();
+				if(currentCanvas == null) System.err.println("Setting canvas to null!");
 			}else{
+				System.err.println("Setting canvas to null!");
 				currentCanvas = null;
 				setImageToolsEnabled(false);
 			}
@@ -204,7 +238,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 						
 						if(openFilesTabs.getSelectedTab() != null){
 							currentCanvas = (PaintCanvas)openFilesTabs.getSelectedTab();
+							if(currentCanvas == null) System.err.println("Setting canvas to null!");
 						}else{
+							System.err.println("Setting canvas to null!");
 							currentCanvas = null;
 							setImageToolsEnabled(false);
 						}
@@ -262,9 +298,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				case SAVE:{
 					final SavePopup pop = new SavePopup("Select filetype","", mainWindow);
 					pop.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							if((Boolean)event.getButton().getData()){
-								saveFile(pop.getValue());
+						public void buttonClick(ClickEvent event) {													
+							if((Boolean)event.getButton().getData()){								
+								saveFile(pop.getValue(), pop.getDpi());
 							}
 						}						
 					});
@@ -285,8 +321,20 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	@Override
 	public void selectedTabChange(SelectedTabChangeEvent event) {
 		TabSheet tabs = (TabSheet)event.getSource();
-		String filename = tabs.getSelectedTab().getCaption();		
+		
+		String filename = tabs.getSelectedTab().getCaption();
+				
+		if(!openFiles.containsKey(filename)){
+			System.err.println("Could not find open file with filename \""+filename+"\"");
+			return;
+		}	
+		
 		PaintCanvas canvas = openFiles.get(filename);
+		
+		if(canvas == null){
+			System.err.println("Canvas was null!");
+			return;
+		}		
 		
 		//Set the current canvas to the tabs canvas
 		this.currentCanvas = canvas;	
@@ -294,14 +342,16 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		leftPanel.setCanvas(canvas);
 	}
 	
-	public void setStatusbarText(String text){
+	public void setStatusbarText(String text){		
 		Object label = statusbar.getComponentIterator().next();
 		((Label)label).setValue(text);
 	}
 	
-	public void saveFile(FileType type){
-		
-		if(currentCanvas == null) return;
+	public void saveFile(FileType type, int dpi){		
+		if(currentCanvas == null){
+			System.err.println("Could not save file, canvas was null");			
+			return;
+		}
 		
 		switch(type){
 			case XML:{
@@ -321,7 +371,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				break;
 			}	
 			
-			case PNG:{
+			case PNG:{								
 				//Listen for the result
 				currentCanvas.addListener(new ValueChangeListener(){
 					public void valueChange(ValueChangeEvent event) {						
@@ -334,7 +384,25 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				});	
 				
 				//Request XML image 
-				currentCanvas.getImagePNG(); 
+				currentCanvas.getImagePNG(dpi); 
+				break;				
+			}
+			
+			case JPG:{
+												
+				//Listen for the result
+				currentCanvas.addListener(new ValueChangeListener(){
+					public void valueChange(ValueChangeEvent event) {						
+						if(event instanceof ImageJPGRecievedEvent){							
+							currentCanvas.removeListener(this);							
+							ImageJPGRecievedEvent evnt = (ImageJPGRecievedEvent)event;							
+							processSavedFile(evnt);
+						}									
+					}					
+				});	
+				
+				//Request XML image 
+				currentCanvas.getImageJPG(dpi); 
 				break;				
 			}
 		}
@@ -344,14 +412,25 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	public void processSavedFile(ValueChangeEvent event){
 		
 		DownloadStream stream = null;
+		Date now = new Date();
+		
 		
 		if(event instanceof ImageXMLRecievedEvent){
-			System.out.println("XML");
+			ImageXMLRecievedEvent evnt = (ImageXMLRecievedEvent)event;
+			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getXML().getBytes());
+			stream = new DownloadStream(iStream,"text/XML","image"+now.getTime()+".xml");			
 		}
+		
 		else if(event instanceof ImagePNGRecievedEvent){			
 			ImagePNGRecievedEvent evnt = (ImagePNGRecievedEvent)event;
 			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());
-			stream = new DownloadStream(iStream,"Image/PNG","image.png");
+			stream = new DownloadStream(iStream,"Image/PNG","image"+now.getTime()+".png");
+		}
+		
+		else if(event instanceof ImageJPGRecievedEvent){			
+			ImageJPGRecievedEvent evnt = (ImageJPGRecievedEvent)event;
+			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());
+			stream = new DownloadStream(iStream,"Image/JPG","image"+now.getTime()+".jpg");
 		}
 				
 		if(stream != null){
@@ -364,7 +443,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				}				
 			}, str.getFileName(), this);
 			
-			mainWindow.open(res);			
+			mainWindow.open(res, "img");		
+		
 		}
 		else	
 			mainWindow.showNotification("Saving image failed");

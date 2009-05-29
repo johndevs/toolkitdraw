@@ -1,12 +1,14 @@
 package com.vaadin.toolkitdraw.tools;
 
+import java.io.Serializable;
+
 import com.vaadin.toolkitdraw.components.PaintCanvas;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 
 
-public abstract class Tool implements com.vaadin.data.Property.ValueChangeListener{
+public abstract class Tool implements com.vaadin.data.Property.ValueChangeListener, Serializable{
 
 	protected PaintCanvas canvas;
 		

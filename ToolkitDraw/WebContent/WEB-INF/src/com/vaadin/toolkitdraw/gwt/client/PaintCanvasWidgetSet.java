@@ -17,15 +17,14 @@ public class PaintCanvasWidgetSet extends DefaultWidgetSet {
         	//Default width and height of paper is fullsize
         	String width = "-1";
         	String height = "-1";
-        	String color = "FFFFFF";
+        	String color = "FF0000";
         	
         	if(uidl.hasVariable("paperWidth"))
         		width = uidl.getStringVariable("paperWidth");        	
         	if(uidl.hasVariable("paperHeight"))
         		height = uidl.getStringVariable("paperHeight");     
         	if(uidl.hasVariable("componentColor")){
-        		color = uidl.getStringVariable("componentColor");
-        		System.out.println(color);
+        		color = uidl.getStringVariable("componentColor");        		
         	}	
         	IPaintCanvas canvas = new IPaintCanvas(Integer.parseInt(width), Integer.parseInt(height), color);        	
         	return canvas;

@@ -42,10 +42,10 @@ public class LeftPanel extends Accordion implements ClickListener {
 		
 		application = app;
 		tools = createToolset(canvas);
+		this.canvas = canvas;
 	
 		//Create the tools tab
-		tab1 = new GridLayout(4,4);
-		//tab1.setSizeFull();
+		tab1 = new GridLayout(4,4);	
 		tab1.setCaption("Tools");				
 		addComponent(tab1);		
 		
@@ -96,7 +96,10 @@ public class LeftPanel extends Accordion implements ClickListener {
 	
 	public void setTool(Tool.Type tool){
 		
-		if(canvas == null) return;
+		if(this.canvas == null){
+			System.err.println("No canvas was found!");
+			return;
+		}
 		
 		//Get the tool from the toolset and deselect all tools
 		Tool selected = null;
@@ -111,7 +114,10 @@ public class LeftPanel extends Accordion implements ClickListener {
 		}
 		
 		//Tool is not in toolset
-		if(selected == null) return;		
+		if(selected == null){
+			System.err.println("Tool is not in toolset");
+			return;		
+		}
 		
 		tab2.removeAllComponents();
 		
@@ -176,13 +182,18 @@ public class LeftPanel extends Accordion implements ClickListener {
 	
 	public void setCanvas(PaintCanvas canvas) {	
 		
+		if(canvas == null){
+			System.err.println("Cannot set null canvas");
+			return;
+		}
+				
 		System.out.println("LeftPanel: Setting new canvas");
 		
 		this.canvas = canvas;
 		
 		//Update toolset canvas
 		for(Tool tool : tools){
-			tool.setCanvas(canvas);
+			tool.setCanvas(this.canvas);
 		}
 	}
 

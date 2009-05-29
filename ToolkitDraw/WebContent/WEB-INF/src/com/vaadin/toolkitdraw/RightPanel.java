@@ -14,6 +14,8 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.toolkitdraw.components.Layer;
 import com.vaadin.toolkitdraw.components.PaintCanvas;
+import com.vaadin.toolkitdraw.util.IconFactory;
+import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -76,7 +78,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	private void createHistograms()
 	{
 		//Create RGB channel histogram
-		PaintCanvas rgb = new PaintCanvas("300px","250px");
+		PaintCanvas rgb = new PaintCanvas("300px","250px","515151");
 		
 		//Set all layer backgrounds
 		for(Layer layer : rgb.getLayers())
@@ -116,7 +118,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		paperWidth = new TextField();
 		paperWidth.setValue(300);		
 		if(this.canvas != null) this.canvas.setPaperWidth(300);
-		paperWidth.setWidth("30px");
+		paperWidth.setWidth("50px");
 		paperWidth.addListener((Property.ValueChangeListener)this);
 		paperWidth.setImmediate(true);
 		grid.addComponent(paperWidth,1,0);
@@ -126,7 +128,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		paperHeight = new TextField();
 		paperHeight.setValue(400);
 		if(this.canvas != null) this.canvas.setPaperHeight(400);
-		paperHeight.setWidth("30px");
+		paperHeight.setWidth("50px");
 		paperHeight.addListener((Property.ValueChangeListener)this);
 		paperHeight.setImmediate(true);
 		grid.addComponent(paperHeight,3,0);
@@ -142,19 +144,31 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			
 		HorizontalLayout layerTools = new HorizontalLayout();
 		
-		addLayer = new Button("Add");
+		addLayer = new Button();
+		addLayer.setDescription("Add layer");
+		addLayer.setIcon(IconFactory.getIcon(Icons.PLUS));
+		addLayer.setStyleName(Button.STYLE_LINK);
 		addLayer.addListener((ClickListener)this);
 		layerTools.addComponent(addLayer);
 	
-		removeLayer = new Button("Del");
+		removeLayer = new Button();
+		removeLayer.setDescription("Remove layer");
+		removeLayer.setIcon(IconFactory.getIcon(Icons.MINUS));
+		removeLayer.setStyleName(Button.STYLE_LINK);
 		removeLayer.addListener((ClickListener)this);
 		layerTools.addComponent(removeLayer);
 		
-		upLayer = new Button("Up");
+		upLayer = new Button();
+		upLayer.setDescription("Move layer up");
+		upLayer.setIcon(IconFactory.getIcon(Icons.UP_ARROW));
+		upLayer.setStyleName(Button.STYLE_LINK);
 		upLayer.addListener((ClickListener)this);
 		layerTools.addComponent(upLayer);
 		
-		downLayer = new Button("Down");
+		downLayer = new Button();
+		downLayer.setDescription("Move layer down");
+		downLayer.setIcon(IconFactory.getIcon(Icons.DOWN_ARROW));
+		downLayer.setStyleName(Button.STYLE_LINK);
 		downLayer.addListener((ClickListener)this);
 		layerTools.addComponent(downLayer);
 		
@@ -170,8 +184,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layerTable.setColumnWidth("Visible", 30);
 		layerTable.setColumnHeader("Visible", "");
 		layerTable.addContainerProperty("Name",String.class, "");
-		
-		
+				
 		
 		tab2.addComponent(layerTable);		
 		tabs.addComponent(tab2);			
@@ -308,6 +321,12 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		this.canvas = canvas;
 		refreshLayers();
+	}
+	
+	public void updateHistogram(){
+		
+		
+		
 	}
 
 
