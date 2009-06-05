@@ -50,7 +50,7 @@ public class SimpleGraphDemo extends Window {
 		setLayout(layout);	
 		
 		//Create a paintcanvas 
-		canvas = new PaintCanvas();
+		canvas = new PaintCanvas("300px","300px");
 		canvas.setHeight("300px");
 		canvas.setWidth("300px");	
 		canvas.setInteractive(false);

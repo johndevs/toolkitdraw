@@ -15,18 +15,33 @@ public class PaintCanvasWidgetSet extends DefaultWidgetSet {
         if ("com.vaadin.toolkitdraw.gwt.client.IPaintCanvas".equals(className)) 
         {        	
         	//Default width and height of paper is fullsize
-        	String width = "-1";
-        	String height = "-1";
+        	String paperWidth = "-1";
+        	String paperHeight = "-1";
         	String color = "FF0000";
         	
         	if(uidl.hasVariable("paperWidth"))
-        		width = uidl.getStringVariable("paperWidth");        	
+        		paperWidth = uidl.getStringVariable("paperWidth");        	
+        	
         	if(uidl.hasVariable("paperHeight"))
-        		height = uidl.getStringVariable("paperHeight");     
-        	if(uidl.hasVariable("componentColor")){
+        		paperHeight = uidl.getStringVariable("paperHeight");     
+        	
+        	if(uidl.hasVariable("componentColor"))
         		color = uidl.getStringVariable("componentColor");        		
-        	}	
-        	IPaintCanvas canvas = new IPaintCanvas(Integer.parseInt(width), Integer.parseInt(height), color);        	
+        	
+        	String width = "100%";
+        	String height = "100%";
+        	
+        	if(uidl.hasVariable("width"))
+        		width  =uidl.getStringVariable("width");
+        	
+        	if(uidl.hasVariable("height"))
+        		height = uidl.getStringVariable("height");        	
+        	
+        	
+        	IPaintCanvas canvas = new IPaintCanvas( width, 
+        											height,
+        											Integer.parseInt(paperWidth), 
+        											Integer.parseInt(paperHeight), color);        	
         	return canvas;
         }     
 
@@ -47,7 +62,5 @@ public class PaintCanvasWidgetSet extends DefaultWidgetSet {
         // Let the DefaultWidgetSet handle resolution of default widgets
         return super.resolveWidgetTypeName(uidl);
     }
-	
-
 	
 }

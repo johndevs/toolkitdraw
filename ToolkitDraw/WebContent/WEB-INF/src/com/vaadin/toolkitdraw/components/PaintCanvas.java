@@ -232,6 +232,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 		
+	/** The command history is needed when the the session is reloaded(F5) **/
+	private Queue<Map<String, String>> commandHistory = new ArrayBlockingQueue<Map<String,String>>(10000);
+	
 	private Queue<Map<String, String>> changedValues = new ArrayBlockingQueue<Map<String,String>>(1000);
 	
 	private List<Layer> layers = new ArrayList<Layer>();	
@@ -245,6 +248,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private Graphics graphics = new Graphics();
 	
 	private String backgroundColor = "FFFFFF";
+	
+	private boolean init = true;
 
 	public static enum BrushType{
 		PEN("Pen"),
@@ -275,6 +280,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height){				
+		super.setWidth(width);
+		super.setHeight(height);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -284,6 +291,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		//Set the height and width of the component
 		setHeight(width);
+		
 		setWidth(height);	
 		
 		setImmediate(true);
@@ -291,6 +299,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height, String color){				
+		super.setWidth(width);
+		super.setHeight(height);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -310,7 +320,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight){
-				
+		super.setWidth(width);
+		super.setHeight(height);
+		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
@@ -330,6 +342,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, String color){
+		super.setWidth(width);
+		super.setHeight(height);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -353,7 +367,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
-				
+		super.setWidth(width);
+		super.setHeight(height);
+		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
@@ -418,7 +434,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	
 	 /** Paint (serialize) the component for the client. */
     public void paintContent(PaintTarget target) throws PaintException {
-        
+            	    	
+    	//Mark initialization flag as false
+    	init = false;
+    	
     	// Superclass writes any common attributes in the paint target.
         super.paintContent(target);
             
@@ -426,22 +445,29 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         List<String> values = new ArrayList<String>();
         
         //Always send the width and height
-        commands.add("height");
-        values.add(height);
-        commands.add("width");
-        values.add(width);
+        if(!commands.contains("height")){
+        	commands.add("height");
+        	values.add(height);
+        }
         
+        if(!commands.contains("width")){
+        	 commands.add("width");
+             values.add(width);
+        }       
         
         while(!changedValues.isEmpty()){
         	Map<String, String> entry = changedValues.poll();
         	for(String command : entry.keySet()){
         		commands.add(command);
         		values.add(entry.get(command));
-        	}        	
+        	}
+        	commandHistory.add(entry);
         }
         
         target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
         target.addVariable(this, "values", values.toArray(new String[values.size()]));
+        target.addVariable(this, "width", width);
+        target.addVariable(this, "height", height);
         
         //Sent the background color as separate variable
         target.addVariable(this,"componentColor", backgroundColor);           
@@ -449,7 +475,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     
     /** Deserialize changes received from client. */
     public void changeVariables(Object source, Map variables) {
-        
+            	    	
     	//XML image recieved
     	if(variables.containsKey("getImageXML")){
     		String xml = variables.get("getImageXML").toString();    		
