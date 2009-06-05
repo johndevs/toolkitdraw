@@ -38,6 +38,7 @@ package
 		
 		private var mouse_is_down:Boolean = false;
 		private var isInteractive:Boolean = false;
+		private var isFlashReady:Boolean = false;
 			
 		public static const PEN:String = "Pen"; 
 		public static const SQUARE:String = "Square";
@@ -71,6 +72,7 @@ package
 				ExternalInterface.addCallback("redo", 							redo);				
 				ExternalInterface.addCallback("setInteractive",					setInteractive);
 				ExternalInterface.addCallback("setComponentBackgroundColor", 	setApplicationColor);
+				ExternalInterface.addCallback("isReady",						isReady);
 				
 				//Filetypes
 				ExternalInterface.addCallback("getImageXML",					getImageXML);
@@ -102,12 +104,16 @@ package
 				ExternalInterface.addCallback("graphicsDrawSquare",				drawSquare);
 				ExternalInterface.addCallback("graphicsClear",					clearCurrentLayer);
 				ExternalInterface.addCallback("graphicsDrawPolygon",			drawPolygon);
+				
+				
 			}	
 			else
 			{
 				Alert.show("External interface not availble");
 				return;	
 			}		
+			
+			isFlashReady = true;
 		}
 			
 		//Brush functions			
@@ -566,6 +572,10 @@ package
 			return b64String;							
 		}
 		
+		//Returns true if initialization is complete
+		public function isReady():Boolean{
+			return isFlashReady;
+		}
 		
 				
 	}
