@@ -6,6 +6,7 @@ package
 	import brushes.Pen;
 	import brushes.Polygon;
 	import brushes.Square;
+	import brushes.Text;
 	
 	import elements.Layer;
 	
@@ -21,6 +22,7 @@ package
 	import mx.graphics.codec.IImageEncoder;
 	import mx.graphics.codec.JPEGEncoder;
 	import mx.graphics.codec.PNGEncoder;
+	import mx.managers.FocusManager;
 	
 	import util.ArrayUtil;
 	import util.ImageConverterUtil;
@@ -28,6 +30,7 @@ package
 	public class Controller
 	{
 		private var painter:IBrush;
+		public static var focusManager:FocusManager;
 		
 		//The current canvas
 		private var currentLayer:Layer;	
@@ -40,11 +43,13 @@ package
 		private var isInteractive:Boolean = false;
 		private var isFlashReady:Boolean = false;
 			
+		//Tool constants	
 		public static const PEN:String = "Pen"; 
 		public static const SQUARE:String = "Square";
 		public static const ELLIPSE:String = "Ellipse";
 		public static const LINE:String = "Line";
 		public static const POLYGON:String = "Polygon";
+		public static const TEXT:String = "Text";
 	
 		public function Controller()
 		{														
@@ -53,16 +58,21 @@ package
 			currentLayer = backgroundLayer;
 			layers.push(backgroundLayer);	
 			Application.application.frame.addChild(backgroundLayer.getCanvas());		
+			focusManager = Application.application.focusManager;
 			
 			//Chreate the default brush
 			var defaultBrush:IBrush = new Pen(currentLayer.getCanvas());	
 			this.history.push(defaultBrush);
 			this.painter = defaultBrush;	
 		
+			//Set component in interactive mode(user-edit)
 			setInteractive(true);	
 			
+			//Add dropshadow to paper
 			Application.application.frame.filters = [new DropShadowFilter()];
-			Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
+			
+			//Add keyboard listener
+			//Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
 													
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
@@ -169,6 +179,9 @@ package
 			
 			if(e.ctrlKey){
 				painter.endTool();		
+				
+				//Ensure that all temporary children are removed
+				painter.getCanvas().removeAllChildren();
 			}
 												
 			else if(e.localX < currentLayer.getWidth() && e.localY < currentLayer.getHeight())
@@ -199,6 +212,7 @@ package
 				
 		private function keyboard(k:KeyboardEvent):void
 		{
+			/*
 			if(k.ctrlKey && String.fromCharCode(k.charCode) != "")
 			{
 				switch(String.fromCharCode(k.charCode))
@@ -221,7 +235,8 @@ package
 													
 					default:	trace("Warning: "+String.fromCharCode(k.charCode)+" unassigned.");
 				}
-			}		
+			}
+			*/		
 		}
 		
 		private function redraw():void
@@ -270,47 +285,25 @@ package
 		//Set the brush
 		public function setBrush(type:String):void
 		{				
+			var brush:IBrush;
+			
 			switch(type)
 			{
-				case PEN:
-				{					
-					this.history.push(new Pen(currentLayer.getCanvas()));
-					this.painter  = this.history[this.history.length-1];					
-					break;	
-				}
+				case PEN: 		brush = new Pen(currentLayer.getCanvas()); break;				
+				case SQUARE:	brush = new Square(currentLayer.getCanvas()); break;				
+				case ELLIPSE:	brush = new Ellipse(currentLayer.getCanvas()); break;				
+				case LINE:		brush = new Line(currentLayer.getCanvas()); break;				
+				case POLYGON:	brush = new Polygon(currentLayer.getCanvas()); break;
+				case TEXT:		brush = new Text(currentLayer.getCanvas()); break;			
 				
-				case SQUARE:
-				{					
-					this.history.push(new Square(currentLayer.getCanvas()));
-					this.painter  = this.history[this.history.length-1];		
-					break;	
-				}
-				
-				case ELLIPSE:
-				{
-					this.history.push(new Ellipse(currentLayer.getCanvas()));
-					this.painter  = this.history[this.history.length-1];		
-					break;
-				}
-				
-				case LINE:
-				{
-					this.history.push(new Line(currentLayer.getCanvas()));
-					this.painter  = this.history[this.history.length-1];		
-					break;					
-				}
-				
-				case POLYGON:
-				{
-					this.history.push(new Polygon(currentLayer.getCanvas()));
-					this.painter = this.history[this.history.length-1];
-					break;
-				}
-				
-				default:{
-					Alert.show("Brush was not found!");
-				}				
+				default:		Alert.show("Brush \""+type+"\" was not found!");
 			}		
+			
+			//Save the selected tool in history
+			this.history.push(brush);
+			
+			//Set the current painter tool
+			this.painter = this.history[this.history.length-1];
 			
 		}	
 		

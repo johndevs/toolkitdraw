@@ -75,9 +75,7 @@ package brushes
 		public function endStroke():void
 		{
 			canvas.removeChild(selection);		
-			
-		//	Alert.show("Fillcolor: "+fillColor);
-						
+								
 			//Draw the background
 			backgroundPen.setColor(fillColor);
 			backgroundPen.setWidth(1);								

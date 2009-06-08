@@ -9,5 +9,6 @@ package brushes
 		public var alpha:Number = 1.0;
 		public var width:Number = 1.0;
 		public var points:Array = new Array;
+		public var text:String = "";
 	}
 }
