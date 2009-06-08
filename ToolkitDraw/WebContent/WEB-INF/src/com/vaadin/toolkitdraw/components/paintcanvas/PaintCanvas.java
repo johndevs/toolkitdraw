@@ -1,4 +1,4 @@
-package com.vaadin.toolkitdraw.components;
+package com.vaadin.toolkitdraw.components.paintcanvas;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,9 +17,9 @@ import org.apache.commons.collections.PriorityQueue;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
-import com.vaadin.toolkitdraw.events.ImageJPGRecievedEvent;
-import com.vaadin.toolkitdraw.events.ImagePNGRecievedEvent;
-import com.vaadin.toolkitdraw.events.ImageXMLRecievedEvent;
+import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
+import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
+import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 
@@ -256,7 +256,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		SQUARE("Square"),
 		ELLIPSE("Ellipse"),
 		LINE("Line"),
-		POLYGON("Polygon");
+		POLYGON("Polygon"),
+		TEXT("Text");
 		
 		private final String str;
 		private BrushType(String s) {

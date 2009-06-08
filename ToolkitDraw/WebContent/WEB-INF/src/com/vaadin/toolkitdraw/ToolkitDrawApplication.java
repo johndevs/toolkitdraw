@@ -20,12 +20,13 @@ import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.toolkitdraw.components.ConfirmPopup;
-import com.vaadin.toolkitdraw.components.PaintCanvas;
 import com.vaadin.toolkitdraw.components.SavePopup;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
+import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
+import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
+import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.toolkitdraw.demos.SimpleGraphDemo;
-import com.vaadin.toolkitdraw.events.ImageJPGRecievedEvent;
-import com.vaadin.toolkitdraw.events.ImagePNGRecievedEvent;
-import com.vaadin.toolkitdraw.events.ImageXMLRecievedEvent;
 import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -107,7 +108,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		rightPanel.setWidth("250px");
 		rightPanel.setHeight("100%");
 				
-		leftPanel = new LeftPanel(currentCanvas,Tool.Type.PEN, this);
+		leftPanel = new LeftPanel(currentCanvas,PaintCanvas.BrushType.PEN, this);
 		leftPanel.setWidth("250px");
 		leftPanel.setHeight("100%");
 			
@@ -284,7 +285,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				
 				case NEW: 	openFilesTabs.setSelectedTab(addNewFile());						
 							setImageToolsEnabled(true);
-							leftPanel.setTool(Tool.Type.PEN);
+							leftPanel.setTool(BrushType.PEN);
 							setStatusbarText("New file opened");
 				break;
 							
@@ -409,11 +410,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		
 	}
 		
-	public void processSavedFile(ValueChangeEvent event){
-		
+	public void processSavedFile(ValueChangeEvent event){		
 		DownloadStream stream = null;
-		Date now = new Date();
-		
+		Date now = new Date();		
 		
 		if(event instanceof ImageXMLRecievedEvent){
 			ImageXMLRecievedEvent evnt = (ImageXMLRecievedEvent)event;

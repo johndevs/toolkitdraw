@@ -1,6 +1,7 @@
-package com.vaadin.toolkitdraw.components;
+package com.vaadin.toolkitdraw.components.paintcanvas;
 
 import java.io.Serializable;
+
 
 
 

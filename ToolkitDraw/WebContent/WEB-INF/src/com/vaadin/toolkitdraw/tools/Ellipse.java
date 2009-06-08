@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.toolkitdraw.components.PaintCanvas;
-import com.vaadin.toolkitdraw.tools.Tool.Type;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;
@@ -28,7 +28,7 @@ public class Ellipse extends Tool implements ValueChangeListener {
 		this.canvas = canvas;
 		
 		button = new Button();
-		button.setData(Type.ELLIPSE);
+		button.setData(BrushType.ELLIPSE);
 		button.setIcon(IconFactory.getIcon(Icons.ICON_ELLIPSE));
 		
 		size = new TextField("Size");
@@ -55,8 +55,8 @@ public class Ellipse extends Tool implements ValueChangeListener {
 		return layout;
 	}	
 		
-	public Type getType(){
-		return Type.ELLIPSE;
+	public BrushType getType(){
+		return BrushType.ELLIPSE;
 	}	
 	
 	@Override

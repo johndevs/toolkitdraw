@@ -1,4 +1,4 @@
-package com.vaadin.toolkitdraw.events;
+package com.vaadin.toolkitdraw.components.paintcanvas.events;
 
 import com.vaadin.ui.Field.ValueChangeEvent;
 

@@ -11,12 +11,13 @@ import org.apache.catalina.startup.SetAllPropertiesRule;
 
 import com.vaadin.Application;
 import com.vaadin.toolkitdraw.MainPanel.Type;
-import com.vaadin.toolkitdraw.components.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.tools.Ellipse;
 import com.vaadin.toolkitdraw.tools.Line;
 import com.vaadin.toolkitdraw.tools.Pen;
 import com.vaadin.toolkitdraw.tools.Polygon;
 import com.vaadin.toolkitdraw.tools.Square;
+import com.vaadin.toolkitdraw.tools.Text;
 import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.GridLayout;
@@ -35,7 +36,7 @@ public class LeftPanel extends Accordion implements ClickListener {
 	
 	private Application application;
 	
-	public LeftPanel(PaintCanvas canvas, Tool.Type selectedTool, Application app) {
+	public LeftPanel(PaintCanvas canvas, PaintCanvas.BrushType selectedTool, Application app) {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
@@ -91,10 +92,14 @@ public class LeftPanel extends Accordion implements ClickListener {
 		poly.getButton().addListener((ClickListener)this);
 		toolset.add(poly);
 		
+		Text text = new Text(canvas);
+		text.getButton().addListener((ClickListener)this);
+		toolset.add(text);		
+		
 		return toolset;
 	}
 	
-	public void setTool(Tool.Type tool){
+	public void setTool(PaintCanvas.BrushType tool){
 		
 		if(this.canvas == null){
 			System.err.println("No canvas was found!");
@@ -143,42 +148,26 @@ public class LeftPanel extends Accordion implements ClickListener {
 			case POLYGON:	tab2.addComponent(selected.createToolOptions());
 							this.canvas.setBrush(PaintCanvas.BrushType.POLYGON);
 			break;
+			
+			case TEXT:		tab2.addComponent(selected.createToolOptions());
+							this.canvas.setBrush(PaintCanvas.BrushType.TEXT);
+			break;
 				
 			default:		System.out.println("No tool with the id could be selected");
 		}
 	}
 	
 	@Override
-	public void buttonClick(ClickEvent event) {
-		
-		//Tool button events
-		if(event.getButton().getData() == Tool.Type.PEN){			
-			setTool(Tool.Type.PEN);			
-		}
-		
-		else if(event.getButton().getData() == Tool.Type.SQUARE){
-			setTool(Tool.Type.SQUARE);			
-		}
-		
-		else if(event.getButton().getData() == Tool.Type.ELLIPSE){
-			setTool(Tool.Type.ELLIPSE);
-		}
-		
-		else if(event.getButton().getData() == Tool.Type.LINE){
-			setTool(Tool.Type.LINE);
-		}
-		
-		else if(event.getButton().getData() == Tool.Type.POLYGON){
-			setTool(Tool.Type.POLYGON);
-		}
+	public void buttonClick(ClickEvent event) {		
+		if(event.getButton().getData() instanceof PaintCanvas.BrushType){
+			PaintCanvas.BrushType type = (PaintCanvas.BrushType)event.getButton().getData();
+			setTool(type);			
+		}		
 	}
 	
 	public PaintCanvas getCanvas() {
 		return canvas;
-	}
-
-	
-	
+	}	
 	
 	public void setCanvas(PaintCanvas canvas) {	
 		

@@ -2,8 +2,8 @@ package com.vaadin.toolkitdraw.tools;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.toolkitdraw.components.PaintCanvas;
-import com.vaadin.toolkitdraw.tools.Tool.Type;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;
@@ -26,7 +26,7 @@ public class Square extends Tool implements ValueChangeListener{
 			this.canvas = canvas;
 			
 			button = new Button();
-			button.setData(Type.SQUARE);
+			button.setData(BrushType.SQUARE);
 			button.setIcon(IconFactory.getIcon(Icons.ICON_SQUARE));
 			
 			size = new TextField("Size");
@@ -53,8 +53,8 @@ public class Square extends Tool implements ValueChangeListener{
 			return layout;
 		}	
 			
-		public Type getType(){
-			return Type.SQUARE;
+		public PaintCanvas.BrushType getType(){
+			return BrushType.SQUARE;
 		}
 	
 		public void valueChange(ValueChangeEvent event) {		
