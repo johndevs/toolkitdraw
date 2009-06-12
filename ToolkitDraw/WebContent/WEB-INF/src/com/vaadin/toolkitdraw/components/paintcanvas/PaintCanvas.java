@@ -24,7 +24,9 @@ import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 
 public class PaintCanvas extends AbstractField implements Component, Serializable{
-		
+	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The graphics class is used to draw on the canvas from the server side
 	 * This is mostly used when we want to present some information on the drawing
@@ -32,6 +34,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	 */
 	public class Graphics implements Serializable{				
 		
+		private static final long serialVersionUID = 1L;
+
 		//Are we using the batch mode?
 		private boolean batchMode = false;		
 		
