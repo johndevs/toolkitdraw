@@ -11,8 +11,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 public class IPaintCanvas extends HTML implements Paintable {
 
-	private static String LOCATION = "ToolkitDraw/VAADIN/widgetsets/com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet/paintcanvas";
-	
 	/** The identifier of the embedded Flash plugin **/
 	private String id = "";
 	
@@ -21,12 +19,15 @@ public class IPaintCanvas extends HTML implements Paintable {
 
     /** Reference to the server connection object. */
     private ApplicationConnection client;	
+    
+    private String url = "";
     	    
-	public IPaintCanvas(String width, String height, int pageWidth, int pageHeight, String bgColor){		
+	public IPaintCanvas(String width, String height, int pageWidth, int pageHeight, String bgColor, String url){		
 		super();				
 		
-		id = DOM.createUniqueId();		
-		
+		this.id = DOM.createUniqueId();		
+		this.url = url;
+			
 		this.getElement().setId(id+"-canvas");
 				
 		//If either of the heights are negative then make papersize fullscrenn
@@ -38,13 +39,13 @@ public class IPaintCanvas extends HTML implements Paintable {
 		}	
 		
 		setHTML("<object width='100%' height='100%'>"+
-				"	<param name='movie' value='"+IPaintCanvas.LOCATION+"/PaintCanvas.swf'>"+
+				"	<param name='movie' value='"+url+"'>"+
 				"	<param name='allowScriptAccess' value='always'/>"+	
 				"	<param name='flashvars' value=\"id="+id+"&width="+w+"&height="+h+"\" />"+
 				"   <param name='wmode' value='transparent' />"+				
-				"	<embed id='"+id+"' width='100%' height='98%' flashvars='id="+id+"&width="+w+"&height="+h+"&bgcolor="+bgColor+"' src='"+IPaintCanvas.LOCATION+"/PaintCanvas.swf' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='"+bgColor+"'>"+
+				"	<embed id='"+id+"' width='100%' height='98%' flashvars='id="+id+"&width="+w+"&height="+h+"&bgcolor="+bgColor+"' src='"+url+"' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='"+bgColor+"'>"+
 				"	</embed>"+
-				"</object>"	)	;
+				"</object>")	;
 			
 		setSize(width, height);
 		setStyleName("paintcanvas");						
@@ -435,11 +436,11 @@ public class IPaintCanvas extends HTML implements Paintable {
     * every time UI changes in the component are received from the server.
     */
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-
 			
 		// This call should be made first. Ensure correct implementation,
         // and let the containing layout manage caption, etc.
-        if (client.updateComponent(this, uidl, true)) {
+        if (client.updateComponent(this, uidl, true)) {        	
+                	        	
             return;
         }
 

@@ -15,8 +15,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.apache.commons.collections.PriorityQueue;
 
 
+import com.vaadin.Application;
+import com.vaadin.terminal.ApplicationResource;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
@@ -254,6 +257,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private String backgroundColor = "FFFFFF";
 	
 	private boolean init = true;
+	
+	private ThemeResource swf  =new ThemeResource("PaintCanvas.swf");
 
 	public static enum BrushType{
 		PEN("Pen"),
@@ -273,7 +278,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 			
 	public PaintCanvas(){	
-						
+		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
@@ -282,11 +287,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		setImmediate(true);		
 		requestRepaint();
+		
 	}
 	
 	public PaintCanvas(String width, String height){				
 		super.setWidth(width);
 		super.setHeight(height);
+		
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -327,7 +334,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight){
 		super.setWidth(width);
 		super.setHeight(height);
-		
+			
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
@@ -348,7 +355,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, String color){
 		super.setWidth(width);
-		super.setHeight(height);
+		super.setHeight(height);	
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -439,13 +446,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	
 	 /** Paint (serialize) the component for the client. */
     public void paintContent(PaintTarget target) throws PaintException {
-            	    	
-    	//Mark initialization flag as false
-    	init = false;
-    	
+            	    	  	  	    	
     	// Superclass writes any common attributes in the paint target.
-        super.paintContent(target);
-            
+        super.paintContent(target);                        
+             
         List<String> commands = new ArrayList<String>();
         List<String> values = new ArrayList<String>();
         
@@ -475,7 +479,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         target.addVariable(this, "height", height);
         
         //Sent the background color as separate variable
-        target.addVariable(this,"componentColor", backgroundColor);           
+        target.addVariable(this,"componentColor", backgroundColor);          
+             
+        
+    	//Mark initialization flag as false
+    	init = false;
     }
     
     /** Deserialize changes received from client. */
