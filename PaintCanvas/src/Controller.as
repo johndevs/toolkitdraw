@@ -12,9 +12,11 @@ package
 	
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
+	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
 	import mx.core.Application;
@@ -29,6 +31,7 @@ package
 	
 	public class Controller
 	{
+		private var clientID:String;
 		private var painter:IBrush;
 		public static var focusManager:FocusManager;
 		
@@ -52,13 +55,14 @@ package
 		public static const TEXT:String = "Text";
 	
 		public function Controller()
-		{														
+		{																	
 			//Create the default layer
 			var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
 			currentLayer = backgroundLayer;
 			layers.push(backgroundLayer);	
 			Application.application.frame.addChild(backgroundLayer.getCanvas());		
 			focusManager = Application.application.focusManager;
+			clientID = Application.application.parameters.id;
 			
 			//Chreate the default brush
 			var defaultBrush:IBrush = new Pen(currentLayer.getCanvas());	
@@ -73,6 +77,8 @@ package
 			
 			//Add keyboard listener
 			//Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
+			
+			
 													
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
@@ -123,14 +129,22 @@ package
 				return;	
 			}		
 			
-			isFlashReady = true;
+			//Notify the client implementation that the flash has loaded and is ready to recieve commands
+			isFlashReady = true;			
+			ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);			
 		}
 			
 		//Brush functions			
-		private function setBrushColor(color:Number):void{ this.painter.setColor(color); }		
+		private function setBrushColor(color:Number):void
+		{ 
+			this.painter.setColor(color); 
+			changeEvent();
+		}		
+		
 		private function setBrushWidth(width:Number):void
 		{ 
-			this.painter.setWidth(width); 
+			this.painter.setWidth(width);
+			changeEvent(); 
 		}
 				
 		private function setFillColor(color:Number):void{
@@ -140,7 +154,9 @@ package
 				Ellipse(this.painter).setFillColor(color);
 			} else if(this.painter.getType() == POLYGON){
 				Polygon(this.painter).setFillColor(color);
-			}			
+			}
+			
+			changeEvent();			
 		}			
 						
 		//Paper options
@@ -156,6 +172,7 @@ package
 			currentLayer.setHeight(height);			
 				
 			redraw();
+			changeEvent();
 		}		
 		
 		public function setPaperWidth(width:int):void
@@ -170,6 +187,7 @@ package
 			currentLayer.setWidth(width);	
 			
 			redraw();
+			changeEvent();
 		}							
 						
 		//Mouse tracking				
@@ -264,7 +282,8 @@ package
 				this.redo_history.push(p);
 			}
 					
-			redraw();			
+			redraw();		
+			changeEvent();	
 		}
 		
 		//Redo brush
@@ -280,6 +299,7 @@ package
 			}		
 			
 			redraw();
+			changeEvent();
 		}	
 		
 		//Set the brush
@@ -305,6 +325,7 @@ package
 			//Set the current painter tool
 			this.painter = this.history[this.history.length-1];
 			
+			changeEvent();
 		}	
 		
 		
@@ -331,6 +352,7 @@ package
 			Application.application.frame.addChild(newLayer.getCanvas());
 			
 			selectLayer(name);
+			changeEvent();
 		}
 		
 		public function removeLayer(name:String):void
@@ -342,7 +364,8 @@ package
 			}
 						
 			layers = layers.filter(ArrayUtil.isNotLayerFilter(name));
-			selectLayer(layers[layers.length-1].getName());			
+			selectLayer(layers[layers.length-1].getName());	
+			changeEvent();		
 		}
 		
 		public function setLayerVisibility(name:String, visible:Boolean):void
@@ -353,6 +376,7 @@ package
 					break;
 				}
 			}
+			changeEvent();
 		}
 				
 		public function moveLayerUp(name:String):void
@@ -373,6 +397,7 @@ package
 					break;
 				}
 			}		
+			changeEvent();
 		}
 		
 		public function moveLayerDown(name:String):void
@@ -392,7 +417,9 @@ package
 					
 					break;
 				}
-			}		
+			}	
+			
+			changeEvent();	
 		}
 		
 		public function selectLayer(name:String):void
@@ -408,6 +435,7 @@ package
 					//Set the brush for the current layer
 					setBrush(this.painter.getType());
 							
+					changeEvent();		
 					return;
 				}
 			}
@@ -449,6 +477,8 @@ package
 				
 				isInteractive = false;				
 			}
+			
+			changeEvent();
 		}
 	
 		//Draw functions
@@ -460,6 +490,8 @@ package
 			painter.processPoint(new Point(x1,y1));
 			painter.processPoint(new Point(x2,y2));
 			painter.endStroke();
+			
+			changeEvent();
 		}
 		
 		public function drawSquare(x:int, y:int, width:int, height:int):void
@@ -477,6 +509,8 @@ package
 			painter.processPoint(new Point(x,y));
 			painter.processPoint(new Point(x+width,y+height));
 			painter.endStroke();
+			
+			changeEvent();
 		}
 		
 		public function clearCurrentLayer():void{
@@ -491,6 +525,8 @@ package
 			
 			this.history = newHistory;
 			redraw();
+			
+			changeEvent();
 		}
 						
 		public function drawPolygon(xa:Object, ya:Object, length:int):void
@@ -512,19 +548,22 @@ package
 				painter.endStroke();
 			}
 			
-			painter.endTool();		
+			painter.endTool();
+			changeEvent();		
 		}
 		
 		public function setApplicationColor(color:String):void
 		{
 			Application.application.setStyle("backgroundColor", color);
 			Application.application.setStyle("backgroundGradientColors",[color,color]);
+			changeEvent();
 		}	
 		
 		public function setLayerBackgroundColor(color:String):void
 		{
 			if(currentLayer != null){
 				currentLayer.setBackgroundColor(color);
+				changeEvent();
 			} else {
 				Alert.show("Current layer not available");
 			}
@@ -534,6 +573,7 @@ package
 		{
 			if(currentLayer != null){
 				currentLayer.setAlpha(alpha);
+				changeEvent();
 			} else {
 				Alert.show("Current layer not available");
 			}
@@ -568,6 +608,13 @@ package
 		//Returns true if initialization is complete
 		public function isReady():Boolean{
 			return isFlashReady;
+		}
+		
+		//This is called when something changes
+		public function changeEvent():void
+		{
+			//Call the client side implementation
+			//ExternalInterface.call("PaintCanvasNativeUtil.error","SWF says hi");
 		}
 		
 				
