@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.catalina.startup.SetContextPropertiesRule;
 
 import com.vaadin.Application;
@@ -67,6 +69,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	
 	private PaintCanvas currentCanvas;
 	
+	/** Supported filetypes **/
 	public enum FileType{
 		XML, JPG, PNG
 	}
@@ -75,7 +78,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	public void init() {	
 		
 		setTheme("toolkitdraw");
-		
+				
 		mainWindow = new Window("IT Mill Toolkit - ToolkitDraw");
 		mainWindow.setSizeFull();
 		mainWindow.setStyleName("mainwindow");
