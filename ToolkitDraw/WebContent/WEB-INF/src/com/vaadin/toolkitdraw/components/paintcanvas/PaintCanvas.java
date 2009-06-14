@@ -256,10 +256,6 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	
 	private String backgroundColor = "FFFFFF";
 	
-	private boolean init = true;
-	
-	private ThemeResource swf  =new ThemeResource("PaintCanvas.swf");
-
 	public static enum BrushType{
 		PEN("Pen"),
 		SQUARE("Square"),
@@ -448,8 +444,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     public void paintContent(PaintTarget target) throws PaintException {
             	    	  	  	    	
     	// Superclass writes any common attributes in the paint target.
-        super.paintContent(target);                        
-             
+        super.paintContent(target);                                     
+           	
         List<String> commands = new ArrayList<String>();
         List<String> values = new ArrayList<String>();
         
@@ -475,20 +471,19 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         
         target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
         target.addVariable(this, "values", values.toArray(new String[values.size()]));
+        
+	        
+        //Send width and height always
         target.addVariable(this, "width", width);
         target.addVariable(this, "height", height);
         
         //Sent the background color as separate variable
         target.addVariable(this,"componentColor", backgroundColor);          
-             
-        
-    	//Mark initialization flag as false
-    	init = false;
     }
     
     /** Deserialize changes received from client. */
     public void changeVariables(Object source, Map variables) {
-            	    	
+            	
     	//XML image recieved
     	if(variables.containsKey("getImageXML")){
     		String xml = variables.get("getImageXML").toString();    		
@@ -533,6 +528,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     			listener.valueChange(event);
     		}    	
     	}    	
+    	
+    	//Flash is ready event recieved
+    	if(variables.containsKey("readyStatus")){    		
+    		//This is ignored for now
+    	}
     }
     
     /**

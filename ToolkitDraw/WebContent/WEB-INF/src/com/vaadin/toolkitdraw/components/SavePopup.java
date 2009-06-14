@@ -2,6 +2,9 @@ package com.vaadin.toolkitdraw.components;
 
 
 import com.google.gwt.user.client.ui.Grid;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.toolkitdraw.ToolkitDrawApplication.FileType;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
@@ -26,6 +29,8 @@ public class SavePopup extends Window implements ClickListener{
 	private TextField dpi;
 	
 	public SavePopup(String caption, String description, Window parent){
+		super();
+		
 		this.parent = parent;
 		setModal(true);
 		setWidth("350px");
@@ -45,13 +50,22 @@ public class SavePopup extends Window implements ClickListener{
 		grid.addComponent(lbl,0,0);
 		
 		filetype = new Select();
+		filetype.setImmediate(true);
 		filetype.setNullSelectionAllowed(false);
 		for(FileType type : FileType.values()){
 			filetype.addItem(type);
 		}
 		
-		//Select the defualt image format
-		filetype.select(FileType.PNG);
+		filetype.addListener(new ValueChangeListener(){
+			public void valueChange(ValueChangeEvent event) {
+				FileType type = (FileType)filetype.getValue();
+				if(type == FileType.XML){
+					dpi.setEnabled(false);
+				} else {
+					dpi.setEnabled(true);
+				}				
+			}			
+		});
 		
 		//fileLayout.addComponent(filetype);
 		
@@ -69,23 +83,28 @@ public class SavePopup extends Window implements ClickListener{
 		
 		dpi = new TextField();
 		dpi.setWidth("100%");
-		dpi.setValue("700");
+		dpi.setValue("72");
 		//dpiLayout.addComponent(dpi);
 		
 		//layout.addComponent(dpiLayout);
 		
 		grid.addComponent(dpi,1,1);
 		layout.addComponent(grid);
+	
+		//Select the defualt image format
+		filetype.select(FileType.PNG);
+		dpi.setEnabled(true);
+		
 		
 		HorizontalLayout buttons = new HorizontalLayout();		
 		
 		ok = new Button("Ok");
-		ok.addListener(this);
+		ok.addListener((ClickListener)this);
 		ok.setData(true);
 		buttons.addComponent(ok);
 	
 		cancel = new Button("Cancel");
-		cancel.addListener(this);
+		cancel.addListener((ClickListener)this);
 		cancel.setData(false);
 		buttons.addComponent(cancel);		
 		
@@ -134,4 +153,6 @@ public class SavePopup extends Window implements ClickListener{
 	public int getDpi(){		
 		return Integer.parseInt(dpi.getValue().toString());		
 	}
+
+	
 }

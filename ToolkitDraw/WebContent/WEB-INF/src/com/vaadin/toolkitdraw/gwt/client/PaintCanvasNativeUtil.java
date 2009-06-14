@@ -1,6 +1,13 @@
 package com.vaadin.toolkitdraw.gwt.client;
 
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dev.GWTMain;
+
 public class PaintCanvasNativeUtil {
+	
+	private static IPaintCanvas[] canvases = new IPaintCanvas[10];
 	
 	/**
 	 * Undo last brush stroke
@@ -475,6 +482,47 @@ public class PaintCanvasNativeUtil {
 	}-*/;	
 	
 	/**
+	 * Set the canvas in a ready state. This is done by the Flash component and should 
+	 * not be not manually
+	 * @param id
+	 * 		The id of the canvas which is ready
+	 */
+	public static void setCanvasReady(String id){
+		getCanvas(id).setReady(true);
+	}
+	
+	/**
+	 * Register a new canvas with this utility. This is done automatically by the client
+	 * side of the component and should not be done manually.
+	 * @param canvas
+	 * 		The canvas which should be registred
+	 */
+	public static void registerCanvas(IPaintCanvas canvas){
+		for(int i=0; i<canvases.length; i++){
+			if(canvases[i] == null || canvases[i].getId().equals(canvas.getId())){
+				canvases[i] = canvas;
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Returns a registred canvas
+	 * @param id
+	 * 		The id of the canvas.
+	 * @return
+	 * 		A client side canvas implementation.
+	 */
+	public static IPaintCanvas getCanvas(String id){
+		for(int i=0; i<canvases.length; i++){
+			if(canvases[i] != null && canvases[i].getId().equals(id))
+				return canvases[i];
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Define the native util methods so the flash can find them.
 	 * If the package changes then these need to be changed also!!!
 	 */
@@ -504,6 +552,7 @@ public class PaintCanvasNativeUtil {
 			this.drawPolygon = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawPolygon(Ljava/lang/String;[I[I)(id,x,y); };
 			this.setComponentBackground = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setComponentBackground(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.isReady = function(id){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::isReady(Ljava/lang/String;)(id); };
+			this.setCanvasReady = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setCanvasReady(Ljava/lang/String;)(id); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		

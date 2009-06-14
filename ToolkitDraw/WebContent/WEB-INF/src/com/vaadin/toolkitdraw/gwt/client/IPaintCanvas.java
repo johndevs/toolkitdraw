@@ -57,9 +57,19 @@ public class IPaintCanvas extends HTML implements Paintable {
 		
 		//Ensure that the methods are also available in javascript
 		PaintCanvasNativeUtil.defineBridgeMethods();
+		
+		//Register the canvas with the native util
+		PaintCanvasNativeUtil.registerCanvas(this);
 	}
 			
-	private void executeCommand(String id, String command, String value){
+	/**
+	 * Exectute a command on the canvas.
+	 * @param command
+	 * 		The command to be executed
+	 * @param value
+	 * 		The parameters for the command
+	 */
+	private void executeCommand(String command, String value){
 		
 		//Execute the operations the server wants to do		
 		if(command.equals("height")){		
@@ -162,8 +172,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 			
 		// This call should be made first. Ensure correct implementation,
         // and let the containing layout manage caption, etc.
-        if (client.updateComponent(this, uidl, true)) {        	
-                	        	
+        if (client.updateComponent(this, uidl, true)) {                     	        	
             return;
         }
                 
@@ -185,7 +194,7 @@ public class IPaintCanvas extends HTML implements Paintable {
         }
         
         //Check if plugin is ready, this will happen at initial call       
-        if(!PaintCanvasNativeUtil.isReady(this.id)){         	
+        if(!ready){         	
         	        	
         	//Try to run the commands after one second if the plugin is not ready
         	final UIDL u = uidl;
@@ -196,12 +205,41 @@ public class IPaintCanvas extends HTML implements Paintable {
         	
         	t.schedule(100);          	
         	
-        } else {        	       	        	
+        } else {        
+        	
         	//execute commands
         	 for(int i=0; i<commands.length; i++)
-        		 executeCommand(this.id, commands[i], values[i]);
+        		 executeCommand(commands[i], values[i]);
         }        
         	
+	}
+	
+	/**
+	 * Returns the id of this canvas. This can be used to recognice the canvas
+	 * @return
+	 * 		Unique id of the canvas
+	 */
+	public String getId(){
+		return this.id;
+	}
+	
+	/**
+	 * This function set the ready state of the Flash component
+	 * This is called by the PaintCanvasNativeUtil when the Flash reports it is ready
+	 * @param ready
+	 */
+	public void setReady(boolean ready){
+		this.ready = ready;
+		client.updateVariable(this.uidlId, "readyStatus", ready, true);
+	}
+	
+	/**
+	 * Returns Flash component status
+	 * @return
+	 * 		Returns true if the Flash is ready, else false.
+	 */
+	public boolean isReady(){
+		return this.ready;
 	}
 	
 
