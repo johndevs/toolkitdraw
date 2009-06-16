@@ -12,11 +12,9 @@ package
 	
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
-	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
 	import mx.core.Application;
@@ -55,15 +53,20 @@ package
 		public static const TEXT:String = "Text";
 	
 		public function Controller()
-		{																	
+		{													
+			//Get parameters				
+			clientID = Application.application.parameters.id;
+			Application.application.frame.width = Application.application.parameters.width;
+			Application.application.frame.height = Application.application.parameters.height;
+			
+			Alert.show(Application.application.frame.width);
+											
 			//Create the default layer
 			var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
 			currentLayer = backgroundLayer;
 			layers.push(backgroundLayer);	
 			Application.application.frame.addChild(backgroundLayer.getCanvas());		
-			focusManager = Application.application.focusManager;
-			clientID = Application.application.parameters.id;
-			
+						
 			//Chreate the default brush
 			var defaultBrush:IBrush = new Pen(currentLayer.getCanvas());	
 			this.history.push(defaultBrush);
@@ -162,6 +165,9 @@ package
 		//Paper options
 		public function setPaperHeight(height:int):void
 		{ 				
+			//If height <0 then set it to 100%
+			if(height < 0) height = Application.application.height;
+			
 			var ratio:Number = height/Application.application.frame.height;
 			for each(var brush:IBrush in history)
 			{
@@ -177,6 +183,8 @@ package
 		
 		public function setPaperWidth(width:int):void
 		{ 			
+			if(width < 0) width = Application.application.width;
+			
 			var ratio:Number = width/Application.application.frame.width;
 			for each(var brush:IBrush in history)
 			{
