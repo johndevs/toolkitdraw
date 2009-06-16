@@ -27,31 +27,15 @@ public class IPaintCanvas extends HTML implements Paintable {
     /** Indicates if the flash has been inited and is ready to be used **/
     private boolean ready = false;
     
+    /** Indicates if the initial UIDL has been processed **/
+    private boolean init = false;
+    
 	public IPaintCanvas(){		
 		super();				
 		
 		this.id = DOM.createUniqueId();			
 		this.getElement().setId(id+"-canvas");
 		
-		//Add the SWF path
-		String url = GWT.getModuleBaseURL() + SWFPATH;		
-				
-		//Default values
-		String pageWidth = "100%"; 
-		String pageHeight = "100%";
-		String bgColor = "FF0000";
-		
-		//Create the embedded object
-		//TODO Use SwfObject instead
-		setHTML("<object width='100%' height='100%'>"+
-				"	<param name='movie' value='"+url+"'>"+
-				"	<param name='allowScriptAccess' value='always'/>"+	
-				"	<param name='flashvars' value=\"id="+id+"&width="+pageWidth+"&height="+pageHeight+"\" />"+
-				"   <param name='wmode' value='transparent' />"+				
-				"	<embed id='"+id+"' width='100%' height='98%' flashvars='id="+id+"&width="+pageWidth+"&height="+pageHeight+"&bgcolor="+bgColor+"' src='"+url+"' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='"+bgColor+"'>"+
-				"	</embed>"+
-				"</object>")	;
-			
 		setSize("100%", "100%");
 		setStyleName("paintcanvas");
 		
@@ -60,6 +44,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		
 		//Register the canvas with the native util
 		PaintCanvasNativeUtil.registerCanvas(this);
+		
 	}
 			
 	/**
@@ -161,6 +146,25 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
 	
+	/**
+	 * This method creates the embedded Flash component when loading is complete
+	 * 
+	 */
+	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor){
+		
+		//Create the embedded object
+		//TODO Use SwfObject instead
+		setHTML("<object width='100%' height='100%'>"+
+				"	<param name='movie' value='"+url+"'>"+
+				"	<param name='allowScriptAccess' value='always'/>"+	
+				"	<param name='flashvars' value=\"id="+this.id+"&width="+pageWidth+"&height="+pageHeight+"\" />"+
+				"   <param name='wmode' value='transparent' />"+				
+				"	<embed id='"+id+"' width='100%' height='98%' flashvars='id="+id+"&width="+pageWidth+"&height="+pageHeight+"&bgcolor="+bgColor+"' src='"+url+"' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='"+bgColor+"'>"+
+				"	</embed>"+
+				"</object>")	;
+	}
+	
+	
 	 /**
     * This method must be implemented to update the client-side component from
     * UIDL data received from server.
@@ -192,10 +196,37 @@ public class IPaintCanvas extends HTML implements Paintable {
         	PaintCanvasNativeUtil.error("Transmission error!");
         	return;
         }
+                
+        //check if the plugin has been added
+        if(!init){
         
-        //Check if plugin is ready, this will happen at initial call       
-        if(!ready){         	
-        	        	
+        	//Check that the uidl contains all needed info
+        	String pageWidth = null;
+        	String pageHeight = null;
+        	String bgColor = null;
+        	for(int c=0; c<commands.length; c++){
+        		if(commands[c].equals("paperWidth"))
+        			pageWidth = values[c];
+        		else if(commands[c].equals("paperHeight"))
+        			pageHeight = values[c];        		
+        		else if(commands[c].equals("componentColor"))
+        			bgColor = values[c];
+        	}
+        	
+        	//If all info is recieved the init the flash
+        	if(pageWidth != null && pageHeight != null && bgColor != null ){
+        		//Add the SWF path
+        		String url = GWT.getModuleBaseURL() + SWFPATH;	       		           	
+            	createFlashComponent(url, pageWidth, pageHeight, bgColor);
+            	init = true;       		
+        	}       	
+        }                
+       
+        
+        //Check if plugin is ready, this will happen at initial call    
+        //Ready state is set by the flash when it has completely loaded
+        if(!ready){           	
+        	
         	//Try to run the commands after one second if the plugin is not ready
         	final UIDL u = uidl;
         	final ApplicationConnection conn = client;
@@ -203,7 +234,7 @@ public class IPaintCanvas extends HTML implements Paintable {
         		public void run() { updateFromUIDL(u, conn); }        		
         	};
         	
-        	t.schedule(100);          	
+        	t.schedule(100);       	
         	
         } else {        
         	
@@ -230,6 +261,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 */
 	public void setReady(boolean ready){
 		this.ready = ready;
+		
 		client.updateVariable(this.uidlId, "readyStatus", ready, true);
 	}
 	
