@@ -35,6 +35,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		
 		this.id = DOM.createUniqueId();			
 		this.getElement().setId(id+"-canvas");
+	
 		
 		setSize("100%", "100%");
 		setStyleName("paintcanvas");
@@ -43,8 +44,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		PaintCanvasNativeUtil.defineBridgeMethods();
 		
 		//Register the canvas with the native util
-		PaintCanvasNativeUtil.registerCanvas(this);
-		
+		PaintCanvasNativeUtil.registerCanvas(this);		
 	}
 			
 	/**
@@ -162,9 +162,12 @@ public class IPaintCanvas extends HTML implements Paintable {
 				"	<embed id='"+id+"' width='100%' height='98%' flashvars='id="+id+"&width="+pageWidth+"&height="+pageHeight+"&bgcolor="+bgColor+"' src='"+url+"' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='"+bgColor+"'>"+
 				"	</embed>"+
 				"</object>")	;
+		
+		//Set dimensions of the paper
+		//PaintCanvasNativeUtil.setPaperHeight(this.id, Integer.parseInt(pageHeight));
+		//PaintCanvasNativeUtil.setPaperWidth(this.id, Integer.parseInt(pageWidth));
 	}
-	
-	
+		
 	 /**
     * This method must be implemented to update the client-side component from
     * UIDL data received from server.
@@ -186,6 +189,13 @@ public class IPaintCanvas extends HTML implements Paintable {
         
         // Save the UIDL identifier for the component        
         uidlId = uidl.getId();        
+        
+        //Check if we are refreshing the component, if so then requast initialization data
+        boolean initFlag = uidl.getBooleanAttribute("init");
+        if(!init && initFlag){
+        	client.updateVariable(uidlId, "initData", true, true);
+        	return;
+        }
         
         //Parse the commands and their values from the UIDL
         String[] commands = uidl.getStringArrayVariable("commands");

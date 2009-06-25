@@ -250,6 +250,14 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	private Graphics graphics = new Graphics();
 	
+	private boolean initComplete = false;
+	
+	//Default initialization data
+	private int paperHeight = -1;
+	private int paperWidth = -1;
+	private String componentColor = "000000";
+	private boolean interactive = false;
+	
 	public static enum BrushType{
 		PEN("Pen"),
 		SQUARE("Square"),
@@ -281,6 +289,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		setImmediate(true);		
 		requestRepaint();		
+		
 	}
 	
 	public PaintCanvas(String width, String height){				
@@ -299,6 +308,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		setImmediate(true);
 		requestRepaint();
+		
 	}
 	
 	public PaintCanvas(String width, String height, String color){				
@@ -320,6 +330,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		setImmediate(true);
 		requestRepaint();
+		
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight){
@@ -337,7 +348,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		setPaperWidth(paperWidth);	
 			
 		setImmediate(true);
-		requestRepaint();		
+		requestRepaint();
+		
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, String color){
@@ -358,7 +370,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		setComponentBackgroundColor(color);
 		
 		setImmediate(true);
-		requestRepaint();	
+		requestRepaint();
+		
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
@@ -383,6 +396,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		setImmediate(true);
 		requestRepaint();
+	
 	}	
 	
 		
@@ -431,21 +445,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
            	
         List<String> commands = new ArrayList<String>();
         List<String> values = new ArrayList<String>();
-        
-        //Always send the width and height
-       
-        /*
-        if(!commands.contains("height")){
-        	commands.add("height");
-        	values.add(height);
-        }
-        
-        if(!commands.contains("width")){
-        	 commands.add("width");
-             values.add(width);
-        }       
-        */
-        
+                
         //Add the changed values
         while(!changedValues.isEmpty()){
         	Map<String, String> entry = changedValues.poll();
@@ -458,14 +458,14 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         
         target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
         target.addVariable(this, "values", values.toArray(new String[values.size()]));
-        
-	        
-        //Send width and height always
-        //target.addVariable(this, "width", width);
-       // target.addVariable(this, "height", height);
-        
-        //Sent the background color as separate variable
-        //target.addVariable(this,"componentColor", backgroundColor);          
+            
+        //Send update flag. If this is not sent(false) then the flash
+        //will refresh itself from the local cache
+        if(initComplete){
+        	target.addAttribute("init", initComplete);
+        }   	
+        	
+        initComplete = true;
     }
     
     /** Deserialize changes received from client. */
@@ -518,7 +518,18 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	
     	//Flash is ready event recieved
     	if(variables.containsKey("readyStatus")){    		
-    		//This is ignored for now
+    		initComplete = true;
+    	}
+    	
+    	//Send the initialization data
+    	if(variables.containsKey("initData")){
+    		System.out.println("Initialization data needed");
+    		setPaperHeight(paperHeight);
+    		setPaperWidth(paperWidth);
+    		setComponentBackgroundColor(componentColor);
+    		setInteractive(interactive);
+    		initComplete = false;
+    		requestRepaint();    		
     	}
     }
     
@@ -549,6 +560,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
      * 		The height of the paper
      */
     public void setPaperHeight(int h){
+    	paperHeight = h;
     	addToQueue("paperHeight", String.valueOf(h));    	
     	if(isImmediate()) requestRepaint();
     }
@@ -562,6 +574,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
      * 		The width of the paper
      */    
     public void setPaperWidth(int w){
+    	paperWidth = w;
     	addToQueue("paperWidth", String.valueOf(w));
     	if(isImmediate()) requestRepaint();
     }
@@ -706,6 +719,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     }
     
     public void setInteractive(boolean interactive){
+    	this.interactive = interactive;
     	addToQueue("interactive", String.valueOf(interactive));
     	if(isImmediate()) requestRepaint();
     }
@@ -719,6 +733,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		color = "0x"+color;
     	}
     	
+    	componentColor = color;
     	addToQueue("componentColor", color);
     	if(isImmediate()) requestRepaint();
     }
