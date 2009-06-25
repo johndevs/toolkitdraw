@@ -39,9 +39,26 @@ package brushes
 			this.canvas = canvas;
 		}
 
+		private function keyboard(e:KeyboardEvent):void
+		{				
+			this.data = ImageSnapshot.captureBitmapData(this.text);				
+			this.x = new Number(this.text.x);
+			this.y = new Number(this.text.y);
+			this.w = new Number(this.text.width);
+			this.h = new Number(this.text.height);	
+		}
+		
+		private function mouse(e:MouseEvent):void
+		{
+			if(e.type == MouseEvent.MOUSE_OVER)
+				this.text.setFocus();
+			else if(e.type == MouseEvent.MOUSE_OUT)
+				this.canvas.setFocus();
+		}
+
 		public function processPoint(p:Point):void
 		{
-			if(!editing) return; 
+			if(!this.editing || selection.numChildren > 0) return; 
 			
 			if(startPoint == null) startPoint = p;
 			endPoint = p;					
@@ -87,41 +104,26 @@ package brushes
 		
 		public function endStroke():void
 		{				
-			if(!editing) return;
+			if(!editing || text != null) return;
 					
 			text = new TextArea();
+			text.setStyle("fontAntiAliasType","normal");
+			
 			text.text = current_text;
-			text.x = selection.x;
-			text.y = selection.y;
+			this.x = selection.x;
+			this.y = selection.y;
 			text.width = selection.width;
+			this.w = selection.width;
 			text.height = selection.height;
+			this.h = selection.height;
 			text.horizontalScrollPolicy = ScrollPolicy.OFF;
 			text.verticalScrollPolicy = ScrollPolicy.OFF;
 			text.editable = true;
-			text.cacheAsBitmap = true;
-			text.addEventListener(KeyboardEvent.KEY_UP, function(e:KeyboardEvent):void{
-				var ta:TextArea = TextArea(e.target);				
-				if(ta == null) return;
-				
-				current_text = ta.text;		
-					
-				data = ImageSnapshot.captureBitmapData(ta);
-				
-				
-				x = ta.x;
-				y = ta.y;
-				w = ta.width;
-				h = ta.height;				
-			});
-			text.addEventListener(MouseEvent.MOUSE_OVER, function(e:MouseEvent):void{
-				text.setFocus();
-			});
-			text.addEventListener(MouseEvent.MOUSE_OUT, function(e:MouseEvent):void{
-				Canvas(canvas.parent).setFocus();
-			});
-										
-			canvas.removeChild(selection);
-			canvas.addChild(text);	
+			text.cacheAsBitmap = true;			
+			text.addEventListener(MouseEvent.MOUSE_OVER, mouse);			
+			text.addEventListener(MouseEvent.MOUSE_OUT, mouse);
+			selection.addChild(text);	
+			selection.alpha = 1.0;
 							
 			text.setFocus();
 			
@@ -131,14 +133,19 @@ package brushes
 		
 		public function endTool():void
 		{
-			editing = false;					
-														
-			canvas.graphics.beginBitmapFill(data);
-			canvas.graphics.drawRect(x, y, w, h);
-			canvas.graphics.endFill();
+			this.editing = false;					
 			
-			canvas.removeChild(text);
-			Canvas(canvas.parent).setFocus();
+			this.current_text = new String(this.text.text);			
+			var d:BitmapData = ImageSnapshot.captureBitmapData(selection);
+			
+			this.canvas.graphics.beginBitmapFill(d);
+			this.canvas.graphics.drawRect(selection.x,selection.y,selection.width,selection.height);
+			this.canvas.graphics.endFill();
+			
+			this.canvas.removeChild(selection);
+			this.selection = null;
+			this.text = null;
+			
 		}
 		
 		public function redraw():void

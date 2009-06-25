@@ -12,12 +12,17 @@ package
 	
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
+	import flash.net.SharedObject;
+	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
 	import mx.core.Application;
+	import mx.effects.Fade;
+	import mx.events.EffectEvent;
 	import mx.graphics.ImageSnapshot;
 	import mx.graphics.codec.IImageEncoder;
 	import mx.graphics.codec.JPEGEncoder;
@@ -43,6 +48,9 @@ package
 		private var mouse_is_down:Boolean = false;
 		private var isInteractive:Boolean = false;
 		private var isFlashReady:Boolean = false;
+		private var hasChanged:Boolean = false;
+		
+		private var autosaveTimer:Timer = new Timer(1000);
 			
 		//Tool constants	
 		public static const PEN:String = "Pen"; 
@@ -51,26 +59,40 @@ package
 		public static const LINE:String = "Line";
 		public static const POLYGON:String = "Polygon";
 		public static const TEXT:String = "Text";
+		
+		public static const HISTORY_OBJECT:String = "PaintCanvas-history";
+		public static const LAYERS_OBJECT:String = "PaintCnavas-layers";
 	
 		public function Controller()
 		{													
 			//Get parameters				
 			clientID = Application.application.parameters.id;
-			Application.application.frame.width = Application.application.parameters.width;
-			Application.application.frame.height = Application.application.parameters.height;
+										
+			//Try to load previos data from the client cache
+			//loadFromClient(clientID);
 			
-			Alert.show(Application.application.frame.width);
-											
-			//Create the default layer
-			var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
-			currentLayer = backgroundLayer;
-			layers.push(backgroundLayer);	
-			Application.application.frame.addChild(backgroundLayer.getCanvas());		
+			//No data was loaded, create the default stuff
+			if(this.history.length == 0){
+				//Create the default layer
+				var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
+				currentLayer = backgroundLayer;
+				layers.push(backgroundLayer);	
+				Application.application.frame.addChild(backgroundLayer.getCanvas());		
 						
-			//Chreate the default brush
-			var defaultBrush:IBrush = new Pen(currentLayer.getCanvas());	
-			this.history.push(defaultBrush);
-			this.painter = defaultBrush;	
+				//Chreate the default brush
+				var defaultBrush:IBrush = new Pen(currentLayer.getCanvas());	
+				this.history.push(defaultBrush);
+				this.painter = defaultBrush;		
+			}			
+		
+			//Check if we have valid dimensions and if not then set to fullsize
+			if(Application.application.parameters.width == null || Application.application.parameters.height == null){
+				Application.application.frame.width = Application.application.width;
+				Application.application.frame.height = Application.application.height;
+			} else {
+				Application.application.frame.width = Application.application.parameters.width;
+				Application.application.frame.height = Application.application.parameters.height;	
+			}	
 		
 			//Set component in interactive mode(user-edit)
 			setInteractive(true);	
@@ -132,9 +154,23 @@ package
 				return;	
 			}		
 			
-			//Notify the client implementation that the flash has loaded and is ready to recieve commands
-			isFlashReady = true;			
-			ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);			
+			//Save the current layers to disk
+			storeOnClient(clientID);
+					
+			var show:Fade = new Fade(Application.application.frame);
+			show.alphaFrom = 0;
+			show.alphaTo = 1;
+			show.play();	
+			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
+			{
+				//Notify the client implementation that the flash has loaded and is ready to recieve commands
+				isFlashReady = true;
+				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);	
+				
+				//Start the autosave timer
+				autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
+				autosaveTimer.start();		
+			});				
 		}
 			
 		//Brush functions			
@@ -621,10 +657,86 @@ package
 		//This is called when something changes
 		public function changeEvent():void
 		{
+			hasChanged = true;
+			
 			//Call the client side implementation
 			//ExternalInterface.call("PaintCanvasNativeUtil.error","SWF says hi");
 		}
 		
+		private function storeOnClient(id:String):void
+		{
+			var history:SharedObject = SharedObject.getLocal(HISTORY_OBJECT+"-"+id);
+			var layers:SharedObject = SharedObject.getLocal(LAYERS_OBJECT+"-"+id);
+			
+			//Store history data
+			history.data.history = this.history;
+			history.data.current = this.painter;
+			
+			//Store layer data
+			layers.data.layers = this.layers;
+			layers.data.current = this.currentLayer;
+			
+			//Add timestamp
+			var ts:Date = new Date();
+			history.data.timestamp = ts.toTimeString();
+			layers.data.timestamp = ts.toTimeString();
+			
+			//Save to disk
+			history.flush();
+			layers.flush();
+		}
+		
+		private function loadFromClient(id:String):void
+		{
+			var history:SharedObject = SharedObject.getLocal(HISTORY_OBJECT+"-"+id);
+			var layers:SharedObject = SharedObject.getLocal(LAYERS_OBJECT+"-"+id);
+			
+			//Check if we have stored data
+			if(history.data.timestamp == null || layers.data.timestamp == null){
 				
+				Alert.show("Timestamps null!");
+				return;
+			}
+				
+				
+			//Warn if timestamp is not the same on all data objects
+			if(history.data.timestamp != layers.data.timestamp)			
+				Alert.show("Warning: Loading data with different timestamp!");	
+			
+			//Load the data
+			this.history = history.data.history;
+			this.painter = history.data.current;
+			
+			Alert.show("Loaded "+history.size+" history items!");
+			
+			this.layers = layers.data.layers;
+			this.currentLayer = layers.data.current;
+			
+			Alert.show("Loaded " +layers.size+" layers!");
+			
+			//Add the background layer
+			Application.application.frame.removeAllChildren();
+			Application.application.frame.addChild(Layer(this.layers[0]).getCanvas());
+			Application.application.frame.width(Layer(this.layers[0]).getWidth());
+			Application.application.frame.height(Layer(this.layers[0]).getHeight());
+			
+			//Redraw the layers
+			for each(var layer:Layer in this.layers)
+			{
+				selectLayer(layer.getName());
+				redraw();
+			}			
+		}	
+		
+		private function autosave(e:TimerEvent):void
+		{
+			if(hasChanged)
+			{
+				storeOnClient(clientID);
+				autosaveTimer.reset();
+				autosaveTimer.start();	
+				hasChanged = false;
+			}					
+		}	
 	}
 }
