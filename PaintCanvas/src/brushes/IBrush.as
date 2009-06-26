@@ -23,6 +23,9 @@ package brushes
 		function getWidth():Number;
 		function setWidth(width:Number):void;
 		
+		function getAlpha():Number;
+		function setAlpha(alpha:Number):void;
+		
 		function getType():String;		
 		function getCanvas():Canvas;
 		function getStrokes():Array;

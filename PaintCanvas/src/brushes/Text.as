@@ -1,28 +1,30 @@
 package brushes
 {
 	import flash.display.BitmapData;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import mx.containers.Canvas;
+	import mx.controls.Alert;
 	import mx.controls.TextArea;
 	import mx.core.ScrollPolicy;
 	import mx.graphics.ImageSnapshot;
 
-	public class Text implements IBrush
+	public class Text implements IFillableBrush
 	{
 		protected var canvas:Canvas;
 		protected var selection:Canvas;
 		protected var text:TextArea;
 		
 		protected var strokes:Array = new Array;
-						
-		protected var current_stroke:BrushStroke;
+		protected var redo_history:Array = new Array();
+								
 		protected var current_color:Number = 0x0;
-		protected var current_width:Number = 1;
-		protected var current_text:String = "";
-		
+		protected var current_width:Number = 12;
+		protected var current_text:String = "";		
+		protected var current_fillColor:Number = 0x0;
+		protected var current_fillAlpha:Number = 0;
 		
 		protected var startPoint:Point = null;				
 		protected var endPoint:Point = null;	
@@ -38,24 +40,7 @@ package brushes
 		{
 			this.canvas = canvas;
 		}
-
-		private function keyboard(e:KeyboardEvent):void
-		{				
-			this.data = ImageSnapshot.captureBitmapData(this.text);				
-			this.x = new Number(this.text.x);
-			this.y = new Number(this.text.y);
-			this.w = new Number(this.text.width);
-			this.h = new Number(this.text.height);	
-		}
-		
-		private function mouse(e:MouseEvent):void
-		{
-			if(e.type == MouseEvent.MOUSE_OVER)
-				this.text.setFocus();
-			else if(e.type == MouseEvent.MOUSE_OUT)
-				this.canvas.setFocus();
-		}
-
+	
 		public function processPoint(p:Point):void
 		{
 			if(!this.editing || selection.numChildren > 0) return; 
@@ -90,14 +75,14 @@ package brushes
 		{
 			if(editing) return;
 			
-			editing = true;
-			current_stroke = new BrushStroke();
+			editing = true;			
 			
 			selection = new Canvas();
 			selection.width = 1;
 			selection.height = 1;
 			selection.setStyle("backgroundColor","blue");
 			selection.alpha = 0.5;
+			selection.cacheAsBitmap = true;
 			
 			canvas.addChildAt(selection, 0);	
 		}
@@ -107,82 +92,146 @@ package brushes
 			if(!editing || text != null) return;
 					
 			text = new TextArea();
-			text.setStyle("fontAntiAliasType","normal");
-			
-			text.text = current_text;
-			this.x = selection.x;
-			this.y = selection.y;
-			text.width = selection.width;
-			this.w = selection.width;
-			text.height = selection.height;
-			this.h = selection.height;
+			text.setStyle("fontFamily", "Times");	
+			text.setStyle("backgroundAlpha", this.current_fillAlpha);	
+			text.setStyle("backgroundColor", this.current_fillColor);
+			text.setStyle("color",this.current_color);
+			text.setStyle("fontSize",this.current_width);
+			text.text = "";
+			text.x = selection.x;
+			text.y = selection.y;
+			text.width = selection.width;			
+			text.height = selection.height;		
 			text.horizontalScrollPolicy = ScrollPolicy.OFF;
 			text.verticalScrollPolicy = ScrollPolicy.OFF;
 			text.editable = true;
-			text.cacheAsBitmap = true;			
-			text.addEventListener(MouseEvent.MOUSE_OVER, mouse);			
-			text.addEventListener(MouseEvent.MOUSE_OUT, mouse);
-			selection.addChild(text);	
-			selection.alpha = 1.0;
-							
+			text.cacheAsBitmap = true;						
+			
+			this.x = new int(selection.x);
+			this.y = new int(selection.y);
+			this.w = new int(selection.width);
+			this.h = new int(selection.height);			
+		
+			this.canvas.removeChild(selection);
+			this.canvas.addChild(text);						
 			text.setFocus();
 			
 			startPoint = null;
-			endPoint = null;											
+			endPoint = null;				
+			selection = null;							
 		}
 		
 		public function endTool():void
 		{
 			this.editing = false;					
 			
-			this.current_text = new String(this.text.text);			
-			var d:BitmapData = ImageSnapshot.captureBitmapData(selection);
+			//Get text			
+			this.current_text = new String(this.text.text);						
+								
+			//Capture the whole frame
+			var d:BitmapData = ImageSnapshot.captureBitmapData(text);
 			
-			this.canvas.graphics.beginBitmapFill(d);
-			this.canvas.graphics.drawRect(selection.x,selection.y,selection.width,selection.height);
+			//Remove borders
+			var d2:BitmapData = new BitmapData(d.width-2, d.height-2,true);		
+			d2.copyPixels(d,new Rectangle(1,1,d.width-2,d.height-2),new Point(0,0));
+																								
+			//Paint the screenshot to the canvas
+			var m2:Matrix = new Matrix();
+			m2.translate(x,y);
+			this.canvas.graphics.lineStyle(1,0xFF0000,0);		
+			this.canvas.graphics.beginBitmapFill(d2,m2,false,false);
+			this.canvas.graphics.drawRect(x, y, d2.width, d2.height);
 			this.canvas.graphics.endFill();
 			
-			this.canvas.removeChild(selection);
-			this.selection = null;
-			this.text = null;
+			this.canvas.removeChild(this.text);			
+			this.text = null;			
 			
+			//Create the stroke
+			var stroke:BrushStroke = new BrushStroke();
+			
+			stroke.points.push(new Point(x,y));
+			stroke.points.push(new Point(x+d2.width, y+d2.height));			
+			stroke.color = this.current_color;
+			stroke.width = this.current_width;
+			stroke.text = this.current_text;
+			stroke.data = d2;
+			
+			strokes.push(stroke);			
 		}
 		
 		public function redraw():void
 		{
+			for each(var stroke:BrushStroke in strokes)
+			{
+				var sx:Number = Point(stroke.points[0]).x;
+				var sy:Number = Point(stroke.points[0]).y;			
+				var d:BitmapData = BitmapData(stroke.data);
+				
+				var matrix:Matrix = new Matrix();
+				matrix.translate(sx,sy);
+		
+				this.canvas.graphics.beginBitmapFill(d,matrix,false,false);
+				this.canvas.graphics.drawRect(sx, sy, d.width, d.height);
+				this.canvas.graphics.endFill();			
+			}			
 		}
 		
 		public function scale(x_ratio:Number, y_ratio:Number):void
 		{
+			//TODO
 		}
 		
 		public function undo():Boolean
 		{
-			return false;
+			if(strokes.length > 0)
+			{
+				redo_history.push(strokes.pop());
+				return true;
+			}
+			else
+			{		
+				return false;	
+			}			
 		}
 		
 		public function redo():Boolean
 		{
-			return false;
+			if(redo_history.length > 0)
+			{
+				strokes.push(redo_history.pop());
+				return true;
+			}
+			else
+			{				
+				return false;	
+			}
 		}
 		
 		public function getColor():Number
 		{
-			return 0;
+			return current_color;
 		}
 		
 		public function setColor(color:Number):void
 		{
+			this.current_color = color;
+			
+			if(this.text != null) 
+				this.text.setStyle("color",this.current_color);
 		}
 		
 		public function getWidth():Number
 		{
-			return 0;
+			return current_width;
 		}
 		
 		public function setWidth(width:Number):void
 		{
-		}
+			this.current_width = width;
+			
+			if(this.text != null) 
+				this.text.setStyle("fontSize",this.current_width);
+		}		
 		
 		public function getType():String
 		{
@@ -204,5 +253,37 @@ package brushes
 			return null;
 		}
 		
+		public function setFillColor(color:Number):void
+		{			
+			this.current_fillColor = color;
+			
+			if(this.text != null)
+				this.text.setStyle("backgroundColor",this.current_fillColor);
+		}
+		
+		public function getFillColor():Number
+		{
+			return this.current_fillColor;	
+		}
+		
+		public function getAlpha():Number{
+			return this.current_fillAlpha;	
+		}
+		
+		public function setAlpha(alpha:Number):void
+		{
+			this.current_fillAlpha = alpha;
+			
+			if(this.text != null)
+				this.text.setStyle("backgroundAlpha", this.current_fillAlpha);	
+		}
+		
+		public function setText(text:String):void
+		{
+			if(this.text != null){
+				Alert.show(text);
+				this.text.text = text;
+			}
+		}
 	}
 }

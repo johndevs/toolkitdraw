@@ -2,6 +2,7 @@ package
 {
 	import brushes.Ellipse;
 	import brushes.IBrush;
+	import brushes.IFillableBrush;
 	import brushes.Line;
 	import brushes.Pen;
 	import brushes.Polygon;
@@ -27,7 +28,6 @@ package
 	import mx.graphics.codec.IImageEncoder;
 	import mx.graphics.codec.JPEGEncoder;
 	import mx.graphics.codec.PNGEncoder;
-	import mx.managers.FocusManager;
 	
 	import util.ArrayUtil;
 	import util.ImageConverterUtil;
@@ -36,7 +36,7 @@ package
 	{
 		private var clientID:String;
 		private var painter:IBrush;
-		public static var focusManager:FocusManager;
+			
 		
 		//The current canvas
 		private var currentLayer:Layer;	
@@ -64,10 +64,10 @@ package
 		public static const LAYERS_OBJECT:String = "PaintCnavas-layers";
 	
 		public function Controller()
-		{													
+		{																				
 			//Get parameters				
 			clientID = Application.application.parameters.id;
-										
+	
 			//Try to load previos data from the client cache
 			//loadFromClient(clientID);
 			
@@ -123,7 +123,8 @@ package
 				//Brush functions
 				ExternalInterface.addCallback("setBrush", 						setBrush);
 				ExternalInterface.addCallback("setBrushColor", 					setBrushColor);
-				ExternalInterface.addCallback("setBrushWidth", 					setBrushWidth);													   
+				ExternalInterface.addCallback("setBrushWidth", 					setBrushWidth);
+				ExternalInterface.addCallback("setBrushAlpha",					setBrushAlpha);									   
 				ExternalInterface.addCallback("setPaperHeight",	 				setPaperHeight);
 				ExternalInterface.addCallback("setPaperWidth", 					setPaperWidth);				
 				ExternalInterface.addCallback("setFillColor", 					setFillColor);
@@ -145,6 +146,7 @@ package
 				ExternalInterface.addCallback("graphicsDrawSquare",				drawSquare);
 				ExternalInterface.addCallback("graphicsClear",					clearCurrentLayer);
 				ExternalInterface.addCallback("graphicsDrawPolygon",			drawPolygon);
+				ExternalInterface.addCallback("graphicsDrawText",				drawText);
 				
 				
 			}	
@@ -185,17 +187,20 @@ package
 			this.painter.setWidth(width);
 			changeEvent(); 
 		}
+		
+		private function setBrushAlpha(alpha:Number):void
+		{
+			this.painter.setAlpha(alpha);
+			changeEvent();
+		}
 				
 		private function setFillColor(color:Number):void{
-			if( this.painter.getType() == SQUARE ){
-				Square(this.painter).setFillColor(color);
-			} else if(this.painter.getType() == ELLIPSE){
-				Ellipse(this.painter).setFillColor(color);
-			} else if(this.painter.getType() == POLYGON){
-				Polygon(this.painter).setFillColor(color);
-			}
 			
-			changeEvent();			
+			if(this.painter is IFillableBrush){			
+				IFillableBrush(this.painter).setFillColor(color);
+				changeEvent();		
+			}			
+				
 		}			
 						
 		//Paper options
@@ -557,6 +562,27 @@ package
 			changeEvent();
 		}
 		
+		public function drawText(text:String, x:int, y:int, width:int, height:int):void
+		{
+			if(this.painter.getType() != TEXT){
+				var color:Number = new Number(this.painter.getColor());
+				var w:Number = new Number(this.painter.getWidth());
+								
+				setBrush(TEXT);
+				this.painter.setColor(color);
+				this.painter.setWidth(w);				
+			}		
+			
+			Alert.show(text+","+x+","+y+","+width+","+height);
+			
+			painter.startStroke();
+			painter.processPoint(new Point(x,y));
+			painter.processPoint(new Point(x+width, y+height));
+			painter.endStroke();
+			Text(painter).setText(text);
+			painter.endTool();		
+		}
+		
 		public function clearCurrentLayer():void{
 					
 			var newHistory:Array = new Array;
@@ -738,5 +764,7 @@ package
 				hasChanged = false;
 			}					
 		}	
+		
+		
 	}
 }

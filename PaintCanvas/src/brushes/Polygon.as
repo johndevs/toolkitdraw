@@ -4,7 +4,7 @@ package brushes
 	
 	import mx.containers.Canvas;
 
-	public class Polygon implements IBrush
+	public class Polygon implements IFillableBrush
 	{
 		protected var canvas:Canvas;		
 		protected var color:Number = 0;
@@ -217,6 +217,14 @@ package brushes
 			currentStroke.fillcolor = fillColor;	
 			
 			
+		}
+		
+		public function getAlpha():Number{
+			return 0;	
+		}
+		
+		public function setAlpha(alpha:Number):void
+		{
 		}
 		
 	}

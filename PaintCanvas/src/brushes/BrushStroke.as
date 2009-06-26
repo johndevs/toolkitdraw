@@ -10,5 +10,6 @@ package brushes
 		public var width:Number = 1.0;
 		public var points:Array = new Array;
 		public var text:String = "";
+		public var data:Object = new Object();
 	}
 }

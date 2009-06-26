@@ -4,7 +4,7 @@ package brushes
 	
 	import mx.containers.Canvas;
 
-	public class Ellipse implements IBrush
+	public class Ellipse implements IFillableBrush
 	{
 		protected var canvas:Canvas;	
 		
@@ -254,5 +254,14 @@ package brushes
 		{
 			
 		}
+		
+		public function getAlpha():Number{
+			return 0;	
+		}
+		
+		public function setAlpha(alpha:Number):void
+		{
+		}
+		
 	}
 }

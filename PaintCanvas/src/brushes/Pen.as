@@ -162,5 +162,13 @@ package brushes
 		{
 			
 		}
+		
+		public function getAlpha():Number{
+			return 0;	
+		}
+		
+		public function setAlpha(alpha:Number):void
+		{
+		}
 	}
 }

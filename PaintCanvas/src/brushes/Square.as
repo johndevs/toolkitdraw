@@ -3,9 +3,8 @@ package brushes
 	import flash.geom.Point;
 	
 	import mx.containers.Canvas;
-	import mx.controls.Alert;
 
-	public class Square implements IBrush
+	public class Square implements IFillableBrush
 	{
 		protected var canvas:Canvas;
 		protected var framePen:Pen;
@@ -224,6 +223,14 @@ package brushes
 		public function endTool():void
 		{
 			
+		}
+		
+		public function getAlpha():Number{
+			return 0;	
+		}
+		
+		public function setAlpha(alpha:Number):void
+		{
 		}
 		
 	}
