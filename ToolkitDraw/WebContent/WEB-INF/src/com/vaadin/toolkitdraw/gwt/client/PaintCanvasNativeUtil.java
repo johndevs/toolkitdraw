@@ -172,6 +172,24 @@ public class PaintCanvasNativeUtil {
 			setTimeout(func,1000);
 		}				
 	}-*/;
+	
+	/**
+	 * Sets the brush alpha. This has different effects on different brushes
+	 * @param id
+	 * @param color
+	 */
+	public static native void setPenAlpha(String id, double alpha)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setBrushAlpha == 'function' && canvas.isReady() ){
+			canvas.setBrushAlpha(alpha);	
+		}else{
+			var func = function() { canvas.setBrushAlpha(alpha); };		
+			setTimeout(func,1000);
+		}				
+	}-*/;
 
 	/**
 	 * Adds a layer to the canvas.
@@ -444,6 +462,29 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
+	 * Draws text using the current brush settings
+	 * @param id
+	 * 		The id of the paintcanvas
+	 * @param x
+	 * 		The x-coordinate where the text should be
+	 * @param y
+	 * 		The y-coordinate where the text should be
+	 */
+	public static native void drawText(String id, String text, int x, int y, int width, int height)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.graphicsDrawText == 'function' && canvas.isReady() ){
+			canvas.graphicsDrawText(text, x, y, width, height);
+		}else{
+			var func = function() { canvas.graphicsDrawText(text, x, y, width, height); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
+	
+	
+	/**
 	 * Sets the background color of the component
 	 * @param id
 	 * 		The id of the paintcanvas
@@ -537,6 +578,7 @@ public class PaintCanvasNativeUtil {
 			this.setPenColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenColor(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.setBrush = function(id, brush){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setBrush(Ljava/lang/String;Ljava/lang/String;)(id,brush); };
 			this.setFillColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFillColor(Ljava/lang/String;Ljava/lang/String;)(id,color); };
+			this.setPenAlpha = function(id, alpha){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenAlpha(Ljava/lang/String;D)(id,alpha); };
 			this.addLayer = function(id, name){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::addLayer(Ljava/lang/String;Ljava/lang/String;)(id,name); };
 			this.setLayerVisibility = function(id, visibility){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setLayerVisibility(Ljava/lang/String;Ljava/lang/String;Z)(id,visibility); };
 			this.selectLayer = function(id, name){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::selectLayer(Ljava/lang/String;Ljava/lang/String;)(id, name); };
@@ -553,6 +595,7 @@ public class PaintCanvasNativeUtil {
 			this.setComponentBackground = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setComponentBackground(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.isReady = function(id){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::isReady(Ljava/lang/String;)(id); };
 			this.setCanvasReady = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setCanvasReady(Ljava/lang/String;)(id); };
+			this.drawText = function(id, text, x, y, width, height){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawText(Ljava/lang/String;Ljava/lang/String;IIII)(id,text,x,y,width,height); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		

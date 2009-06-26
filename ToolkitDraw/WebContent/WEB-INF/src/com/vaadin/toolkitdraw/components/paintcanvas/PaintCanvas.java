@@ -236,6 +236,50 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(isImmediate() && !batchMode) requestRepaint();	
 		}
 		
+		/**
+		 * Draws some text at the position gived
+		 * @param text
+		 * 		The string of text to add
+		 * @param x
+		 * 		The x-coordinate
+		 * @param y
+		 * 		The y-coordinate
+		 * @param color'
+		 * 		The color of the text
+		 * @param fontSize
+		 * 		The size of the text
+		 * @param fillColor
+		 * 		The background color of the text
+		 * @param alpha
+		 * 		The transparency of the background
+		 */
+		public void drawText(String text, int x, int y, int width, int height, String color, int fontSize, String fillColor, double alpha){
+			
+			//Do some color string checks
+	    	if(color.contains("#")) color = color.replaceAll("#", "0x");
+	    	if(fillColor.contains("#")) fillColor = fillColor.replaceAll("#", "0x");
+	    	
+	    	if(!color.contains("x")) color = "0x"+color;
+	    	if(!fillColor.contains("x")) fillColor = "0x"+fillColor;
+	    		    	
+	    	if(batchMode){
+	    		addToBatch("brush", BrushType.TEXT.toString());
+	    		addToBatch("penSize",String.valueOf(fontSize));				
+				addToBatch("penColor", color);
+				addToBatch("fillColor", fillColor);	
+				addToBatch("penAlpha", String.valueOf(alpha));
+				addToBatch("graphics-text", text+"|"+String.valueOf(x)+";"+String.valueOf(y)+";"+String.valueOf(width)+";"+String.valueOf(height));	    		
+	    	} else {
+	    		addToQueue("brush", BrushType.TEXT.toString());
+	    		addToQueue("penSize",String.valueOf(fontSize));				
+	    		addToQueue("penColor", color);
+	    		addToQueue("fillColor", fillColor);	
+	    		addToQueue("penAlpha", String.valueOf(alpha));
+	    		addToQueue("graphics-text", text+"|"+String.valueOf(x)+";"+String.valueOf(y)+";"+String.valueOf(width)+";"+String.valueOf(height));	    		    		
+	    	}
+	    	if(isImmediate() && !batchMode) requestRepaint();				
+		}
+		
 		
 	}
 		
@@ -631,6 +675,17 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	addToQueue("fillColor", color);
     	if(isImmediate()) requestRepaint();    	
     }
+    
+    /**
+     * Sets the alpha value of the brush
+     * @param alpha
+     * 		Value between 0 and 1
+     */
+    public void setAlpha(double alpha){
+    	addToQueue("penAlpha", String.valueOf(alpha));
+    	if(isImmediate()) requestRepaint();   
+    }
+    
     
     //TODO Update if necessery
     /**

@@ -72,6 +72,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 			PaintCanvasNativeUtil.setPenSize(id, Double.parseDouble(value));
 		}
 		else if(command.equals("penColor"))		PaintCanvasNativeUtil.setPenColor(id, value);
+		else if(command.equals("penAlpha"))		PaintCanvasNativeUtil.setPenAlpha(id, Double.parseDouble(value));
 		else if(command.equals("brush"))		PaintCanvasNativeUtil.setBrush(id, value);
 		else if(command.equals("fillColor"))	PaintCanvasNativeUtil.setFillColor(id, value);
 		else if(command.equals("showLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, true);
@@ -142,6 +143,18 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("layeralpha")){
 			PaintCanvasNativeUtil.setLayerAlpha(id, Double.parseDouble(value));
 		}    		
+		else if(command.equals("graphics-text")){
+			String args[] = value.split("|");
+			
+			PaintCanvasNativeUtil.error(args[0]);
+			PaintCanvasNativeUtil.error(args[1]);
+			
+			String coords[] = args[1].split(";");
+			PaintCanvasNativeUtil.drawText(id, args[0], Integer.parseInt(coords[0]), 
+														Integer.parseInt(coords[1]), 
+														Integer.parseInt(coords[2]), 
+														Integer.parseInt(coords[3]));			
+		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}

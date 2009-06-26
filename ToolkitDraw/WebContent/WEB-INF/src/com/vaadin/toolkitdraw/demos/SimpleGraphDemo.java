@@ -144,6 +144,8 @@ public class SimpleGraphDemo extends Window {
 	private void renderBarGraph(){			
 				
 		
+		
+		
 		//Get the graphics object
 		PaintCanvas.Graphics gc = canvas.getGraphics();
 		
@@ -159,8 +161,7 @@ public class SimpleGraphDemo extends Window {
 		for(Object id : table.getItemIds()){			
 			Item item = table.getItem(id);
 			int value = Integer.valueOf((item.getItemProperty("Value").getValue().toString()));
-			
-			
+						
 			//Draw the front of the bars
 			gc.drawSquare(counter*70+20, 280-value*2, 50, value*2,"CC0000","FF0000");
 			
@@ -191,9 +192,14 @@ public class SimpleGraphDemo extends Window {
 			
 			gc.drawPolygon(topX, topY, "CC0000", "CC0000");
 			
+			
 			counter++;
 		}		
 							
+		//Add the values to the top of the bars
+		gc.drawText("addddd", 50, 50, 20, 15, "FFFFFF", 12, "000000", 1.0);
+		
+		
 		//Send the draw intstructions to the client
 		gc.sendBatch();	
 	}
