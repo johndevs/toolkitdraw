@@ -23,7 +23,7 @@ public class IPaintCanvas extends HTML implements Paintable {
     
     /** Relative path to the executable Flash **/ 
     public static String SWFPATH = "paintcanvas/PaintCanvas.swf";
-    
+          
     /** Indicates if the flash has been inited and is ready to be used **/
     private boolean ready = false;
     
@@ -34,11 +34,10 @@ public class IPaintCanvas extends HTML implements Paintable {
 		super();				
 		
 		this.id = DOM.createUniqueId();			
-		this.getElement().setId(id+"-canvas");
-	
+		this.getElement().setId(id+"-canvas");	
 		
-		setSize("100%", "100%");
-		setStyleName("paintcanvas");
+		setSize("100%", "100%");		
+		setHTML("<DIV id='"+id+"'></DIV>");
 		
 		//Ensure that the methods are also available in javascript
 		PaintCanvasNativeUtil.defineBridgeMethods();
@@ -163,23 +162,30 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * This method creates the embedded Flash component when loading is complete
 	 * 
 	 */
-	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor){
-		
-		//Create the embedded object
-		//TODO Use SwfObject instead
-		setHTML("<object width='100%' height='100%'>"+
-				"	<param name='movie' value='"+url+"'>"+
-				"	<param name='allowScriptAccess' value='always'/>"+	
-				"	<param name='flashvars' value=\"id="+this.id+"&width="+pageWidth+"&height="+pageHeight+"\" />"+
-				"   <param name='wmode' value='transparent' />"+				
-				"	<embed id='"+id+"' width='100%' height='98%' flashvars='id="+id+"&width="+pageWidth+"&height="+pageHeight+"&bgcolor="+bgColor+"' src='"+url+"' wmode='transparent' allowscriptaccess='always' quality='high' play='true' bgcolor='"+bgColor+"'>"+
-				"	</embed>"+
-				"</object>")	;
-		
-		//Set dimensions of the paper
-		//PaintCanvasNativeUtil.setPaperHeight(this.id, Integer.parseInt(pageHeight));
-		//PaintCanvasNativeUtil.setPaperWidth(this.id, Integer.parseInt(pageWidth));
+	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor){		
+		String idd = this.id;		
+		createSWFObject(url,idd, pageWidth, pageHeight, bgColor);		
 	}
+	
+	private native void createSWFObject(String swfUrl, String id, String pageWidth, String pageHeight, String bgColor)/*-{
+		var flashvars = {};
+		flashvars.id = id;
+		flashvars.width = pageWidth;
+		flashvars.height = pageHeight;
+		flashvars.bgColor = bgColor;
+		
+		var params = {};
+		params.menu = "false";
+		params.wmode = "transparent";
+		params.movie = swfUrl;
+		params.allowScriptAccess = "always";
+		
+		var attributes = {};
+		attributes.id = id;
+		attributes.name = id;		
+		
+		$wnd.swfobject.embedSWF(swfUrl, id, "100%", "100%", "9.0.0","expressInstall.swf", flashvars, params, attributes);
+	}-*/;
 		
 	 /**
     * This method must be implemented to update the client-side component from

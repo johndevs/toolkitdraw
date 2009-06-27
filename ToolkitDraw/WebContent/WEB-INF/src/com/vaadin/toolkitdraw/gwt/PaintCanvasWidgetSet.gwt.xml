@@ -2,6 +2,9 @@
 	<!-- Inherit the NoEntry version to avoid multiple entrypoints -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSetNoEntry" /> 
 	
+	<!-- Add SWFObject library -->
+	<script src="paintcanvas/swfobject.js" />
+	
 	<!-- WidgetSet default theme -->	
 	<stylesheet src="paintcanvas/styles.css"/>
 
