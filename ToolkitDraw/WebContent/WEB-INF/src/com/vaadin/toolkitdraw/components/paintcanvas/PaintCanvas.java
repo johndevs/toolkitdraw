@@ -262,20 +262,30 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(!color.contains("x")) color = "0x"+color;
 	    	if(!fillColor.contains("x")) fillColor = "0x"+fillColor;
 	    		    	
+	    	StringBuilder value = new StringBuilder(text);
+	    	value.append(";");
+	    	value.append(x);
+	    	value.append(";");
+	    	value.append(y);
+	    	value.append(";");
+	    	value.append(width);
+	    	value.append(";");
+	    	value.append(height);
+	    		    	
 	    	if(batchMode){
 	    		addToBatch("brush", BrushType.TEXT.toString());
 	    		addToBatch("penSize",String.valueOf(fontSize));				
 				addToBatch("penColor", color);
 				addToBatch("fillColor", fillColor);	
 				addToBatch("penAlpha", String.valueOf(alpha));
-				addToBatch("graphics-text", text+"|"+String.valueOf(x)+";"+String.valueOf(y)+";"+String.valueOf(width)+";"+String.valueOf(height));	    		
+				addToBatch("graphics-text", value.toString());	    		
 	    	} else {
 	    		addToQueue("brush", BrushType.TEXT.toString());
 	    		addToQueue("penSize",String.valueOf(fontSize));				
 	    		addToQueue("penColor", color);
 	    		addToQueue("fillColor", fillColor);	
 	    		addToQueue("penAlpha", String.valueOf(alpha));
-	    		addToQueue("graphics-text", text+"|"+String.valueOf(x)+";"+String.valueOf(y)+";"+String.valueOf(width)+";"+String.valueOf(height));	    		    		
+	    		addToQueue("graphics-text", value.toString());	    		    		
 	    	}
 	    	if(isImmediate() && !batchMode) requestRepaint();				
 		}
@@ -808,5 +818,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	
     	if(isImmediate()) requestRepaint();
 	}
+    
+    public boolean isReady(){
+    	return initComplete;
+    }
     
 }

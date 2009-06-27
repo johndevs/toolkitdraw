@@ -143,16 +143,18 @@ public class IPaintCanvas extends HTML implements Paintable {
 			PaintCanvasNativeUtil.setLayerAlpha(id, Double.parseDouble(value));
 		}    		
 		else if(command.equals("graphics-text")){
-			String args[] = value.split("|");
+			String args[] = value.split(";");
+			int height = Integer.parseInt(args[args.length-1]);
+			int width = Integer.parseInt(args[args.length-2]);
+			int y = Integer.parseInt(args[args.length-3]);
+			int x = Integer.parseInt(args[args.length-4]);
+			String text = "";
 			
-			PaintCanvasNativeUtil.error(args[0]);
-			PaintCanvasNativeUtil.error(args[1]);
+			for(int i=0; i<args.length-4; i++)
+				text = text + args[i];					
 			
-			String coords[] = args[1].split(";");
-			PaintCanvasNativeUtil.drawText(id, args[0], Integer.parseInt(coords[0]), 
-														Integer.parseInt(coords[1]), 
-														Integer.parseInt(coords[2]), 
-														Integer.parseInt(coords[3]));			
+			PaintCanvasNativeUtil.drawText(id, text, x, y, width, height); 
+																
 		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		

@@ -142,15 +142,12 @@ public class SimpleGraphDemo extends Window {
 	 * Renders a bar graph of the values in the table
 	 */
 	private void renderBarGraph(){			
-				
-		
-		
-		
+					
 		//Get the graphics object
 		PaintCanvas.Graphics gc = canvas.getGraphics();
 		
-		//Clear the earlier drawings
-		gc.setBatchMode(true);
+		//Clear the earlier drawings and set the canvas in batch mode
+		gc.setBatchMode(true);		
 		gc.clear();	
 		
 		//Draw the background
@@ -190,14 +187,15 @@ public class SimpleGraphDemo extends Window {
 			topX[3] = topX[0];
 			topY[3] = topY[2]+10;
 			
-			gc.drawPolygon(topX, topY, "CC0000", "CC0000");
-			
-			
+			gc.drawPolygon(topX, topY, "CC0000", "CC0000");			
+		
+			//Add the values to the top of the bars
+			gc.drawText(id.toString(), counter*70+20, 280-value*2, 100, 100, "FFFFFF", 12, "000000", 0.0);
+			System.out.println(id);
 			counter++;
 		}		
 							
-		//Add the values to the top of the bars
-		gc.drawText("addddd", 50, 50, 20, 15, "FFFFFF", 12, "000000", 1.0);
+		
 		
 		
 		//Send the draw intstructions to the client
