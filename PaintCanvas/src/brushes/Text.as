@@ -6,7 +6,6 @@ package brushes
 	import flash.geom.Rectangle;
 	
 	import mx.containers.Canvas;
-	import mx.controls.Alert;
 	import mx.controls.TextArea;
 	import mx.core.ScrollPolicy;
 	import mx.graphics.ImageSnapshot;
@@ -35,6 +34,7 @@ package brushes
 		private var y:Number;
 		private var w:Number;
 		private var h:Number;
+		private var editable:Boolean = true;
 		
 		public function Text(canvas:Canvas)
 		{
@@ -105,7 +105,8 @@ package brushes
 			text.horizontalScrollPolicy = ScrollPolicy.OFF;
 			text.verticalScrollPolicy = ScrollPolicy.OFF;
 			text.editable = true;
-			text.cacheAsBitmap = true;						
+			text.cacheAsBitmap = true;	
+			text.editable = editable;					
 			
 			this.x = new int(selection.x);
 			this.y = new int(selection.y);
@@ -124,10 +125,11 @@ package brushes
 		public function endTool():void
 		{
 			this.editing = false;					
-			
-			//Get text			
-			this.current_text = new String(this.text.text);						
-								
+						
+			//Get text
+			this.text.validateNow();			
+			this.current_text = new String(this.text.text);		
+										
 			//Capture the whole frame
 			var d:BitmapData = ImageSnapshot.captureBitmapData(text);
 			
@@ -281,9 +283,14 @@ package brushes
 		public function setText(text:String):void
 		{
 			if(this.text != null){
-				Alert.show(text);
+				this.current_text = text;
 				this.text.text = text;
+				this.text.validateNow();
 			}
+		}
+		
+		public function setEditable(editable:Boolean):void{
+			this.editable = editable;
 		}
 	}
 }

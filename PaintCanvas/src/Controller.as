@@ -373,7 +373,7 @@ package
 			
 			//Set the current painter tool
 			this.painter = this.history[this.history.length-1];
-			
+						
 			changeEvent();
 		}	
 		
@@ -570,17 +570,20 @@ package
 								
 				setBrush(TEXT);
 				this.painter.setColor(color);
-				this.painter.setWidth(w);				
+				this.painter.setWidth(w);						
 			}		
-			
-			Alert.show(text+","+x+","+y+","+width+","+height);
-			
+				
+			Text(painter).setEditable(false);
+				
 			painter.startStroke();
 			painter.processPoint(new Point(x,y));
 			painter.processPoint(new Point(x+width, y+height));
-			painter.endStroke();
-			Text(painter).setText(text);
+			painter.endStroke();			
+						
+			Text(painter).setText(text);			
 			painter.endTool();		
+			Text(painter).setEditable(true);
+								
 		}
 		
 		public function clearCurrentLayer():void{
