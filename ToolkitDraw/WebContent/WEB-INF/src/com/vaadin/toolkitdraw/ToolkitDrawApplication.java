@@ -50,10 +50,6 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	
 	private Window mainWindow;
 	
-	private SplitPanel contentWindow;
-	
-	private SplitPanel subContentWindow;
-	
 	private TabSheet openFilesTabs;
 			
 	private MainPanel mainPanel;
@@ -87,8 +83,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		VerticalLayout mainLayout = new VerticalLayout();
 		mainLayout.setStyleName("mainlayout");
 		mainLayout.setSizeFull();
-		mainWindow.setLayout(mainLayout);
-				
+		mainWindow.setContent(mainLayout);
+						
 		mainPanel = new MainPanel();		
 		mainPanel.setWidth("100%");
 		mainPanel.addListener(this);
@@ -111,7 +107,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		rightPanel.setWidth("250px");
 		rightPanel.setHeight("100%");
 				
-		leftPanel = new LeftPanel(currentCanvas,PaintCanvas.BrushType.PEN, this);
+		leftPanel = new LeftPanel(currentCanvas,PaintCanvas.BrushType.PEN);
 		leftPanel.setWidth("250px");
 		leftPanel.setHeight("100%");
 			
@@ -139,12 +135,12 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 
 	private PaintCanvas addNewFile(){
 		
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");		
-					
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");					
 		if(canvas == null){
-			System.err.println("Creating canvas failed!");			
+			System.err.println("ERROR: Creating canvas failed!");			
 		}
 		
+		canvas.setInteractive(true);
 		canvas.setComponentBackgroundColor("515151");			
 		
 		//Set the canvas as the current canvas
@@ -178,11 +174,11 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			return false;
 		}		
 		
-		final String filename = openFilesTabs.getTabCaption(canvas);	
+		final String filename = openFilesTabs.getTab(canvas).getCaption();	
 		
 		if(filename == null){
 			System.err.println("No filename");
-			return false;
+			return false;			
 		}
 		
 		//Check if file has not been saved
@@ -191,7 +187,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		if(status.booleanValue()){
 			
 			//Select the previous tab
-			Iterator<Component> tabs = openFilesTabs.getComponentIterator();
+			Iterator<Component> tabs = (Iterator<Component>)openFilesTabs.getComponentIterator();
 			Component prevObject = tabs.next();
 			while(tabs.hasNext()){
 				Component o = tabs.next();
@@ -278,11 +274,11 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				
 		if(value instanceof MainPanel.Type){			
 			switch((MainPanel.Type)value){
-				case UNDO: 	currentCanvas.undo(); 
+				case UNDO: 	currentCanvas.getInteractive().undo(); 
 							setStatusbarText("Undo operation done");
 				break;
 				
-				case REDO: 	currentCanvas.redo(); 
+				case REDO: 	currentCanvas.getInteractive().redo(); 
 							setStatusbarText("Redo operation done");
 				break;
 				

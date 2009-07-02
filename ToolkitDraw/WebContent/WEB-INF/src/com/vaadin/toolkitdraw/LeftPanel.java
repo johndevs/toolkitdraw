@@ -12,10 +12,12 @@ import org.apache.catalina.startup.SetAllPropertiesRule;
 import com.vaadin.Application;
 import com.vaadin.toolkitdraw.MainPanel.Type;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
 import com.vaadin.toolkitdraw.tools.Ellipse;
 import com.vaadin.toolkitdraw.tools.Line;
 import com.vaadin.toolkitdraw.tools.Pen;
 import com.vaadin.toolkitdraw.tools.Polygon;
+import com.vaadin.toolkitdraw.tools.Select;
 import com.vaadin.toolkitdraw.tools.Square;
 import com.vaadin.toolkitdraw.tools.Text;
 import com.vaadin.toolkitdraw.tools.Tool;
@@ -28,20 +30,19 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class LeftPanel extends Accordion implements ClickListener {
 
+	private static final long serialVersionUID = 1L;
+
 	private Layout tab1;
 	private Layout tab2;
 		
 	private List<Tool>  tools = new ArrayList<Tool>();			
 	private PaintCanvas canvas;
-	
-	private Application application;
-	
-	public LeftPanel(PaintCanvas canvas, PaintCanvas.BrushType selectedTool, Application app) {
+		
+	public LeftPanel(PaintCanvas canvas, PaintCanvas.BrushType selectedTool) {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
 		
-		application = app;
 		tools = createToolset(canvas);
 		this.canvas = canvas;
 	
@@ -96,6 +97,10 @@ public class LeftPanel extends Accordion implements ClickListener {
 		text.getButton().addListener((ClickListener)this);
 		toolset.add(text);		
 		
+		Select select = new Select(canvas);
+		select.getButton().addListener((ClickListener)this);
+		toolset.add(select);
+		
 		return toolset;
 	}
 	
@@ -105,56 +110,33 @@ public class LeftPanel extends Accordion implements ClickListener {
 			System.err.println("No canvas was found!");
 			return;
 		}
-		
+						
 		//Get the tool from the toolset and deselect all tools
 		Tool selected = null;
 		for(Tool t : tools){
 			if(t.getType() == tool){
 				selected = t;
 				t.getButton().setStyleName("tool-selected");
-			} else {
-				
+			} else {				
 				t.getButton().setStyleName("tool-unselected");
 			}
 		}
 		
 		//Tool is not in toolset
 		if(selected == null){
-			System.err.println("Tool is not in toolset");
+			System.err.println("Tool is not in toolset ("+tool+")");
 			return;		
 		}
 		
-		tab2.removeAllComponents();
+		//Set the tool
+		tab2.removeAllComponents();		
+		tab2.addComponent(selected.createToolOptions()); 
 		
-						
-		switch(selected.getType()){
+		Interactive i = this.canvas.getInteractive();
 		
-			case PEN: 		tab2.addComponent(selected.createToolOptions()); 
-							this.canvas.setBrush(PaintCanvas.BrushType.PEN);
-			break;
-							
-			case SQUARE:	tab2.addComponent(selected.createToolOptions()); 
-							this.canvas.setBrush(PaintCanvas.BrushType.SQUARE);			
-			break;
-			
-			case ELLIPSE:	tab2.addComponent(selected.createToolOptions());
-							this.canvas.setBrush(PaintCanvas.BrushType.ELLIPSE);
-			break;			
-			
-			case LINE:		tab2.addComponent(selected.createToolOptions());
-							this.canvas.setBrush(PaintCanvas.BrushType.LINE);
-			break;			
-			
-			case POLYGON:	tab2.addComponent(selected.createToolOptions());
-							this.canvas.setBrush(PaintCanvas.BrushType.POLYGON);
-			break;
-			
-			case TEXT:		tab2.addComponent(selected.createToolOptions());
-							this.canvas.setBrush(PaintCanvas.BrushType.TEXT);
-			break;
-				
-			default:		System.out.println("No tool with the id could be selected");
-		}
+		if(i != null) i.setBrush(tool);
+		else System.out.println("ERROR: Canvas is not interactive");
+		
 	}
 	
 	@Override

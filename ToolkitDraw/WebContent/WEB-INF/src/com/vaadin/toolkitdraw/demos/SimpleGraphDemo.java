@@ -191,7 +191,7 @@ public class SimpleGraphDemo extends Window {
 		
 			//Add the values to the top of the bars
 			gc.drawText(id.toString(), counter*70+20, 280-value*2, 100, 100, "FFFFFF", 12, "000000", 0.0);
-			System.out.println(id);
+			
 			counter++;
 		}		
 							

@@ -10,6 +10,8 @@ import com.vaadin.ui.VerticalLayout;
 
 public abstract class Tool implements com.vaadin.data.Property.ValueChangeListener, Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	protected PaintCanvas canvas;
 		
 	protected Button button = new Button("Undefined");

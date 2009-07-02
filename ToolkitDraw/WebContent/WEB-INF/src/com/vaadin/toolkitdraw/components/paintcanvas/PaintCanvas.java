@@ -3,7 +3,7 @@ package com.vaadin.toolkitdraw.components.paintcanvas;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,20 +12,16 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.apache.commons.collections.PriorityQueue;
-
-
-import com.vaadin.Application;
-import com.vaadin.terminal.ApplicationResource;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.ThemeResource;
+
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 
+@SuppressWarnings("unchecked")
 public class PaintCanvas extends AbstractField implements Component, Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -35,7 +31,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	 * This is mostly used when we want to present some information on the drawing
 	 * component.
 	 */
-	public class Graphics implements Serializable{				
+	public class Graphics implements Serializable{
 		
 		private static final long serialVersionUID = 1L;
 
@@ -293,6 +289,216 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 		
+	/**
+	 * The interactive class contains all methods for controlling the canvas component draw
+	 * actions. It can be used to set current color, undo, redo etc.
+	 * The iteractive object is ONLY available when the canvas is in interactive mode.
+	 */
+	public class Interactive implements Serializable{
+
+		private static final long serialVersionUID = 1L;
+		
+		/**
+	     * Undo a previously done brush stroke
+	     */
+	    public void undo(){    	
+	    	addToQueue("undo", "true");    	
+	    	if(isImmediate()) requestRepaint();  
+	    }
+	    
+	    /**
+	     * Redo an undone brush stroke.
+	     * If a brush is undone and then the user draws on the canvas then redo
+	     * cannot redo the undone brush stroke since the canvas has changed.
+	     */
+	    public void redo(){
+	    	addToQueue("redo", "true");    	
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    /**
+	     * Set the paper height in the drawing component
+	     * This can be used if we want to create an drawable area which is less than
+	     * the component size
+	     * 
+	     * @param h
+	     * 		The height of the paper
+	     */
+	    public void setPaperHeight(int h){
+	    	paperHeight = h;
+	    	addToQueue("paperHeight", String.valueOf(h));    	
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    /**
+	     * Set the paper width in the drawing component.
+	     * This can be used if we want to create an drawable area which is less than
+	     * the component size
+	     * 
+	     * @param w
+	     * 		The width of the paper
+	     */    
+	    public void setPaperWidth(int w){
+	    	paperWidth = w;
+	    	addToQueue("paperWidth", String.valueOf(w));
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    /**
+	     * Sets the pixel size of the currently used brush. How this effects the output
+	     * depends on the current brush.
+	     * @param size
+	     * 		The size of the brush in pixels
+	     */
+	    public void setToolSize(double size){
+	    	addToQueue("penSize", String.valueOf(size));
+	    	if(isImmediate()) requestRepaint();
+	    }
+
+	    /**
+	     * Sets the color of the currently user brush.
+	     * If the brush is a square or ellipse the it is the frame color.
+	     * 
+	     * @param color
+	     * 		The color of the brush in hexadecimal representation
+	     */		
+	    public void setColor(String color){
+	    	
+	    	if(color.contains("#")){
+	    		color.replaceAll("#", "0x");
+	    	}
+	    	
+	    	if(!color.contains("x")){
+	    		color = "0x"+color;
+	    	}
+	    	    	
+	    	addToQueue("penColor", color);
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    /**
+	     * Sets the fill color of the current brush.
+	     * This is used if the brush supports fillcolor. For example ellipse and square brushes
+	     * support this
+	     * 
+	     * @param color
+	     * 		The color used to fill the brush in hexadecimal representation
+	     */
+	    public void setFillColor(String color){
+	    	if(color.contains("#")){
+	    		color.replaceAll("#", "0x");
+	    	}
+	    	
+	    	if(!color.contains("x")){
+	    		color = "0x"+color;
+	    	}
+	    	
+	    	addToQueue("fillColor", color);
+	    	if(isImmediate()) requestRepaint();    	
+	    }
+	    
+	    /**
+	     * Sets the alpha value of the brush
+	     * @param alpha
+	     * 		Value between 0 and 1
+	     */
+	    public void setAlpha(double alpha){
+	    	addToQueue("penAlpha", String.valueOf(alpha));
+	    	if(isImmediate()) requestRepaint();   
+	    }
+	    
+	    
+	    //TODO Update if necessery
+	    /**
+	     * Set the currently used brush
+	     * The following brushes are currently supported:
+	     * 
+	     * @param brush
+	     */
+	    public void setBrush(BrushType brush){
+	    	addToQueue("brush", brush.toString());
+	    	if(isImmediate()){    	
+	    		requestRepaint();
+	    	}
+	    }
+		
+	}
+	
+	/**
+	 * The layers class contains all the layer functionality like adding layers, modifying 
+	 * layers etc.
+	 */
+	public class Layers implements Serializable{
+
+		private static final long serialVersionUID = 1L;
+		
+		public void addLayer(Layer layer){
+	    	addToQueue("newlayer", layer.getName());
+	    	layers.add(layer);
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public void removeLayer(Layer layer){
+	    	
+	    	//Cannot remove background layer
+	    	if(layer.getName().equals("Background")) return;
+	    	
+	    	addToQueue("removelayer", layer.getName());
+	    	layers.remove(layer);
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public void moveLayerUp(String name){
+	    	
+	    	//Cannot move background layer
+	    	if(name.equals("Background")) return;
+	    	
+	    	addToQueue("layerdown", name);
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public void moveLayerDown(String name){
+	    	
+	    	//Cannot move background layer
+	    	if(name.equals("Background")) return;
+	    	
+	    	addToQueue("layerup", name);
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public void setLayerVisibility(String name, boolean visible){
+	    	if(visible) addToQueue("showLayer", name);
+	    	else addToQueue("hideLayer", name);    
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public void setActiveLayer(Layer layer){
+	    	addToQueue("activeLayer", layer.getName());
+	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public List<Layer> getLayers(){
+	    	return layers;
+	    }    
+	    
+	    public void setLayerBackground(Layer layer, String color, double alpha){
+			if(layer == null || color == null || alpha < 0 || alpha > 1.0) return;
+			
+			//Do some color string checks
+	    	if(color.contains("#")) color = color.replaceAll("#", "0x");	    	
+	    	if(!color.contains("x")) color = "0x"+color;
+	    	
+	    	//Select the layer
+	    	Ilayers.setActiveLayer(layer);
+	    	
+	    	//Set the color
+	    	addToQueue("layercolor", color);
+	    	
+	    	if(isImmediate()) requestRepaint();
+		}
+		
+	}
+	
 	/** The command history is needed when the the session is reloaded(F5) **/
 	private Queue<Map<String, String>> commandHistory = new ArrayBlockingQueue<Map<String,String>>(10000);
 	
@@ -304,13 +510,17 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	private Graphics graphics = new Graphics();
 	
+	private Interactive interactive = new Interactive();
+	
+	private Layers Ilayers = new Layers();
+
 	private boolean initComplete = false;
 	
 	//Default initialization data
 	private int paperHeight = -1;
 	private int paperWidth = -1;
 	private String componentColor = "000000";
-	private boolean interactive = false;
+	private boolean isInteractive = false;
 	
 	public static enum BrushType{
 		PEN("Pen"),
@@ -318,7 +528,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		ELLIPSE("Ellipse"),
 		LINE("Line"),
 		POLYGON("Polygon"),
-		TEXT("Text");
+		TEXT("Text"),
+		
+		SELECT("Generic-Select"),
+		RECTANGLE_SELECT("Rectangle-Select");
 		
 		private final String str;
 		private BrushType(String s) {
@@ -338,8 +551,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 		
 		//Set the paper height and width of the component to full
-		setPaperHeight(-1);		
-		setPaperWidth(-1);
+		interactive.setPaperHeight(-1);		
+		interactive.setPaperWidth(-1);
 		
 		setImmediate(true);		
 		requestRepaint();		
@@ -357,8 +570,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 		
 		//Set the paper height and width of the component to full
-		setPaperHeight(-1);		
-		setPaperWidth(-1);	
+		interactive.setPaperHeight(-1);		
+		interactive.setPaperWidth(-1);	
 		
 		setImmediate(true);
 		requestRepaint();
@@ -376,8 +589,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 		
 		//Set the paper height and width of the component to full
-		setPaperHeight(-1);		
-		setPaperWidth(-1);	
+		interactive.setPaperHeight(-1);		
+		interactive.setPaperWidth(-1);	
 		
 		//Set the background color
 		setComponentBackgroundColor(color);		
@@ -398,8 +611,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 		
 		//Set the paper height and width of the component to full
-		setPaperHeight(paperHeight);		
-		setPaperWidth(paperWidth);	
+		interactive.setPaperHeight(paperHeight);		
+		interactive.setPaperWidth(paperWidth);	
 			
 		setImmediate(true);
 		requestRepaint();
@@ -417,8 +630,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 				
 		//Set the paper height and width(layer size)
-		setPaperHeight(paperHeight);
-		setPaperWidth(paperWidth);		
+		interactive.setPaperHeight(paperHeight);
+		interactive.setPaperWidth(paperWidth);		
 		
 		//Set the background color
 		setComponentBackgroundColor(color);
@@ -439,8 +652,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 						
 		//Set the paper height and width(layer size)
-		setPaperHeight(paperHeight);
-		setPaperWidth(paperWidth);	
+		this.interactive.setPaperHeight(paperHeight);
+		this.interactive.setPaperWidth(paperWidth);	
 		
 		/*
 		 * Set the component in interactive mode which means that the user can draw on it
@@ -449,10 +662,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		setInteractive(interactive);
 		
 		setImmediate(true);
-		requestRepaint();
-	
-	}	
-	
+		requestRepaint();	
+	}		
 		
 	/**
 	 * Adds an element to the changed variables sent to the client
@@ -466,11 +677,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		Map<String, String> entry = new HashMap<String, String>();
 		entry.put(command, value);	
 		changedValues.add(entry);
-	}
-	
-	
-	
-	
+	}	
 	
 	/**
 	 * This method returns a graphics object which can be used to draw on the canvas
@@ -482,7 +689,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}	
 	
 	@Override
-	public Class getType() {		
+	public Class<?> getType() {		
 		return PaintCanvas.class;
 	}
 
@@ -523,7 +730,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     }
     
     /** Deserialize changes received from client. */
-    public void changeVariables(Object source, Map variables) {
+	public void changeVariables(Object source, Map variables) {
             	
     	//XML image recieved
     	if(variables.containsKey("getImageXML")){
@@ -578,186 +785,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	//Send the initialization data
     	if(variables.containsKey("initData")){
     		System.out.println("Initialization data needed");
-    		setPaperHeight(paperHeight);
-    		setPaperWidth(paperWidth);
+    		interactive.setPaperHeight(paperHeight);
+    		interactive.setPaperWidth(paperWidth);
     		setComponentBackgroundColor(componentColor);
-    		setInteractive(interactive);
+    		setInteractive(isInteractive);
     		initComplete = false;
     		requestRepaint();    		
     	}
-    }
-    
-    /**
-     * Undo a previously done brush stroke
-     */
-    public void undo(){    	
-    	addToQueue("undo", "true");    	
-    	if(isImmediate()) requestRepaint();  
-    }
-    
-    /**
-     * Redo an undone brush stroke.
-     * If a brush is undone and then the user draws on the canvas then redo
-     * cannot redo the undone brush stroke since the canvas has changed.
-     */
-    public void redo(){
-    	addToQueue("redo", "true");    	
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Set the paper height in the drawing component
-     * This can be used if we want to create an drawable area which is less than
-     * the component size
-     * 
-     * @param h
-     * 		The height of the paper
-     */
-    public void setPaperHeight(int h){
-    	paperHeight = h;
-    	addToQueue("paperHeight", String.valueOf(h));    	
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Set the paper width in the drawing component.
-     * This can be used if we want to create an drawable area which is less than
-     * the component size
-     * 
-     * @param w
-     * 		The width of the paper
-     */    
-    public void setPaperWidth(int w){
-    	paperWidth = w;
-    	addToQueue("paperWidth", String.valueOf(w));
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Sets the pixel size of the currently used brush. How this effects the output
-     * depends on the current brush.
-     * @param size
-     * 		The size of the brush in pixels
-     */
-    public void setToolSize(double size){
-    	addToQueue("penSize", String.valueOf(size));
-    	if(isImmediate()) requestRepaint();
-    }
-
-    /**
-     * Sets the color of the currently user brush.
-     * If the brush is a square or ellipse the it is the frame color.
-     * 
-     * @param color
-     * 		The color of the brush in hexadecimal representation
-     */		
-    public void setColor(String color){
-    	
-    	if(color.contains("#")){
-    		color.replaceAll("#", "0x");
-    	}
-    	
-    	if(!color.contains("x")){
-    		color = "0x"+color;
-    	}
-    	    	
-    	addToQueue("penColor", color);
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Sets the fill color of the current brush.
-     * This is used if the brush supports fillcolor. For example ellipse and square brushes
-     * support this
-     * 
-     * @param color
-     * 		The color used to fill the brush in hexadecimal representation
-     */
-    public void setFillColor(String color){
-    	if(color.contains("#")){
-    		color.replaceAll("#", "0x");
-    	}
-    	
-    	if(!color.contains("x")){
-    		color = "0x"+color;
-    	}
-    	
-    	addToQueue("fillColor", color);
-    	if(isImmediate()) requestRepaint();    	
-    }
-    
-    /**
-     * Sets the alpha value of the brush
-     * @param alpha
-     * 		Value between 0 and 1
-     */
-    public void setAlpha(double alpha){
-    	addToQueue("penAlpha", String.valueOf(alpha));
-    	if(isImmediate()) requestRepaint();   
-    }
-    
-    
-    //TODO Update if necessery
-    /**
-     * Set the currently used brush
-     * The following brushes are currently supported:
-     * 
-     * @param brush
-     */
-    public void setBrush(BrushType brush){
-    	addToQueue("brush", brush.toString());
-    	if(isImmediate()){    	
-    		requestRepaint();
-    	}
-    }
-    
-    public void addLayer(Layer layer){
-    	addToQueue("newlayer", layer.getName());
-    	layers.add(layer);
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    public void removeLayer(Layer layer){
-    	
-    	//Cannot remove background layer
-    	if(layer.getName().equals("Background")) return;
-    	
-    	addToQueue("removelayer", layer.getName());
-    	layers.remove(layer);
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    public void moveLayerUp(String name){
-    	
-    	//Cannot move background layer
-    	if(name.equals("Background")) return;
-    	
-    	addToQueue("layerdown", name);
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    public void moveLayerDown(String name){
-    	
-    	//Cannot move background layer
-    	if(name.equals("Background")) return;
-    	
-    	addToQueue("layerup", name);
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    public void setLayerVisibility(String name, boolean visible){
-    	if(visible) addToQueue("showLayer", name);
-    	else addToQueue("hideLayer", name);    
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    public void setActiveLayer(Layer layer){
-    	addToQueue("activeLayer", layer.getName());
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    public List<Layer> getLayers(){
-    	return layers;
     }    
      
     public void getImageXML(){
@@ -784,7 +818,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     }
     
     public void setInteractive(boolean interactive){
-    	this.interactive = interactive;
+    	this.isInteractive = interactive;
     	addToQueue("interactive", String.valueOf(interactive));
     	if(isImmediate()) requestRepaint();
     }
@@ -801,26 +835,21 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	componentColor = color;
     	addToQueue("componentColor", color);
     	if(isImmediate()) requestRepaint();
-    }
-    
-    public void setLayerBackground(Layer layer, String color, double alpha){
-		if(layer == null || color == null || alpha < 0 || alpha > 1.0) return;
-		
-		//Do some color string checks
-    	if(color.contains("#")) color = color.replaceAll("#", "0x");	    	
-    	if(!color.contains("x")) color = "0x"+color;
-    	
-    	//Select the layer
-    	setActiveLayer(layer);
-    	
-    	//Set the color
-    	addToQueue("layercolor", color);
-    	
-    	if(isImmediate()) requestRepaint();
-	}
+    }    
     
     public boolean isReady(){
     	return initComplete;
+    }
+    
+    public Interactive getInteractive() {
+    	if(isInteractive) 
+    		return interactive;
+    	else 
+    		return null;
+	}
+    
+    public Layers getLayers(){
+    	return Ilayers;
     }
     
 }

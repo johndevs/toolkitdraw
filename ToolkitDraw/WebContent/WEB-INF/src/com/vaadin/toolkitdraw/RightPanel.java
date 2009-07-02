@@ -1,11 +1,9 @@
 package com.vaadin.toolkitdraw;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -31,6 +29,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 public class RightPanel extends VerticalLayout implements Property.ValueChangeListener, ClickListener, ItemClickListener{
+
+	private static final long serialVersionUID = 1L;
 
 	private PaintCanvas canvas;	
 	
@@ -81,8 +81,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		PaintCanvas rgb = new PaintCanvas("300px","250px","515151");
 		
 		//Set all layer backgrounds
-		for(Layer layer : rgb.getLayers())
-			rgb.setLayerBackground(layer,"0x414141", 0);	
+		for(Layer layer : rgb.getLayers().getLayers())
+			rgb.getLayers().setLayerBackground(layer,"0x414141", 0);	
 		
 		String caption = "Histogram";
 		histogramCanvases.put(caption, rgb);		
@@ -117,7 +117,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		paperWidth = new TextField();
 		paperWidth.setValue(300);		
-		if(this.canvas != null) this.canvas.setPaperWidth(300);
+		if(this.canvas != null) this.canvas.getInteractive().setPaperWidth(300);
 		paperWidth.setWidth("50px");
 		paperWidth.addListener((Property.ValueChangeListener)this);
 		paperWidth.setImmediate(true);
@@ -127,7 +127,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		paperHeight = new TextField();
 		paperHeight.setValue(400);
-		if(this.canvas != null) this.canvas.setPaperHeight(400);
+		if(this.canvas != null) this.canvas.getInteractive().setPaperHeight(400);
 		paperHeight.setWidth("50px");
 		paperHeight.addListener((Property.ValueChangeListener)this);
 		paperHeight.setImmediate(true);
@@ -200,7 +200,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			c.setVisible(true);
 		}
 		
-		List<Layer> layers = this.canvas.getLayers();
+		List<Layer> layers = this.canvas.getLayers().getLayers();
 		
  		layerTable.removeAllItems();
 		
@@ -239,11 +239,11 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	public void valueChange(ValueChangeEvent event) {
 		
 		if(event.getProperty() == paperWidth){
-			canvas.setPaperWidth(Integer.parseInt(event.getProperty().getValue().toString()));
+			canvas.getInteractive().setPaperWidth(Integer.parseInt(event.getProperty().getValue().toString()));
 		}
 		
 		if(event.getProperty() == paperHeight){
-			canvas.setPaperHeight(Integer.parseInt(event.getProperty().getValue().toString()));
+			canvas.getInteractive().setPaperHeight(Integer.parseInt(event.getProperty().getValue().toString()));
 		}
 		
 	}
@@ -254,11 +254,11 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		if(event.getButton() == addLayer){			
 		
-			List<Layer> layers = this.canvas.getLayers();
+			List<Layer> layers = this.canvas.getLayers().getLayers();
 												
 			//The layer is added automatically to the canvas
 			Layer newLayer = new Layer("Layer #"+(layers.size()+1), this.canvas);						
-			this.canvas.addLayer(newLayer);						
+			this.canvas.getLayers().addLayer(newLayer);						
 			
 			refreshLayers();
 			
@@ -271,14 +271,14 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			
 		}else if(event.getButton() == upLayer && layerTable.getValue() != null ){
 			Layer selected = (Layer)layerTable.getValue();
-			List<Layer> layers = this.canvas.getLayers();			
+			List<Layer> layers = this.canvas.getLayers().getLayers();			
 			
 			//Do not move an element behind the Background element
 			int idx = layers.indexOf(selected);
 			if(idx <= 1) return;
 			
 			//Swap the layers in both the table and the image component
-			this.canvas.moveLayerUp(selected.getName());
+			this.canvas.getLayers().moveLayerUp(selected.getName());
 			Collections.swap(layers, idx, idx-1);
 			
 			refreshLayers();			
@@ -286,14 +286,14 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			
 		}else if(event.getButton() == downLayer && layerTable.getValue() != null){
 			Layer selected = (Layer)layerTable.getValue();
-			List<Layer> layers = this.canvas.getLayers();
+			List<Layer> layers = this.canvas.getLayers().getLayers();
 			
 			//Do not move the Background element or the last element
 			int idx = layers.indexOf(selected);
 			if(idx == layers.size()-1 || idx == 0) return;
 			
 			//Swap the layers in both the table and the image component
-			this.canvas.moveLayerDown(selected.getName());
+			this.canvas.getLayers().moveLayerDown(selected.getName());
 			Collections.swap(layers, idx, idx+1);
 			
 			refreshLayers();
@@ -306,7 +306,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		if(event.getItemId() == null) return;
 		
 		Layer layer = (Layer)event.getItemId();
-		layer.getCanvas().setActiveLayer(layer);
+		layer.getCanvas().getLayers().setActiveLayer(layer);
 	}
 	
 	public PaintCanvas getCanvas() {

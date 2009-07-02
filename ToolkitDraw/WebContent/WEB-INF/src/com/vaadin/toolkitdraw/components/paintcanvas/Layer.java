@@ -3,8 +3,6 @@ package com.vaadin.toolkitdraw.components.paintcanvas;
 import java.io.Serializable;
 
 
-
-
 public class Layer implements Serializable {
 
 	private boolean visible;
@@ -34,17 +32,17 @@ public class Layer implements Serializable {
 	
 	public void setVisible(boolean visible){	
 		this.visible = visible;
-		this.canvas.setLayerVisibility(name, visible);
+		this.canvas.getLayers().setLayerVisibility(name, visible);
 	}
 	
 	public void setColor(String color){
 		this.color = color;
-		this.canvas.setLayerBackground(this, color, alpha);
+		this.canvas.getLayers().setLayerBackground(this, color, alpha);
 	}
 	
 	public void setAlpha(double alpha){
 		this.alpha = alpha;
-		this.canvas.setLayerBackground(this, color, alpha);
+		this.canvas.getLayers().setLayerBackground(this, color, alpha);
 	}
 	
 	public boolean getVisible(){

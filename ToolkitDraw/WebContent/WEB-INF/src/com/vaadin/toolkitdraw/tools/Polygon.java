@@ -13,6 +13,8 @@ import com.vaadin.ui.VerticalLayout;
 
 public class Polygon extends Tool implements ValueChangeListener {
 
+	private static final long serialVersionUID = 1L;
+
 	private TextField size;
 	
 	private TextField color;
@@ -60,13 +62,13 @@ public class Polygon extends Tool implements ValueChangeListener {
 		if(canvas == null) return;			
 		
 		if(event.getProperty() == size){							
-			canvas.setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
+			canvas.getInteractive().setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
 		}
 		else if(event.getProperty() == color){
-			canvas.setColor(String.valueOf(event.getProperty().getValue()));
+			canvas.getInteractive().setColor(String.valueOf(event.getProperty().getValue()));
 		}		
 		else if(event.getProperty() == fillColor){
-			canvas.setFillColor(String.valueOf(event.getProperty().getValue()));
+			canvas.getInteractive().setFillColor(String.valueOf(event.getProperty().getValue()));
 		}
 	}
 
