@@ -18,6 +18,16 @@ package util
 			}
 		}
 		
+		/**
+		 * This function moves all elements in arr2 to arr1.
+		 * All elements previously in arr1 are lost and arr2 is empty after this
+		 * operation. Order is preserved.
+		 */ 
+		public static function assignArray(arr1:Array, arr2:Array):void{
+			while(arr1.length > 0) arr1.pop();
+			while(arr2.length > 0) arr1.push(arr2.pop());
+		}
+		
 		
 		
 	}

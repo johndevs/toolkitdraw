@@ -2,7 +2,7 @@ package util
 {
 	import brushes.BrushStroke;
 	import brushes.IBrush;
-	import brushes.Square;
+	import brushes.Rectangle;
 	
 	import elements.Layer;
 	
@@ -65,9 +65,9 @@ package util
 						}
 						
 						//Generate background strokes
-						if(brush.getType() == Controller.SQUARE)
+						if(brush.getType() == Controller.RECTANGLE)
 						{
-							for each(var backgroundStroke:BrushStroke in Square(brush).getBackgroundStrokes())
+							for each(var backgroundStroke:BrushStroke in Rectangle(brush).getBackgroundStrokes())
 							{
 								var bstrokeXML:XML = new XML("<backgroundstroke></backgroundstroke>");
 								bstrokeXML.@color = backgroundStroke.color;

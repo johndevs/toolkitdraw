@@ -19,6 +19,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import util.GraphicsUtil;
 			import mx.controls.Alert;
 			
 			private static var  controller:Controller;
@@ -33,7 +34,7 @@
 					
 					if(Application.application.parameters.bgcolor != null)
 					{
-						controller.setApplicationColor(Application.application.parameters.bgcolor);
+						GraphicsUtil.setApplicationColor(Application.application.parameters.bgcolor);
 					}
 									
 									

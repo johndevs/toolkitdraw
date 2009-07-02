@@ -1,32 +1,148 @@
 package util
 {
-	import flash.net.URLRequest;
+	import brushes.Ellipse;
+	import brushes.IBrush;
+	import brushes.IFillableBrush;
+	import brushes.Line;
+	import brushes.Pen;
+	import brushes.Polygon;
+	import brushes.Rectangle;
+	import brushes.RectangleSelect;
+	import brushes.Text;
 	
+	import mx.controls.Alert;
 	import mx.core.Application;
-	import mx.managers.CursorManager;
-	import mx.styles.StyleManager;
-   		
+	import mx.graphics.ImageSnapshot;
+	import mx.graphics.codec.IImageEncoder;
+	import mx.graphics.codec.JPEGEncoder;
+	import mx.graphics.codec.PNGEncoder;
+	
+	
 	public class GraphicsUtil
 	{
-		[Embed("/assets/pen.png")]
-   		private static var penCursor:Class;	
-   		
-   		private static var loader:URLLoader;
-   		
+		private static var painter:IBrush;
+		private static var controller:Controller;
+		private static var history:Array;
+		private static var redo_history:Array;
 		
-		public static const PEN:String = "pen";	
-		public static const NONE:String = "none";	
+		public static function setPainter(p:IBrush):void{
+			painter = p;	
+		}
 		
-		public static function showCursor(cursor:String):void
-   		{
-   			switch(cursor)
-   			{
-   				case PEN:	CursorManager.setCursor(penCursor, CursorManagerPriority.HIGH, 3, 2); break;
-   				default: CursorManager.removeAllCursors();
-   			}    		
-   		}
-   		
+		public static function setController(c:Controller):void{
+			controller = c;
+		}
+		
+		//Brush functions			
+		public static function setBrushColor(color:Number):void
+		{ 
+			painter.setColor(color); 
+			controller.changeEvent();
+		}		
+		
+		public static function setBrushWidth(width:Number):void
+		{ 
+			painter.setWidth(width);
+			controller.changeEvent(); 
+		}
+		
+		public static function setBrushAlpha(alpha:Number):void
+		{
+			painter.setAlpha(alpha);
+			controller.changeEvent();
+		}
+		
+		public static function setHistory(h:Array, r:Array):void
+		{
+			history = h;
+			redo_history = r;
+		}
+				
+		public static function setFillColor(color:Number):void
+		{	
+			if(painter is IFillableBrush){			
+				IFillableBrush(painter).setFillColor(color);
+				controller.changeEvent();		
+			}			
+		}
+		
+		public static function setApplicationColor(color:String):void
+		{
+			Application.application.setStyle("backgroundColor", color);
+			Application.application.setStyle("backgroundGradientColors",[color,color]);
+			controller.changeEvent();
+		}			
+		
+		//returns a PNG image in base64 encoding
+		public static function getPNG(dpi:int):String{										
+			var encoder:IImageEncoder = new PNGEncoder();
+			
+			//Take the snapshot
+			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
 
+			//Convert image to base 64
+			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
+
+			return b64String;							
+		}
+				
+		//returns a JPEG image in base64 encoding
+		public static function getJPG(dpi:int):String{
+			var encoder:IImageEncoder = new JPEGEncoder();
+			
+			//Take the snapshot
+			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
+
+			//Convert image to base 64
+			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
+
+			return b64String;							
+		}
+		
+		//Set the brush
+		public static function setBrush(type:String):void
+		{				
+			var brush:IBrush;
+			
+			switch(type)
+			{
+				case Controller.PEN: 		brush = new Pen(LayerUtil.getCurrentLayer().getCanvas()); break;				
+				case Controller.RECTANGLE:	brush = new Rectangle(LayerUtil.getCurrentLayer().getCanvas()); break;				
+				case Controller.ELLIPSE:	brush = new Ellipse(LayerUtil.getCurrentLayer().getCanvas()); break;				
+				case Controller.LINE:		brush = new Line(LayerUtil.getCurrentLayer().getCanvas()); break;				
+				case Controller.POLYGON:	brush = new Polygon(LayerUtil.getCurrentLayer().getCanvas()); break;
+				case Controller.TEXT:		brush = new Text(LayerUtil.getCurrentLayer().getCanvas()); break;		
+				
+				case Controller.RECTANGLE_SELECT:	brush = new RectangleSelect(LayerUtil.getCurrentLayer().getCanvas()); break;	
+				
+				default:		Alert.show("Brush \""+type+"\" was not found!");
+			}		
+			
+			//Save the selected tool in history
+			history.push(brush);
+			
+			//Set the current painter tool
+			painter = history[history.length-1];
+			
+			//Notify controller of the painter change
+			controller.setPainter(painter);						
+			controller.changeEvent();
+		}	
+		
+		public static function redraw():void
+		{
+			if(LayerUtil.getCurrentLayer() == null) Alert.show("No layer selected!");
+						
+			LayerUtil.getCurrentLayer().getCanvas().graphics.clear();
+			
+			for each(var brush:IBrush in history)
+			{											
+				brush.redraw();
+			}	
+		}
+
+		
+		
    		
 	}
 }

@@ -135,7 +135,7 @@ package brushes
 			
 			//Remove borders
 			var d2:BitmapData = new BitmapData(d.width-2, d.height-2,true);		
-			d2.copyPixels(d,new Rectangle(1,1,d.width-2,d.height-2),new Point(0,0));
+			d2.copyPixels(d,new flash.geom.Rectangle(1,1,d.width-2,d.height-2),new Point(0,0));
 																								
 			//Paint the screenshot to the canvas
 			var m2:Matrix = new Matrix();

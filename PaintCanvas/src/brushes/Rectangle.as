@@ -4,7 +4,7 @@ package brushes
 	
 	import mx.containers.Canvas;
 
-	public class Square implements IFillableBrush
+	public class Rectangle implements IFillableBrush
 	{
 		protected var canvas:Canvas;
 		protected var framePen:Pen;
@@ -22,7 +22,7 @@ package brushes
 		//protected var history:Array = new Array;
 		//protected var redohistory:Array = new Array;
 		
-		public function Square(canvas:Canvas)
+		public function Rectangle(canvas:Canvas)
 		{
 			this.canvas = canvas;	
 			framePen = new Pen(this.canvas);
@@ -180,7 +180,7 @@ package brushes
 		
 		public function getType():String
 		{
-			return Controller.SQUARE;
+			return Controller.RECTANGLE;
 		}
 		
 		public function setFillColor(color:Number):void
