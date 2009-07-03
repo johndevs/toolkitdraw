@@ -64,9 +64,11 @@ package brushes
 			
 			var arr:Array = new Array();
 			arr.push(startPoint);
+			arr.push(new Point(endPoint.x, startPoint.y));
 			arr.push(endPoint);
+			arr.push(new Point(startPoint.x, endPoint.y));
 			
-			SelectionUtil.setSelection(Controller.RECTANGLE_SELECT, arr);
+			SelectionUtil.setSelection(arr);
 			SelectionUtil.showSelection(canvas);
 			
 			startPoint = null;

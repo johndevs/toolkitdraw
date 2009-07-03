@@ -1,33 +1,31 @@
 package util
 {
+	import flash.display.BitmapData;
 	import flash.display.BlendMode;
 	import flash.geom.Point;
 	
 	import mx.containers.Canvas;
-	import mx.controls.ColorPicker;
 	
 	public class SelectionUtil
 	{
-		private static const points:Array = new Array;
-		private static var mode:String;
+		private static const points:Array = new Array;		
 		private static var currentCanvas:Canvas = null;
 		private static const selection:Canvas = new Canvas();
+		private static const foreground:Canvas = new Canvas();	
+		private static var hitTestBitmap:BitmapData;
 		
-		public static function setSelection(m:String, pts:Array):void
-		{
-			//Set mode
-			mode = m;	
-				
+		public static function setSelection(pts:Array):void
+		{			
 			//Old selection is overwritten
 			ArrayUtil.assignArray(points, pts);		
-		}
+		}	
 		
-		public static function getMode():String{
-			return mode;
-		}
-		
-		public static function getPoints():Array{
+		public static function getSelection():Array{
 			return points;
+		}
+		
+		public static function hasSelection():Boolean{
+			return currentCanvas != null;
 		}
 		
 		public static function showSelection(canvas:Canvas):void{
@@ -47,27 +45,26 @@ package util
 			selection.graphics.beginFill(0, 0.8);
 			selection.graphics.drawRect(0,0,selection.width,selection.height);
 			selection.graphics.endFill();		
-								
-			var fg:Canvas = new Canvas();
-			fg.cacheAsBitmap = true;
-			fg.blendMode = BlendMode.ERASE;
-			fg.graphics.clear();
-			fg.graphics.beginFill(0xFFFFFF);
+					
+			foreground.cacheAsBitmap = true;			
+			foreground.blendMode = BlendMode.ERASE;
+			foreground.width = selection.width;
+			foreground.height = selection.height;
 			
-			if(mode == Controller.RECTANGLE_SELECT)
+			foreground.graphics.clear();			
+			foreground.graphics.beginFill(0xFFFFFF);		
+			foreground.graphics.moveTo(Point(points[0]).x, Point(points[0]).y);			
+			for(var i:int=1; i<points.length; i++)
 			{
-				var upperLeft:Point = points[0];
-				var lowerRight:Point = points[1];				
-				fg.graphics.drawRect(upperLeft.x, upperLeft.y, lowerRight.x-upperLeft.x, lowerRight.y-upperLeft.y);
+				foreground.graphics.lineTo(Point(points[i]).x,Point(points[i]).y);							
+			}
+			foreground.graphics.lineTo(Point(points[0]).x,Point(points[0]).y);													
+			foreground.graphics.endFill();				
 			
-				selection.graphics.lineStyle(1,0x0000FF,0.5);
-				selection.graphics.drawRect(upperLeft.x-1, upperLeft.y-1, lowerRight.x-upperLeft.x+1, lowerRight.y-upperLeft.y+1);
-			}			
+			hitTestBitmap = new BitmapData(foreground.width, foreground.height,true, 0x00000000);					
+            hitTestBitmap.draw(foreground);
 			
-			fg.graphics.endFill();
-			
-			selection.addChild(fg);
-			
+			selection.addChild(foreground);			
 			currentCanvas.addChild(selection);
 		}
 		
@@ -79,5 +76,27 @@ package util
 			selection.removeAllChildren();			
 			currentCanvas = null;
 		}
+		
+		public static function selectAll():void{
+			hideSelection();
+								
+			var canv:Canvas = LayerUtil.getCurrentLayer().getCanvas();
+			
+			var arr:Array = new Array();
+			arr.push(new Point(0,0));
+			arr.push(new Point(canv.width, 0));
+			arr.push(new Point(canv.width, canv.height));
+			arr.push(new Point(0,canv.height));						
+			SelectionUtil.setSelection(arr);
+			
+			SelectionUtil.showSelection(canv);
+		}
+				
+		public static function inSelection(x:int, y:int):Boolean{							
+			var p1:Point = new Point(0,0);
+			var p2:Point = new Point(x,y);			
+			return hitTestBitmap.hitTest(p1,0xFF,p2);
+		}
+		
 	}
 }

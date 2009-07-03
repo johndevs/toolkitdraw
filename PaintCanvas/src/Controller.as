@@ -1,6 +1,7 @@
 package
 {
 	import brushes.IBrush;
+	import brushes.ISelectableBrush;
 	import brushes.Pen;
 	
 	import elements.Layer;
@@ -23,6 +24,7 @@ package
 	import util.GraphicsUtil;
 	import util.ImageConverterUtil;
 	import util.LayerUtil;
+	import util.SelectionUtil;
 	
 	public class Controller
 	{
@@ -104,8 +106,7 @@ package
 			
 			//Add keyboard listener
 			//Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
-			
-			
+						
 													
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
@@ -141,8 +142,7 @@ package
 				ExternalInterface.addCallback("setLayerVisibility", 			LayerUtil.setLayerVisibility);	
 				ExternalInterface.addCallback("setLayerBackgroundColor", 		LayerUtil.setLayerBackgroundColor);
 				ExternalInterface.addCallback("setLayerBackgroundAlpha", 		LayerUtil.setLayerBackgroundAlpha);
-								
-				
+												
 				//Graphics functions
 				ExternalInterface.addCallback("graphicsDrawLine",				DrawingUtil.drawLine);
 				ExternalInterface.addCallback("graphicsDrawSquare",				DrawingUtil.drawSquare);
@@ -150,6 +150,9 @@ package
 				ExternalInterface.addCallback("graphicsDrawPolygon",			DrawingUtil.drawPolygon);
 				ExternalInterface.addCallback("graphicsDrawText",				DrawingUtil.drawText);
 				
+				//Selection functions
+				ExternalInterface.addCallback("removeSelection",				SelectionUtil.hideSelection);
+				ExternalInterface.addCallback("selectAll",						SelectionUtil.selectAll);				
 				
 			}	
 			else
@@ -235,10 +238,26 @@ package
 				painter.getCanvas().removeAllChildren();
 			}
 												
+			//Is the cursor inside paper bounds									
 			else if(e.localX < LayerUtil.getCurrentLayer().getWidth() && e.localY < LayerUtil.getCurrentLayer().getHeight())
 			{
-				mouse_is_down = true;
-				painter.startStroke();
+				//Do we have a selection, if so check its bounds
+				if(SelectionUtil.hasSelection() && !(painter is ISelectableBrush)){
+					
+					var x:int = new int(e.localX);
+					var y:int  =new int(e.localY);
+					
+					if(SelectionUtil.inSelection(x, y)){
+						
+						mouse_is_down = true;
+						painter.startStroke();
+					} else {
+						Alert.show("Outside("+e.localX+","+e.localY+")");
+					}					
+				} else {
+					mouse_is_down = true;
+					painter.startStroke();
+				}				
 			}
 		}
 		
@@ -255,7 +274,18 @@ package
 			if(mouse_is_down && e.localX < LayerUtil.getCurrentLayer().getWidth() && 
 					e.localY < LayerUtil.getCurrentLayer().getHeight())
 			{
-				painter.processPoint(new Point(e.localX, e.localY));
+				//Do we have a selection, if so check its bounds
+				if(SelectionUtil.hasSelection() && !(painter is ISelectableBrush)){
+					
+					var x:int = new int(e.localX);
+					var y:int  =new int(e.localY);
+					
+					if(SelectionUtil.inSelection(x, y)){						
+						painter.processPoint(new Point(e.localX, e.localY));
+					} 			
+				} else {
+					painter.processPoint(new Point(e.localX, e.localY));
+				}							
 			}					
 		}
 		
