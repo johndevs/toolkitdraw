@@ -56,8 +56,7 @@ public class Select extends Tool {
 		//Create the button
 		button = new Button();
 		button.setData(getType());		
-		//button.setIcon(IconFactory.getIcon(Icons.ICON_TEXT));
-		button.setCaption("Sel");
+		button.setIcon(IconFactory.getIcon(Icons.SELECT));		
 		
 		mode.addListener(new Property.ValueChangeListener(){
 			public void valueChange(ValueChangeEvent event) {

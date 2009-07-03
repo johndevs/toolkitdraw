@@ -15,7 +15,7 @@ public class IconFactory implements Serializable {
 	
 	public static enum Icons{
 		ICON_PEN, ICON_SQUARE, ICON_ELLIPSE, ICON_LINE, ICON_POLY, ICON_TEXT,
-		DOWN_ARROW, UP_ARROW, PLUS, MINUS
+		DOWN_ARROW, UP_ARROW, PLUS, MINUS, SELECT
 	}
 	
 	
@@ -37,6 +37,7 @@ public class IconFactory implements Serializable {
 			case UP_ARROW:		res = new ThemeResource("icons/upArrow.png"); break;
 			case PLUS:			res = new ThemeResource("icons/plus.png"); break;
 			case MINUS:			res = new ThemeResource("icons/minus.png"); break;
+			case SELECT:		res = new ThemeResource("icons/selectTool.png"); break;
 		}
 		
 		return res;

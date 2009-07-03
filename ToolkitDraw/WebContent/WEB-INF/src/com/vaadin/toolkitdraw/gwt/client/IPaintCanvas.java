@@ -153,8 +153,13 @@ public class IPaintCanvas extends HTML implements Paintable {
 			for(int i=0; i<args.length-4; i++)
 				text = text + args[i];					
 			
-			PaintCanvasNativeUtil.drawText(id, text, x, y, width, height); 
-																
+			PaintCanvasNativeUtil.drawText(id, text, x, y, width, height); 																
+		}
+		else if(command.equals("selectionRemove")){
+			PaintCanvasNativeUtil.removeSelection(id);
+		}
+		else if(command.equals("selectionAll")){
+			PaintCanvasNativeUtil.selectAll(id);
 		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		

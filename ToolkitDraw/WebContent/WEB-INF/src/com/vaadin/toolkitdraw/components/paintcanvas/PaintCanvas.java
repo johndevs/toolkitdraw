@@ -406,9 +406,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	addToQueue("penAlpha", String.valueOf(alpha));
 	    	if(isImmediate()) requestRepaint();   
 	    }
-	    
-	    
-	    //TODO Update if necessery
+	    	 
 	    /**
 	     * Set the currently used brush
 	     * The following brushes are currently supported:
@@ -417,6 +415,26 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	     */
 	    public void setBrush(BrushType brush){
 	    	addToQueue("brush", brush.toString());
+	    	if(isImmediate()){    	
+	    		requestRepaint();
+	    	}
+	    }
+	    
+	    /**
+	     * Removes selection if there is one
+	     */
+	    public void removeSelection(){
+	    	addToQueue("selectionRemove", "");
+	    	if(isImmediate()){    	
+	    		requestRepaint();
+	    	}
+	    }
+	    
+	    /**
+	     * Selects the whole image
+	     */
+	    public void selectAll(){
+	    	addToQueue("selectionAll", "");
 	    	if(isImmediate()){    	
 	    		requestRepaint();
 	    	}

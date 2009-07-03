@@ -307,6 +307,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 					pop.show();
 					break;
 				}
+				
+				case SELECTION_REMOVE: currentCanvas.getInteractive().removeSelection(); break;
+				case SELECTION_ALL: currentCanvas.getInteractive().selectAll(); break;
 					
 				//Demos
 				case DEMO1:{

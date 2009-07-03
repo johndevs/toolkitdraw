@@ -522,6 +522,47 @@ public class PaintCanvasNativeUtil {
 		return false;		
 	}-*/;	
 	
+	
+	/**
+	 * Removes the current selection
+	 * @param id
+	 * 		The id of the canvas
+	 * @return
+	 */
+	public static native void removeSelection(String id)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.removeSelection == 'function' && canvas.isReady() ){
+			canvas.removeSelection();
+		}else{
+			var func = function() { canvas.removeSelection(); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
+	
+	
+	/**
+	 * Select the whole image
+	 * @param id
+	 * 		The id of the canvas
+	 * @return
+	 */
+	public static native void selectAll(String id)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.selectAll == 'function' && canvas.isReady() ){
+			canvas.selectAll();
+		}else{
+			var func = function() { canvas.selectAll(); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
+	
+	
 	/**
 	 * Set the canvas in a ready state. This is done by the Flash component and should 
 	 * not be not manually
@@ -561,7 +602,7 @@ public class PaintCanvasNativeUtil {
 		}
 		
 		return null;
-	}
+	}	
 	
 	/**
 	 * Define the native util methods so the flash can find them.
@@ -596,6 +637,8 @@ public class PaintCanvasNativeUtil {
 			this.isReady = function(id){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::isReady(Ljava/lang/String;)(id); };
 			this.setCanvasReady = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setCanvasReady(Ljava/lang/String;)(id); };
 			this.drawText = function(id, text, x, y, width, height){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawText(Ljava/lang/String;Ljava/lang/String;IIII)(id,text,x,y,width,height); };
+			this.removeSelection = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::removeSelection(Ljava/lang/String;)(id); };
+			this.selectAll = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::selectAll(Ljava/lang/String;)(id); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		
