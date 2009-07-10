@@ -8,8 +8,44 @@ package util
 	
 	import flash.geom.Point;
 	
+	import mx.core.Application;
+	import mx.graphics.ImageSnapshot;
+	import mx.graphics.codec.IImageEncoder;
+	import mx.graphics.codec.JPEGEncoder;
+	import mx.graphics.codec.PNGEncoder;
+	
 	public class ImageConverterUtil
 	{
+		/**
+		 * returns a PNG image in base64 encoding
+		 */
+		public static function getPNG(dpi:int):String{										
+			var encoder:IImageEncoder = new PNGEncoder();
+			
+			//Take the snapshot
+			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
+
+			//Convert image to base 64
+			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
+
+			return b64String;							
+		}
+				
+		/**
+		 * returns a JPEG image in base64 encoding
+		 */ 
+		public static function getJPG(dpi:int):String{
+			var encoder:IImageEncoder = new JPEGEncoder();
+			
+			//Take the snapshot
+			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
+
+			//Convert image to base 64
+			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
+
+			return b64String;							
+		}		
+		
 		/**
 		 * This function uses the image history to convert the image to XML
 		 * 

@@ -50,6 +50,7 @@ package
 		public static const LINE:String = "Line";
 		public static const POLYGON:String = "Polygon";
 		public static const TEXT:String = "Text";
+		public static const IMAGE:String = "Image";
 		
 		public static const HISTORY_OBJECT:String = "PaintCanvas-history";
 		public static const LAYERS_OBJECT:String = "PaintCnavas-layers";
@@ -121,8 +122,8 @@ package
 				
 				//Filetypes
 				ExternalInterface.addCallback("getImageXML",					getImageXML);
-				ExternalInterface.addCallback("getImagePNG",					GraphicsUtil.getPNG);
-				ExternalInterface.addCallback("getImageJPG",					GraphicsUtil.getJPG);
+				ExternalInterface.addCallback("getImagePNG",					ImageConverterUtil.getPNG);
+				ExternalInterface.addCallback("getImageJPG",					ImageConverterUtil.getJPG);
 				
 				//Brush functions
 				ExternalInterface.addCallback("setBrush", 						GraphicsUtil.setBrush);
@@ -151,6 +152,7 @@ package
 				ExternalInterface.addCallback("graphicsClear",					LayerUtil.clearCurrentLayer);
 				ExternalInterface.addCallback("graphicsDrawPolygon",			DrawingUtil.drawPolygon);
 				ExternalInterface.addCallback("graphicsDrawText",				DrawingUtil.drawText);
+				ExternalInterface.addCallback("graphicsDrawImage",				DrawingUtil.drawImage);		
 				
 				//Selection functions
 				ExternalInterface.addCallback("removeSelection",				SelectionUtil.hideSelection);
@@ -239,10 +241,7 @@ package
 			if(LayerUtil.getCurrentLayer() == null) Alert.show("No layer selected!");
 			
 			if(e.ctrlKey){
-				painter.endTool();		
-				
-				//Ensure that all temporary children are removed
-				painter.getCanvas().removeAllChildren();
+				painter.endTool();										
 			}
 												
 			//Is the cursor inside paper bounds									
@@ -254,13 +253,10 @@ package
 					var x:int = new int(e.localX);
 					var y:int  =new int(e.localY);
 					
-					if(SelectionUtil.inSelection(x, y)){
-						
+					if(SelectionUtil.inSelection(x, y)){						
 						mouse_is_down = true;
 						painter.startStroke();
-					} else {
-						Alert.show("Outside("+e.localX+","+e.localY+")");
-					}					
+					} 
 				} else {
 					mouse_is_down = true;
 					painter.startStroke();

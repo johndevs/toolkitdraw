@@ -3,6 +3,7 @@ package util
 	import brushes.Ellipse;
 	import brushes.IBrush;
 	import brushes.IFillableBrush;
+	import brushes.Image;
 	import brushes.Line;
 	import brushes.Pen;
 	import brushes.Polygon;
@@ -12,10 +13,6 @@ package util
 	
 	import mx.controls.Alert;
 	import mx.core.Application;
-	import mx.graphics.ImageSnapshot;
-	import mx.graphics.codec.IImageEncoder;
-	import mx.graphics.codec.JPEGEncoder;
-	import mx.graphics.codec.PNGEncoder;
 	
 	
 	public class GraphicsUtil
@@ -73,31 +70,7 @@ package util
 			controller.changeEvent();
 		}			
 		
-		//returns a PNG image in base64 encoding
-		public static function getPNG(dpi:int):String{										
-			var encoder:IImageEncoder = new PNGEncoder();
-			
-			//Take the snapshot
-			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
-
-			//Convert image to base 64
-			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
-
-			return b64String;							
-		}
-				
-		//returns a JPEG image in base64 encoding
-		public static function getJPG(dpi:int):String{
-			var encoder:IImageEncoder = new JPEGEncoder();
-			
-			//Take the snapshot
-			var snapshot:ImageSnapshot = ImageSnapshot.captureImage(Application.application.frame,dpi,encoder,true);
-
-			//Convert image to base 64
-			var b64String:String = ImageSnapshot.encodeImageAsBase64(snapshot);
-
-			return b64String;							
-		}
+		
 		
 		//Set the brush
 		public static function setBrush(type:String):void
@@ -112,6 +85,7 @@ package util
 				case Controller.LINE:		brush = new Line(LayerUtil.getCurrentLayer().getCanvas()); break;				
 				case Controller.POLYGON:	brush = new Polygon(LayerUtil.getCurrentLayer().getCanvas()); break;
 				case Controller.TEXT:		brush = new Text(LayerUtil.getCurrentLayer().getCanvas()); break;		
+				case Controller.IMAGE:		brush = new Image(LayerUtil.getCurrentLayer().getCanvas()); break;
 				
 				case Controller.RECTANGLE_SELECT:	brush = new RectangleSelect(LayerUtil.getCurrentLayer().getCanvas()); break;	
 				

@@ -184,16 +184,15 @@ package util
 		public static function clearCurrentLayer():void{
 					
 			var newHistory:Array = new Array;
-						
+									
 			for each(var brush:IBrush in history)
-			{
-				if(brush.getCanvas() != LayerUtil.getCurrentLayer().getCanvas())
+			{			
+				if(brush.getCanvas() != currentLayer.getCanvas())
 					newHistory.push(brush);					
 			}
+				
 			
-			while(history.length > 0) history.pop();
-			while(newHistory.length > 0) history.push(newHistory.pop());
-			
+			ArrayUtil.assignArray(history, newHistory);			
 			GraphicsUtil.redraw();
 			
 			controller.changeEvent();

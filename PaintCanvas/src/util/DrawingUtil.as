@@ -1,9 +1,16 @@
 package util
 {
 	import brushes.IBrush;
+	import brushes.Image;
 	import brushes.Text;
 	
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
+	
+	import mx.utils.Base64Decoder;
 	
 	public class DrawingUtil
 	{
@@ -96,16 +103,25 @@ package util
 			controller.changeEvent();
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		//Can only draw JPG and PNG images
+		public static function drawImage(img:String, x:int, y:int, alpha:Number):void
+		{
+			//Decode image to bitmapData
+			var decoder1:Base64Decoder = new Base64Decoder();
+			decoder1.decode(img);
+			
+			var bytes:ByteArray = decoder1.toByteArray();
+			
+			var loader:Loader = new Loader();
+			loader.loadBytes(decoder1.toByteArray());
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void
+			{				
+				GraphicsUtil.setBrush(Controller.IMAGE);
+						
+				painter.setAlpha(alpha);
+				Image(painter).drawImage(new Point(x,y), Bitmap(loader.content).bitmapData);				
+			});				
+		}	
 		
 	}
 }
