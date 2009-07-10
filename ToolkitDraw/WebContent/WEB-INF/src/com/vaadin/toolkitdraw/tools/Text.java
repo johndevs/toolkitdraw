@@ -1,5 +1,9 @@
 package com.vaadin.toolkitdraw.tools;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.sun.org.apache.bcel.internal.generic.Select;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
@@ -7,7 +11,9 @@ import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -25,7 +31,7 @@ public class Text extends Tool {
 	
 	private TextField alpha;
 	
-	private Select font;
+	private ComboBox font;
 	
 	public Text(PaintCanvas canvas){
 		this.canvas = canvas;
@@ -33,6 +39,11 @@ public class Text extends Tool {
 		button = new Button();
 		button.setData(PaintCanvas.BrushType.TEXT);		
 		button.setIcon(IconFactory.getIcon(Icons.ICON_TEXT));
+		
+		font = new ComboBox("Font type");
+		font.addListener(this);
+		font.setImmediate(true);
+		layout.addComponent(font);
 		
 		size = new TextField("Font Size");
 		size.addListener(this);
@@ -58,6 +69,8 @@ public class Text extends Tool {
 		alpha.setValue("0");
 		layout.addComponent(alpha);
 		
+		
+		
 	}
 	
 	@Override
@@ -76,9 +89,24 @@ public class Text extends Tool {
 		else if(event.getProperty() == alpha){
 			canvas.getInteractive().setAlpha(Double.parseDouble(event.getProperty().getValue().toString()));
 		}
+		else if(event.getProperty() == font){
+			canvas.getInteractive().setFont(event.getProperty().getValue().toString());
+		}
 	}
 	
 	public Layout createToolOptions(){	
+		
+		//Populate the font select
+		font.removeAllItems();
+		
+		//Sort fonts in alphabetical order
+		List<String> fontNames = new ArrayList<String>(canvas.getAvailableFonts());
+		Collections.sort(fontNames);
+		
+		//Add the fonts to the select
+		for(String fontName : fontNames)
+			font.addItem(fontName);					
+		
 		return layout;
 	}	
 		

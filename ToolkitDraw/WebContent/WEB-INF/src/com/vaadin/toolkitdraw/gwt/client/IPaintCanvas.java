@@ -161,6 +161,10 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("selectionAll")){
 			PaintCanvasNativeUtil.selectAll(id);
 		}
+		else if(command.equals("setCurrentFont")){
+			String fontName = value;
+			PaintCanvasNativeUtil.setFont(id, fontName);
+		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
@@ -296,8 +300,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * @param ready
 	 */
 	public void setReady(boolean ready){
-		this.ready = ready;
-		
+		this.ready = ready;		
 		client.updateVariable(this.uidlId, "readyStatus", ready, true);
 	}
 	
@@ -308,6 +311,15 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 */
 	public boolean isReady(){
 		return this.ready;
+	}
+	
+	/**
+	 * This function sets the available fonts
+	 * This is called by the PaintCanvasNativeUtil when the Flash sends the fonts
+	 * @param fonts
+	 */
+	public void setFonts(String[] fonts){
+		client.updateVariable(this.uidlId, "fontset", fonts, true);
 	}
 	
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -439,6 +440,16 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    		requestRepaint();
 	    	}
 	    }
+	    
+	    /**
+	     * Set the current font
+	     */
+	    public void setFont(String fontName){
+	    	addToQueue("setCurrentFont", fontName);
+	    	if(isImmediate()){    	
+	    		requestRepaint();
+	    	}
+	    }
 		
 	}
 	
@@ -539,6 +550,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private int paperWidth = -1;
 	private String componentColor = "000000";
 	private boolean isInteractive = false;
+	
+	private Set<String> availableFonts = new HashSet<String>();
 	
 	public static enum BrushType{
 		PEN("Pen"),
@@ -810,6 +823,12 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		initComplete = false;
     		requestRepaint();    		
     	}
+    	
+    	//Available fonts recieved
+    	if(variables.containsKey("fontset")){
+    		String[] fonts = (String[])variables.get("fontset");
+    		availableFonts = new HashSet<String>(Arrays.asList(fonts));
+    	}
     }    
      
     public void getImageXML(){
@@ -868,6 +887,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     
     public Layers getLayers(){
     	return Ilayers;
+    }
+    
+    public Set<String> getAvailableFonts(){
+    	return availableFonts;
     }
     
 }

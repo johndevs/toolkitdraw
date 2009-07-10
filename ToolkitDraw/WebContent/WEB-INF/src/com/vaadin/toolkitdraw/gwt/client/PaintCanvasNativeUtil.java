@@ -191,6 +191,19 @@ public class PaintCanvasNativeUtil {
 		}				
 	}-*/;
 
+	public static native void setFont(String id, String font)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setFont == 'function' && canvas.isReady() ){
+			canvas.setFont(font);
+		}else{
+			var func = function() { canvas.setFont(font); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
+	
 	/**
 	 * Adds a layer to the canvas.
 	 * @param id
@@ -560,8 +573,19 @@ public class PaintCanvasNativeUtil {
 			var func = function() { canvas.selectAll(); };		
 		setTimeout(func,1000);
 		}		
-	}-*/;
+	}-*/;	
 	
+	/**
+	 * Set the available fonts. This is done by the Flash component and should
+	 * not be done manually
+	 * @param id
+	 * 		The id of the canvas
+	 * @param fonts
+	 * 		The available font names
+	 */
+	public static void setAvailableFonts(String id, String[] fonts){
+		getCanvas(id).setFonts(fonts);
+	}	
 	
 	/**
 	 * Set the canvas in a ready state. This is done by the Flash component and should 
@@ -602,7 +626,7 @@ public class PaintCanvasNativeUtil {
 		}
 		
 		return null;
-	}	
+	}
 	
 	/**
 	 * Define the native util methods so the flash can find them.
@@ -639,6 +663,8 @@ public class PaintCanvasNativeUtil {
 			this.drawText = function(id, text, x, y, width, height){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawText(Ljava/lang/String;Ljava/lang/String;IIII)(id,text,x,y,width,height); };
 			this.removeSelection = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::removeSelection(Ljava/lang/String;)(id); };
 			this.selectAll = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::selectAll(Ljava/lang/String;)(id); };
+			this.setAvailableFonts = function(id, fonts){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setAvailableFonts(Ljava/lang/String;[Ljava/lang/String;)(id, fonts); };
+			this.setFont = function(id, font){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFont(Ljava/lang/String;Ljava/lang/String;)(id, font); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		
