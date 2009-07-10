@@ -287,7 +287,27 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(isImmediate() && !batchMode) requestRepaint();				
 		}
 		
-		
+		public void drawImage(String base64EncodedImage, int x, int y, double alpha){
+			
+			StringBuilder value = new StringBuilder();
+			value.append(x);
+			value.append(";");
+			value.append(y);
+			value.append(";");
+			value.append(alpha);
+			value.append(";");
+			value.append(base64EncodedImage.replaceAll("\r", "").replaceAll("\n", ""));			
+			
+			if(batchMode){
+				addToBatch("graphics-image", value.toString());
+			} else {
+				addToQueue("graphics-image", value.toString());
+			}
+			
+			if(isImmediate() && !batchMode){			
+				requestRepaint();				
+			}
+		}
 	}
 		
 	/**
@@ -555,7 +575,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	
 	public static enum BrushType{
 		PEN("Pen"),
-		SQUARE("Square"),
+		SQUARE("Rectangle"),
 		ELLIPSE("Ellipse"),
 		LINE("Line"),
 		POLYGON("Polygon"),

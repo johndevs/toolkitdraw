@@ -496,7 +496,33 @@ public class PaintCanvasNativeUtil {
 		}		
 	}-*/;
 	
+	/**
+	 * Draws an image on the current canvas
+	 * @param id
+	 * 		The id of the paintcanvas
+	 * @param image
+	 * 		The image in base64 encoding
+	 * @param x
+	 * 		The x-position of the top left corner of the image
+	 * @param y
+	 * 		The y-position of the top left corner of the image
+	 * @param alpha
+	 * 		The alpha value of the image
+	 */
+	public static native void drawImage(String id, String image, int x, int y, double alpha)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.graphicsDrawImage == 'function' && canvas.isReady() ){
+			canvas.graphicsDrawImage(image, x, y,alpha);
+		}else{
+			var func = function() { canvas.graphicsDrawImage(image, x, y,alpha); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;
 	
+
 	/**
 	 * Sets the background color of the component
 	 * @param id

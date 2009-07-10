@@ -165,6 +165,18 @@ public class IPaintCanvas extends HTML implements Paintable {
 			String fontName = value;
 			PaintCanvasNativeUtil.setFont(id, fontName);
 		}
+		else if(command.equals("graphics-image")){
+			int marker1 = value.indexOf(";");
+			int marker2 = marker1 + value.substring(marker1+1).indexOf(";") +1;
+			int marker3 = marker2 + value.substring(marker2+1).indexOf(";") +1;
+			
+			int x = Integer.parseInt(value.substring(0,marker1));
+			int y = Integer.parseInt(value.substring(marker1+1, marker2));
+			double alpha = Double.parseDouble(value.substring(marker2+1,marker3));
+			String img = value.substring(marker3+1);
+					
+			PaintCanvasNativeUtil.drawImage(id, img, x, y, alpha);
+		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}

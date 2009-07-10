@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.catalina.startup.SetContextPropertiesRule;
 
+import sun.misc.BASE64Encoder;
+
 import com.vaadin.Application;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -22,6 +24,7 @@ import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.toolkitdraw.components.ConfirmPopup;
+import com.vaadin.toolkitdraw.components.OpenPopup;
 import com.vaadin.toolkitdraw.components.SavePopup;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
@@ -42,6 +45,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+import com.vaadin.ui.Window.CloseEvent;
 
 
 public class ToolkitDrawApplication extends Application implements ClickListener, ValueChangeListener, SelectedTabChangeListener, Serializable {
@@ -165,6 +169,33 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		return canvas;
 	}
 	
+	private PaintCanvas openFile(){
+		
+		//Create a new image
+		PaintCanvas canvas = addNewFile();
+		
+		final OpenPopup selectFile = new OpenPopup("Open file", mainWindow);
+		selectFile.setData(canvas);
+		selectFile.addListener(new Window.CloseListener(){
+			public void windowClose(CloseEvent e) {
+				
+				//Get the uploaded image
+				byte[] bytes = selectFile.getImage();
+				PaintCanvas canvas = (PaintCanvas)selectFile.getData();
+				
+				//Draw the image onto the canvas
+				BASE64Encoder enc = new BASE64Encoder();
+				String encString = enc.encode(bytes);
+											
+				canvas.getGraphics().drawImage(encString, 0, 0, 1.0);
+			}			
+		});		
+		
+		selectFile.show();
+		
+		return canvas;
+	}
+	
 	private boolean closeCurrentFile(){
 						
 		final PaintCanvas canvas = (PaintCanvas)openFilesTabs.getSelectedTab();
@@ -283,6 +314,12 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				break;
 				
 				case NEW: 	openFilesTabs.setSelectedTab(addNewFile());						
+							setImageToolsEnabled(true);
+							leftPanel.setTool(BrushType.PEN);
+							setStatusbarText("New file opened");
+				break;
+				
+				case OPEN:	openFilesTabs.setSelectedTab(openFile());
 							setImageToolsEnabled(true);
 							leftPanel.setTool(BrushType.PEN);
 							setStatusbarText("New file opened");

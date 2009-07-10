@@ -52,6 +52,7 @@ public class SimpleGraphDemo extends Window {
 		//Create a paintcanvas 
 		canvas = new PaintCanvas("300px","300px", "515151");	
 		canvas.setInteractive(false);
+		
 				
 		layout.addComponent(canvas,0,0);
 		
@@ -142,17 +143,23 @@ public class SimpleGraphDemo extends Window {
 	 * Renders a bar graph of the values in the table
 	 */
 	private void renderBarGraph(){			
-					
+						
 		//Get the graphics object
 		PaintCanvas.Graphics gc = canvas.getGraphics();
+				
+		gc.drawImage("HELLO WORLD", 10, 20, 1.0);
+		
 		
 		//Clear the earlier drawings and set the canvas in batch mode
 		gc.setBatchMode(true);		
-		gc.clear();	
 		
+		//TODO This clears the whole screen and does not work FIX ASAP
+		//gc.clear();	
+						
 		//Draw the background
 		gc.drawSquare(0, 0, 300, 300, "515151", "515151");
 		
+			
 		//Draw the bars to the component in one batch
 		int counter = 0;
 		for(Object id : table.getItemIds()){			
@@ -195,11 +202,12 @@ public class SimpleGraphDemo extends Window {
 			counter++;
 		}		
 							
-		
-		
+				
 		
 		//Send the draw intstructions to the client
 		gc.sendBatch();	
+	
+		
 	}
 	
 
