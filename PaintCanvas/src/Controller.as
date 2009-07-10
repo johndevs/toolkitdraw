@@ -13,6 +13,7 @@ package
 	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
 	import flash.net.SharedObject;
+	import flash.text.Font;
 	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
@@ -131,6 +132,7 @@ package
 				ExternalInterface.addCallback("setPaperHeight",	 				setPaperHeight);
 				ExternalInterface.addCallback("setPaperWidth", 					setPaperWidth);				
 				ExternalInterface.addCallback("setFillColor", 					GraphicsUtil.setFillColor);
+				ExternalInterface.addCallback("setFont",						GraphicsUtil.setBrushFont);
 				
 				//Layer functions
 				ExternalInterface.addCallback("addNewLayer", 					LayerUtil.addNewLayer);
@@ -154,6 +156,10 @@ package
 				ExternalInterface.addCallback("removeSelection",				SelectionUtil.hideSelection);
 				ExternalInterface.addCallback("selectAll",						SelectionUtil.selectAll);				
 				
+				//Send available fonts to the server
+				var fonts:Array = new Array();
+				for each(var font:Font in Font.enumerateFonts(true)) fonts.push(font.fontName);					
+				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);	
 			}	
 			else
 			{
@@ -166,8 +172,7 @@ package
 					
 			var show:Fade = new Fade(Application.application.frame);
 			show.alphaFrom = 0;
-			show.alphaTo = 1;
-			show.play();	
+			show.alphaTo = 1;			
 			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
 			{
 				//Notify the client implementation that the flash has loaded and is ready to recieve commands
@@ -177,7 +182,9 @@ package
 				//Start the autosave timer
 				autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
 				autosaveTimer.start();		
-			});				
+			});
+			show.play();			
+					
 		}	
 						
 		/**

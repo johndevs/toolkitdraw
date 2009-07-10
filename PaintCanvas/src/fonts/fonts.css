@@ -1,7 +1,0 @@
-/* This file contains all the available font definitions */
-@font-face{
-	src: url("times.ttf");
-	fontFamily: Times;
-	fontStyle: normal;
-	fontWeight: normal;
-}

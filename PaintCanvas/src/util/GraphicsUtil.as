@@ -141,7 +141,13 @@ package util
 			}	
 		}
 
-		
+		public static function setBrushFont(font:String):void
+		{
+			if(painter.getType() == Controller.TEXT)
+			{
+				Text(painter).setFont(font);
+			}
+		}
 		
    		
 	}

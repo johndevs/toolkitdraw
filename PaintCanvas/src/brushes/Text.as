@@ -3,7 +3,6 @@ package brushes
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	import mx.containers.Canvas;
 	import mx.controls.TextArea;
@@ -24,6 +23,7 @@ package brushes
 		protected var current_text:String = "";		
 		protected var current_fillColor:Number = 0x0;
 		protected var current_fillAlpha:Number = 0;
+		protected var current_fontName:String = "";
 		
 		protected var startPoint:Point = null;				
 		protected var endPoint:Point = null;	
@@ -97,6 +97,7 @@ package brushes
 			text.setStyle("backgroundColor", this.current_fillColor);
 			text.setStyle("color",this.current_color);
 			text.setStyle("fontSize",this.current_width);
+			text.setStyle("fontFamily",this.current_fontName);
 			text.text = "";
 			text.x = selection.x;
 			text.y = selection.y;
@@ -124,7 +125,7 @@ package brushes
 		
 		public function endTool():void
 		{
-			this.editing = false;					
+			this.editing = false;						
 						
 			//Get text
 			this.text.validateNow();			
@@ -282,8 +283,9 @@ package brushes
 		
 		public function setText(text:String):void
 		{
-			if(this.text != null){
-				this.current_text = text;
+			this.current_text = text;
+			
+			if(this.text != null){	
 				this.text.text = text;
 				this.text.validateNow();
 			}
@@ -291,6 +293,13 @@ package brushes
 		
 		public function setEditable(editable:Boolean):void{
 			this.editable = editable;
+		}
+		
+		public function setFont(font:String):void{
+			this.current_fontName = font;
+			
+			if(this.text != null)
+				this.text.setStyle("fontFamily",this.current_fontName);
 		}
 	}
 }

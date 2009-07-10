@@ -11,5 +11,6 @@ package brushes
 		public var points:Array = new Array;
 		public var text:String = "";
 		public var data:Object = new Object();
+		public var fontName:String = "";
 	}
 }
