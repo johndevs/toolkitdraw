@@ -12,7 +12,6 @@ package
 	import flash.external.ExternalInterface;
 	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
-	import flash.net.SharedObject;
 	import flash.text.Font;
 	import flash.utils.Timer;
 	
@@ -21,6 +20,8 @@ package
 	import mx.effects.Fade;
 	import mx.events.EffectEvent;
 	
+	import util.ArrayUtil;
+	import util.ClientStoreUtil;
 	import util.DrawingUtil;
 	import util.GraphicsUtil;
 	import util.ImageConverterUtil;
@@ -63,34 +64,41 @@ package
 			clientID = Application.application.parameters.id;
 	
 			//Try to load previos data from the client cache
-			//loadFromClient(clientID);
-			
+			var loaded:Object = ImageConverterUtil.convertFromXML(ClientStoreUtil.readFromClient(clientID) as XML);
+			ArrayUtil.assignArray(this.history, loaded.history);			
+			ArrayUtil.assignArray(this.layers, loaded.layers);
+							
 			//No data was loaded, create the default stuff
-			if(this.history.length == 0){
+			var backgroundLayer:Layer;
+			if(this.history.length == 0 || this.layers.length == 0){
 				//Create the default layer
-				var backgroundLayer:Layer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
-				layers.push(backgroundLayer);	
-				Application.application.frame.addChild(backgroundLayer.getCanvas());		
-						
-				//Chreate the default brush
-				var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
-				this.history.push(defaultBrush);
-				this.painter = defaultBrush;		
+				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
+				layers.push(backgroundLayer);						
+			} else{
+				//Create the default layer
+				backgroundLayer = this.layers[0] as Layer;							
+			}						
 				
-				//Init the utility classes
-				DrawingUtil.setController(this);
-				DrawingUtil.setPainter(this.painter);
+			Application.application.frame.addChild(backgroundLayer.getCanvas());	
 				
-				GraphicsUtil.setController(this);
-				GraphicsUtil.setPainter(this.painter);
-				GraphicsUtil.setHistory(this.history, this.redo_history);
-				
-				LayerUtil.setController(this);
-				LayerUtil.setPainter(this.painter);
-				LayerUtil.setLayerArray(this.layers);
-				LayerUtil.setCurrentLayer(backgroundLayer);
-			}			
-		
+			//Chreate the default brush
+			var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
+			this.history.push(defaultBrush);
+			this.painter = defaultBrush;		
+			
+			//Init the utility classes
+			DrawingUtil.setController(this);
+			DrawingUtil.setPainter(this.painter);
+			
+			GraphicsUtil.setController(this);
+			GraphicsUtil.setPainter(this.painter);
+			GraphicsUtil.setHistory(this.history, this.redo_history);
+			
+			LayerUtil.setController(this);
+			LayerUtil.setPainter(this.painter);
+			LayerUtil.setLayerArray(this.layers);
+			LayerUtil.setCurrentLayer(backgroundLayer);
+							
 			//Check if we have valid dimensions and if not then set to fullsize
 			if(Application.application.parameters.width == null || Application.application.parameters.height == null){
 				Application.application.frame.width = Application.application.width;
@@ -170,8 +178,8 @@ package
 			}		
 			
 			//Save the current layers to disk
-			storeOnClient(clientID);
-					
+			ClientStoreUtil.storeOnClient(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+						
 			var show:Fade = new Fade(Application.application.frame);
 			show.alphaFrom = 0;
 			show.alphaTo = 1;			
@@ -241,7 +249,8 @@ package
 			if(LayerUtil.getCurrentLayer() == null) Alert.show("No layer selected!");
 			
 			if(e.ctrlKey){
-				painter.endTool();										
+				painter.endTool();	
+				changeEvent();									
 			}
 												
 			//Is the cursor inside paper bounds									
@@ -298,7 +307,8 @@ package
 		private function mouseUp(e:MouseEvent):void
 		{
 			if(mouse_is_down) painter.endStroke();				
-			mouse_is_down = false;			
+			mouse_is_down = false;		
+			changeEvent();	
 		}
 			
 		/**
@@ -406,9 +416,7 @@ package
 			}
 			
 			changeEvent();
-		}
-					
-		
+		}	
 		
 		/**
 		 * Returns true if initialization is complete
@@ -422,91 +430,9 @@ package
 		 */ 
 		public function changeEvent():void
 		{
-			hasChanged = true;
-			
-			//Call the client side implementation
-			//ExternalInterface.call("PaintCanvasNativeUtil.error","SWF says hi");
+			hasChanged = true;			
 		}
-		
-		/**
-		 * This stores the image information in the browsers cache so it can be reloaded
-		 * if the Flash plugin gets refreshed(F5)
-		 */ 
-		private function storeOnClient(id:String):void
-		{
-			var history:SharedObject = SharedObject.getLocal(HISTORY_OBJECT+"-"+id);
-			var layers:SharedObject = SharedObject.getLocal(LAYERS_OBJECT+"-"+id);
-			
-			//Store history data
-			history.data.history = this.history;
-			history.data.current = this.painter;
-			
-			//Store layer data
-			layers.data.layers = this.layers;
-			layers.data.current = LayerUtil.getCurrentLayer();
-			
-			//Add timestamp
-			var ts:Date = new Date();
-			history.data.timestamp = ts.toTimeString();
-			layers.data.timestamp = ts.toTimeString();
-			
-			//Save to disk
-			history.flush();
-			layers.flush();
-		}
-		
-		/**
-		 * This loads the image information from the browsers cache if the Flash
-		 * plugin is refreshed. The loading overwrites all data and only if all needed
-		 * data is found in the cache the image is loaded.
-		 */ 
-		private function loadFromClient(id:String):void
-		{
-			var history:SharedObject = SharedObject.getLocal(HISTORY_OBJECT+"-"+id);
-			var layers:SharedObject = SharedObject.getLocal(LAYERS_OBJECT+"-"+id);
-			
-			//Check if we have stored data
-			if(history.data.timestamp == null || layers.data.timestamp == null){
-				
-				Alert.show("Timestamps null!");
-				return;
-			}
-				
-				
-			//Warn if timestamp is not the same on all data objects
-			if(history.data.timestamp != layers.data.timestamp)			
-				Alert.show("Warning: Loading data with different timestamp!");	
-			
-			//Load the data			
-			//TODO; this.history = history.data.history;
-			
-			this.painter = history.data.current;
-			GraphicsUtil.setPainter(this.painter);
-			DrawingUtil.setPainter(this.painter);
-			LayerUtil.setPainter(this.painter);
-			
-			Alert.show("Loaded "+history.size+" history items!");
-			
-			//TODO this.layers = layers.data.layers;
-			LayerUtil.setCurrentLayer(layers.data.current);
-			
-			
-			Alert.show("Loaded " +layers.size+" layers!");
-			
-			//Add the background layer
-			Application.application.frame.removeAllChildren();
-			Application.application.frame.addChild(Layer(this.layers[0]).getCanvas());
-			Application.application.frame.width(Layer(this.layers[0]).getWidth());
-			Application.application.frame.height(Layer(this.layers[0]).getHeight());
-			
-			//Redraw the layers
-			for each(var layer:Layer in this.layers)
-			{
-				LayerUtil.selectLayer(layer.getName());
-				GraphicsUtil.redraw();
-			}			
-		}	
-		
+						
 		/**
 		 * This is called by the autosave timer and stores the current image 
 		 * in the browsers cache if possible.
@@ -514,8 +440,9 @@ package
 		private function autosave(e:TimerEvent):void
 		{
 			if(hasChanged)
-			{
-				storeOnClient(clientID);
+			{				
+				ClientStoreUtil.storeOnClient(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+			
 				autosaveTimer.reset();
 				autosaveTimer.start();	
 				hasChanged = false;

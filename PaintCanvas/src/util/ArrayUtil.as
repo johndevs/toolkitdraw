@@ -24,6 +24,8 @@ package util
 		 * operation. Order is preserved.
 		 */ 
 		public static function assignArray(arr1:Array, arr2:Array):void{
+			if(arr1 == null || arr2 == null) return;		
+		
 			while(arr1.length > 0) arr1.pop();
 			while(arr2.length > 0) arr1.push(arr2.pop());
 		}

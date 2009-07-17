@@ -134,6 +134,20 @@ package util
 					
 			return doc;
 		}
+		
+		/**
+		 * Converts an xml to history/layers information
+		 * The returned object has two parameters Object.history and Object.layers
+		 * 
+		 */ 
+		public static function convertFromXML(xml:XML):Object{
+			
+			var res:Object = new Object();
+			res.history = new Array();
+			res.layers = new Array();
+			
+			return res;
+		}
 
 	}
 }

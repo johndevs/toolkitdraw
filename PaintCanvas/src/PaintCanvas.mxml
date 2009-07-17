@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	applicationComplete="init()" 
-	backgroundGradientColors="[0xFF000 0xFF000]" 
-	backgroundColor="0xFF0000"
-	backgroundAlpha="0" 
-	backgroundGradientAlphas="[0 0]"
-	width="100%" height="100%" 
-	paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+	applicationComplete="init()" 	
+	width="100%" height="100%" 		
+	paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"
+	preloader="Preloader">
 					
 	<mx:VBox 
 		width="100%" height="100%" 
@@ -23,21 +20,19 @@
 			private static var  controller:Controller;
 			private static function init():void
 			{
-				if(Application.application !=  null){
+				if(Application.application !=  null)
+				{					
+					Application.application.setStyle("backgroundColor", Application.application.parameters.bgColor);
+					Application.application.setStyle("backgroundGradientColors",[Application.application.parameters.bgColor, Application.application.parameters.bgColor]); 
+					Application.application.setStyle("backgroundGradientAlphas",[1,1]);
+				
 					Application.application.frame.width = Application.application.parameters.width;
 					Application.application.frame.height = Application.application.parameters.height;	
 					Application.application.frame.filters = [new DropShadowFilter()];
-					
-					controller = new Controller();						
-					
-					if(Application.application.parameters.bgcolor != null)
-					{
-						GraphicsUtil.setApplicationColor(Application.application.parameters.bgcolor);
-					}
-									
-									
+														
+					controller = new Controller();												
 				}
-			}
+			}			
 		]]>
 	</mx:Script>
 
