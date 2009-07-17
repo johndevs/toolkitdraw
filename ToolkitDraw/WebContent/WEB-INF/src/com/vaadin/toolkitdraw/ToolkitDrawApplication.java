@@ -145,7 +145,6 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		}
 		
 		canvas.setInteractive(true);
-		canvas.setComponentBackgroundColor("515151");			
 		
 		//Set the canvas as the current canvas
 		leftPanel.setCanvas(canvas);

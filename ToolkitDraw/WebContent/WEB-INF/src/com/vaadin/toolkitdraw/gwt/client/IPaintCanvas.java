@@ -134,7 +134,8 @@ public class IPaintCanvas extends HTML implements Paintable {
 			}   			
 		}
 		else if(command.equals("componentColor")){
-			PaintCanvasNativeUtil.setComponentBackground(id, value);
+			this.getElement().setPropertyString("style", "background:"+value);
+			//PaintCanvasNativeUtil.setComponentBackground(id, value);
 		}    		
 		else if(command.equals("layercolor")){    		
 			PaintCanvasNativeUtil.setLayerColor(id, value); 
@@ -202,6 +203,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		params.wmode = "transparent";
 		params.movie = swfUrl;
 		params.allowScriptAccess = "always";
+		params.bgcolor = "#"+bgColor.substr(2,6);
 		
 		var attributes = {};
 		attributes.id = id;

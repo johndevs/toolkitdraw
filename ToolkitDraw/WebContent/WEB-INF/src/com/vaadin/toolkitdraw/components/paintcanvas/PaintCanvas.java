@@ -888,7 +888,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	if(!color.contains("x")){
     		color = "0x"+color;
     	}
-    	
+    	        	
     	componentColor = color;
     	addToQueue("componentColor", color);
     	if(isImmediate()) requestRepaint();
