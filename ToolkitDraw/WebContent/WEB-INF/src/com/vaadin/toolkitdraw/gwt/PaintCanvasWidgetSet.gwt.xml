@@ -9,6 +9,5 @@
 	<stylesheet src="paintcanvas/styles.css"/>
 
 	<!-- Entry point -->
-	<entry-point class="com.vaadin.toolkitdraw.gwt.client.PaintCanvasWidgetSet"/>
-  
+	<entry-point class="com.vaadin.toolkitdraw.gwt.client.PaintCanvasWidgetSet"/>  
 </module>

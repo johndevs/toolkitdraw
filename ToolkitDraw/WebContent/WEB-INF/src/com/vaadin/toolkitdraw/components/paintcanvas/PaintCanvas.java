@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -565,6 +566,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 
 	private boolean initComplete = false;
 	
+	private String id;
+	
 	//Default initialization data
 	private int paperHeight = -1;
 	private int paperWidth = -1;
@@ -595,6 +598,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			
 	public PaintCanvas(){	
 		
+		Random r = new Random();
+		this.id = Long.toString(Math.abs(r.nextLong()), 36);
+		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
@@ -612,7 +618,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	
 	public PaintCanvas(String width, String height){				
 		super.setWidth(width);
-		super.setHeight(height);		
+		super.setHeight(height);	
+		
+		Random r = new Random();
+		this.id = Long.toString(Math.abs(r.nextLong()), 36);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -632,6 +641,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public PaintCanvas(String width, String height, String color){				
 		super.setWidth(width);
 		super.setHeight(height);
+		
+		Random r = new Random();
+		this.id = Long.toString(Math.abs(r.nextLong()), 36);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -654,6 +666,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight){
 		super.setWidth(width);
 		super.setHeight(height);
+		
+		Random r = new Random();
+		this.id = Long.toString(Math.abs(r.nextLong()), 36);
 			
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -673,6 +688,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, String color){
 		super.setWidth(width);
 		super.setHeight(height);	
+		
+		Random r = new Random();
+		this.id = Long.toString(Math.abs(r.nextLong()), 36);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -695,6 +713,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
 		super.setWidth(width);
 		super.setHeight(height);
+		
+		Random r = new Random();
+		this.id = Long.toString(Math.abs(r.nextLong()), 36);
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
@@ -753,7 +774,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     public void paintContent(PaintTarget target) throws PaintException {
             	    	  	  	    	
     	// Superclass writes any common attributes in the paint target.
-        super.paintContent(target);                                     
+        super.paintContent(target);              
+        
+        // Add id to all messages
+        target.addVariable(this, "flashIdentifier", this.id);
            	
         List<String> commands = new ArrayList<String>();
         List<String> values = new ArrayList<String>();

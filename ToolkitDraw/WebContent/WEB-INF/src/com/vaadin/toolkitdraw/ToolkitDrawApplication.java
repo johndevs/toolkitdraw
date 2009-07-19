@@ -3,7 +3,7 @@ package com.vaadin.toolkitdraw;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.StringBufferInputStream;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.catalina.startup.SetContextPropertiesRule;
 
 import sun.misc.BASE64Encoder;
 

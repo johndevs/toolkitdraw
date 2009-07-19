@@ -71,6 +71,9 @@ See configure target to adjust this buildfile.
 			<arg value="-out" />
 			<arg value="${client-side-destination}" />			
 			<arg value="com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet" />
+		    <jvmarg value="-Xmx1G" />
+		    <jvmarg value="-Xss1024k"/>
+		    <jvmarg value="-Xms64M"/> 
 			<classpath>
 				<path refid="compile.classpath"/>
 			</classpath>

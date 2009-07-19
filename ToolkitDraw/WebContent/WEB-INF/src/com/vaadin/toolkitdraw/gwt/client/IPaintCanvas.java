@@ -17,7 +17,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	
 	/** Component identifier in UIDL communications. */   
 	private String uidlId;
-
+	
     /** Reference to the server connection object. */
     private ApplicationConnection client;	
     
@@ -32,12 +32,8 @@ public class IPaintCanvas extends HTML implements Paintable {
     
 	public IPaintCanvas(){		
 		super();				
-		
-		this.id = DOM.createUniqueId();			
-		this.getElement().setId(id+"-canvas");	
-		
-		setSize("100%", "100%");		
-		setHTML("<DIV id='"+id+"'></DIV>");
+								
+		setSize("100%", "100%");			
 		
 		//Ensure that the methods are also available in javascript
 		PaintCanvasNativeUtil.defineBridgeMethods();
@@ -186,9 +182,12 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * This method creates the embedded Flash component when loading is complete
 	 * 
 	 */
-	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor){		
-		String idd = this.id;		
-		createSWFObject(url,idd, pageWidth, pageHeight, bgColor);		
+	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor){	
+		
+		this.getElement().setId(id+"-canvas");	
+		setHTML("<DIV id='"+id+"'></DIV>");
+		
+		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor);		
 	}
 	
 	private native void createSWFObject(String swfUrl, String id, String pageWidth, String pageHeight, String bgColor)/*-{
@@ -233,6 +232,7 @@ public class IPaintCanvas extends HTML implements Paintable {
         
         // Save the UIDL identifier for the component        
         uidlId = uidl.getId();        
+               
         
         //Check if we are refreshing the component, if so then requast initialization data
         boolean initFlag = uidl.getBooleanAttribute("init");
@@ -240,6 +240,9 @@ public class IPaintCanvas extends HTML implements Paintable {
         	client.updateVariable(uidlId, "initData", true, true);
         	return;
         }
+        
+        // Save the component id
+        this.id = uidl.getStringVariable("flashIdentifier");
         
         //Parse the commands and their values from the UIDL
         String[] commands = uidl.getStringArrayVariable("commands");
