@@ -144,5 +144,14 @@ package brushes
 			return null;
 		}
 		
+		public function getXML():XML
+		{
+			var brushXML:XML = new XML("<brush></brush>");	
+			brushXML.@type = getType();
+			
+			return brushXML;
+		}
+		public function setXML(xml:XML):void{ }
+		
 	}
 }

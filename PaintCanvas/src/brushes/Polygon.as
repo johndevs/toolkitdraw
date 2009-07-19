@@ -227,5 +227,76 @@ package brushes
 		{
 		}
 		
+		public function getXML():XML
+		{
+			var brushXML:XML = new XML("<brush></brush>");	
+			brushXML.@type = getType();
+			brushXML.@color = getColor();
+			brushXML.@width = getWidth();	
+			brushXML.@fill = getFillColor();
+			
+			//generate brush strokes						
+			for each(var stroke:BrushStroke in getStrokes())
+			{
+				var strokeXML:XML = new XML("<stroke></stroke>");
+				strokeXML.@color = stroke.color;
+				strokeXML.@fill = stroke.fillcolor;
+				strokeXML.@alpha = stroke.alpha;
+				strokeXML.@width = stroke.width;
+				strokeXML.@orderNumber = getStrokes().indexOf(stroke);
+				
+				//Generate point list
+				var points:String = "";
+				for each(var p:Point in stroke.points)
+					points += p.x+","+p.y+";";
+				
+				strokeXML.points = points;							
+				brushXML.appendChild(strokeXML);							
+			}					
+			
+			return brushXML;
+		}
+		
+		public function setXML(brushXML:XML):void
+		{
+			if(brushXML.hasOwnProperty("@color")) setColor(brushXML.@color);
+			if(brushXML.hasOwnProperty("@width")) setWidth(brushXML.@width);
+			if(brushXML.hasOwnProperty("@fill")) setFillColor(brushXML.@fill);
+			
+			if(!brushXML.hasOwnProperty("stroke")) return;
+								
+			for each(var strokeXML:XML in brushXML.stroke)
+			{				
+				if(strokeXML == null) continue;
+				
+				if(strokeXML.hasOwnProperty("@color")) 	setColor(strokeXML.@color);
+				if(strokeXML.hasOwnProperty("@alpha")) 	setAlpha(strokeXML.@alpha);
+				if(strokeXML.hasOwnProperty("@width")) 	setWidth(strokeXML.@width);
+				if(strokeXML.hasOwnProperty("@fill"))	setFillColor(strokeXML.@fill);
+													
+				startStroke();						
+					
+				if(!strokeXML.hasOwnProperty("points")) continue;								
+				for each(var pointXML:String in strokeXML.points)
+				{										
+					if(pointXML == null) continue;
+								
+					// Point format is x,y;x,y;..
+					var points:Array = pointXML.split(";");
+					for each(var point:String in points)
+					{
+						var coord:Array = point.split(",");
+						
+						if(coord.length != 2) continue;
+						
+						processPoint(new Point(coord[0], coord[1]));
+					}							
+				}		
+				
+				endStroke();						
+			}
+			
+			endTool();				
+		}		
 	}
 }

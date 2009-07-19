@@ -16,8 +16,7 @@ package elements
 		public function Layer(name:String, width:int, height:int)
 		{
 			if(name == null){
-				this.name = "???";
-				Alert.show("Name was null");
+				this.name = "???";				
 			}else{
 				this.name = name;
 			}
@@ -62,7 +61,11 @@ package elements
 		}
 		public function getHeight():int{ return height; }
 		
-		public function setName(name:String):void{ this.name = name;}
+		public function setName(name:String):void
+		{ 
+			this.name = name;
+			this.canvas.id = name;
+		}
 		public function getName():String{ return name; }
 		
 		public function setVisible(visible:Boolean):void
@@ -85,5 +88,27 @@ package elements
 			this.canvas.alpha = alpha;
 		}
 		public function getAlpha():Number{ return alpha; }
+		
+		public function getXML():XML
+		{
+			var layerXML:XML = new XML("<layer></layer>");
+			layerXML.@id = getName();
+			layerXML.@visible = getVisible();
+			layerXML.@height = getHeight();
+			layerXML.@width = getWidth();
+			layerXML.@alpha = getAlpha();
+			layerXML.@color = getBackgroundColor();			
+			
+			return layerXML;
+		}
+		
+		public function setXML(layerXML:XML):void
+		{ 				
+			if(layerXML.hasOwnProperty("@id")) setName(new String(layerXML.@id));						
+			if(layerXML.hasOwnProperty("@width")) setWidth(new int(layerXML.@width));
+			if(layerXML.hasOwnProperty("@height")) setHeight(new int(layerXML.@height));		
+			if(layerXML.hasOwnProperty("@alpha")) setAlpha(new Number(layerXML.@alpha));
+			if(layerXML.hasOwnProperty("@color")) setBackgroundColor(new String(layerXML.@color));					
+		}
 	}
 }

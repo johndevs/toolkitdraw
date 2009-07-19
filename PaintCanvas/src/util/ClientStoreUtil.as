@@ -49,7 +49,12 @@ package util
 		
 		public static function readFromClient(id:String):Object
 		{		
-			var sharedObject:SharedObject = SharedObject.getLocal(id);				
+			var sharedObject:SharedObject = SharedObject.getLocal(id);		
+			
+			// No catched object
+			if(sharedObject.data.object == null)			
+				sharedObject.data.object = new XML("<image></image>");									
+										
 			return sharedObject.data.object;			
 		}
 		

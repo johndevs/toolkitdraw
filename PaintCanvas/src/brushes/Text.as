@@ -301,5 +301,14 @@ package brushes
 			if(this.text != null)
 				this.text.setStyle("fontFamily",this.current_fontName);
 		}
+		
+		public function getXML():XML
+		{
+			var brushXML:XML = new XML("<brush></brush>");	
+			brushXML.@type = getType();
+			
+			return brushXML;
+		}
+		public function setXML(xml:XML):void{ }
 	}
 }

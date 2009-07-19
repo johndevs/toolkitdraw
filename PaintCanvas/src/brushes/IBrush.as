@@ -31,6 +31,9 @@ package brushes
 		function getStrokes():Array;
 		
 		function getCursor():Class;
+		
+		function getXML():XML;
+		function setXML(xml:XML):void;
 
 	}
 }

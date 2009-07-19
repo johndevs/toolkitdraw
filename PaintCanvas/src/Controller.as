@@ -65,20 +65,31 @@ package
 	
 			//Try to load previos data from the client cache
 			var loaded:Object = ImageConverterUtil.convertFromXML(ClientStoreUtil.readFromClient(clientID) as XML);
-			ArrayUtil.assignArray(this.history, loaded.history);			
+						
+			ArrayUtil.assignArray(this.history, loaded.history);								
 			ArrayUtil.assignArray(this.layers, loaded.layers);
-							
-			//No data was loaded, create the default stuff
+										
+			var backgroundFound:Boolean = false;
 			var backgroundLayer:Layer;
-			if(this.history.length == 0 || this.layers.length == 0){
+			for each(var layer:Layer in this.layers)
+			{
+				if(layer.getName() == "Background")
+				{
+					backgroundLayer = layer;
+					backgroundFound = true;					
+					break;
+				}
+			}
+			
+			if(!backgroundFound){				
+			
 				//Create the default layer
 				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
-				layers.push(backgroundLayer);						
-			} else{
-				//Create the default layer
-				backgroundLayer = this.layers[0] as Layer;							
-			}						
-				
+				layers.push(backgroundLayer);		
+			}
+						
+			Application.application.frame.width = backgroundLayer.getWidth();
+			Application.application.frame.height = backgroundLayer.getHeight();		
 			Application.application.frame.addChild(backgroundLayer.getCanvas());	
 				
 			//Chreate the default brush
@@ -176,10 +187,7 @@ package
 				Alert.show("External interface not availble");
 				return;	
 			}		
-			
-			//Save the current layers to disk
-			ClientStoreUtil.storeOnClient(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
-						
+								
 			var show:Fade = new Fade(Application.application.frame);
 			show.alphaFrom = 0;
 			show.alphaTo = 1;			
@@ -193,8 +201,7 @@ package
 				autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
 				autosaveTimer.start();		
 			});
-			show.play();			
-					
+			show.play();						
 		}	
 						
 		/**

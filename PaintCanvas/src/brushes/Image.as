@@ -159,6 +159,15 @@ package brushes
 			//TODO: implement function
 			return null;
 		}
+		
+		public function getXML():XML
+		{
+			var brushXML:XML = new XML("<brush></brush>");	
+			brushXML.@type = getType();
+			
+			return brushXML;
+		}
+		public function setXML(xml:XML):void{ }
 
 		//Functions not used
 		public function processPoint(p:Point):void{}		
