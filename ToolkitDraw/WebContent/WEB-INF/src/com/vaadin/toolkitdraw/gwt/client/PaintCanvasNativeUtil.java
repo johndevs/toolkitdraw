@@ -601,6 +601,32 @@ public class PaintCanvasNativeUtil {
 		}		
 	}-*/;	
 	
+	public static native void setCacheMode(String id, String mode)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setCacheMode == 'function' && canvas.isReady() ){
+			canvas.setCacheMode(mode);
+		}else{
+			var func = function() { canvas.setCacheMode(mode); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;	
+	
+	public static native void setImageCache(String id, String cache)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setImageCache == 'function' && canvas.isReady() ){
+			canvas.setImageCache(cache);
+		}else{
+			var func = function() { canvas.setImageCache(cache); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;	
+	
 	/**
 	 * Set the available fonts. This is done by the Flash component and should
 	 * not be done manually
@@ -654,6 +680,13 @@ public class PaintCanvasNativeUtil {
 		return null;
 	}
 	
+	/** Fetches the cached image from the server
+	 * 
+	 */
+	public static void getServerCache(String id){
+		getCanvas(id).getServerCache();
+	}
+	
 	/**
 	 * Define the native util methods so the flash can find them.
 	 * If the package changes then these need to be changed also!!!
@@ -691,6 +724,7 @@ public class PaintCanvasNativeUtil {
 			this.selectAll = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::selectAll(Ljava/lang/String;)(id); };
 			this.setAvailableFonts = function(id, fonts){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setAvailableFonts(Ljava/lang/String;[Ljava/lang/String;)(id, fonts); };
 			this.setFont = function(id, font){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFont(Ljava/lang/String;Ljava/lang/String;)(id, font); };
+			this.getServerCache = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getServerCache(Ljava/lang/String;)(id); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		

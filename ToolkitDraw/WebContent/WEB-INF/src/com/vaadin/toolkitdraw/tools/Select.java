@@ -4,7 +4,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;

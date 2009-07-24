@@ -3,6 +3,7 @@ package com.vaadin.toolkitdraw.tools;
 import java.io.Serializable;
 
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
@@ -24,7 +25,7 @@ public abstract class Tool implements com.vaadin.data.Property.ValueChangeListen
 		return this.button;
 	}
 	
-	public abstract PaintCanvas.BrushType getType();
+	public abstract BrushType getType();
 	
 	public PaintCanvas getCanvas() {
 		return canvas;

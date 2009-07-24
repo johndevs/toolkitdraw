@@ -13,6 +13,7 @@ import com.vaadin.Application;
 import com.vaadin.toolkitdraw.MainPanel.Type;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.tools.Ellipse;
 import com.vaadin.toolkitdraw.tools.Line;
 import com.vaadin.toolkitdraw.tools.Pen;
@@ -38,7 +39,7 @@ public class LeftPanel extends Accordion implements ClickListener {
 	private List<Tool>  tools = new ArrayList<Tool>();			
 	private PaintCanvas canvas;
 		
-	public LeftPanel(PaintCanvas canvas, PaintCanvas.BrushType selectedTool) {
+	public LeftPanel(PaintCanvas canvas, BrushType selectedTool) {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
@@ -104,7 +105,7 @@ public class LeftPanel extends Accordion implements ClickListener {
 		return toolset;
 	}
 	
-	public void setTool(PaintCanvas.BrushType tool){
+	public void setTool(BrushType tool){
 		
 		if(this.canvas == null){
 			System.err.println("No canvas was found!");
@@ -141,8 +142,8 @@ public class LeftPanel extends Accordion implements ClickListener {
 	
 	@Override
 	public void buttonClick(ClickEvent event) {		
-		if(event.getButton().getData() instanceof PaintCanvas.BrushType){
-			PaintCanvas.BrushType type = (PaintCanvas.BrushType)event.getButton().getData();
+		if(event.getButton().getData() instanceof BrushType){
+			BrushType type = (BrushType)event.getButton().getData();
 			setTool(type);			
 		}		
 	}

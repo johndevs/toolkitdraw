@@ -7,7 +7,7 @@ import java.util.List;
 import com.sun.org.apache.bcel.internal.generic.Select;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;
@@ -37,7 +37,7 @@ public class Text extends Tool {
 		this.canvas = canvas;
 		
 		button = new Button();
-		button.setData(PaintCanvas.BrushType.TEXT);		
+		button.setData(BrushType.TEXT);		
 		button.setIcon(IconFactory.getIcon(Icons.ICON_TEXT));
 		
 		font = new ComboBox("Font type");
@@ -67,10 +67,7 @@ public class Text extends Tool {
 		alpha.addListener(this);
 		alpha.setImmediate(true);
 		alpha.setValue("0");
-		layout.addComponent(alpha);
-		
-		
-		
+		layout.addComponent(alpha);		
 	}
 	
 	@Override
@@ -100,7 +97,7 @@ public class Text extends Tool {
 		font.removeAllItems();
 		
 		//Sort fonts in alphabetical order
-		List<String> fontNames = new ArrayList<String>(canvas.getAvailableFonts());
+		List<String> fontNames = new ArrayList<String>(canvas.getConfiguration().getAvailableFonts());
 		Collections.sort(fontNames);
 		
 		//Add the fonts to the select
@@ -110,7 +107,7 @@ public class Text extends Tool {
 		return layout;
 	}	
 		
-	public PaintCanvas.BrushType getType(){
+	public BrushType getType(){
 		return BrushType.TEXT;
 	}
 

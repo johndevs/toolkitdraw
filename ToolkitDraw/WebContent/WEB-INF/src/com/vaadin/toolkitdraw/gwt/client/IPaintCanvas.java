@@ -174,6 +174,14 @@ public class IPaintCanvas extends HTML implements Paintable {
 					
 			PaintCanvasNativeUtil.drawImage(id, img, x, y, alpha);
 		}
+		else if(command.equals("cache-mode")){
+			PaintCanvasNativeUtil.setCacheMode(id, value);
+		}		
+		
+		else if(command.equals("cache")){		
+			PaintCanvasNativeUtil.error(value);
+			PaintCanvasNativeUtil.setImageCache(id, value);
+		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
@@ -182,20 +190,21 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * This method creates the embedded Flash component when loading is complete
 	 * 
 	 */
-	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor){	
+	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor, String cacheMode){	
 		
 		this.getElement().setId(id+"-canvas");	
 		setHTML("<DIV id='"+id+"'></DIV>");
 		
-		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor);		
+		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor, cacheMode);		
 	}
 	
-	private native void createSWFObject(String swfUrl, String id, String pageWidth, String pageHeight, String bgColor)/*-{
+	private native void createSWFObject(String swfUrl, String id, String pageWidth, String pageHeight, String bgColor, String cacheMode)/*-{
 		var flashvars = {};
 		flashvars.id = id;
 		flashvars.width = pageWidth;
 		flashvars.height = pageHeight;
 		flashvars.bgColor = bgColor;
+		flashvars.cacheMode = cacheMode;
 		
 		var params = {};
 		params.menu = "false";
@@ -253,7 +262,8 @@ public class IPaintCanvas extends HTML implements Paintable {
         	PaintCanvasNativeUtil.error("Transmission error!");
         	return;
         }
-                
+    
+        
         //check if the plugin has been added
         if(!init){
         
@@ -261,6 +271,7 @@ public class IPaintCanvas extends HTML implements Paintable {
         	String pageWidth = null;
         	String pageHeight = null;
         	String bgColor = null;
+        	String cacheMode = "cache-auto";
         	for(int c=0; c<commands.length; c++){
         		if(commands[c].equals("paperWidth"))
         			pageWidth = values[c];
@@ -268,22 +279,24 @@ public class IPaintCanvas extends HTML implements Paintable {
         			pageHeight = values[c];        		
         		else if(commands[c].equals("componentColor"))
         			bgColor = values[c];
+        		else if(commands[c].equals("cache-mode"))
+        			cacheMode = values[c];
         	}
         	
         	//If all info is recieved the init the flash
         	if(pageWidth != null && pageHeight != null && bgColor != null ){
         		//Add the SWF path
         		String url = GWT.getModuleBaseURL() + SWFPATH;	       		           	
-            	createFlashComponent(url, pageWidth, pageHeight, bgColor);
+            	createFlashComponent(url, pageWidth, pageHeight, bgColor,cacheMode);
             	init = true;       		
         	}       	
-        }                
+        }    
        
         
         //Check if plugin is ready, this will happen at initial call    
         //Ready state is set by the flash when it has completely loaded
         if(!ready){           	
-        	
+        	       	
         	//Try to run the commands after one second if the plugin is not ready
         	final UIDL u = uidl;
         	final ApplicationConnection conn = client;
@@ -337,6 +350,13 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 */
 	public void setFonts(String[] fonts){
 		client.updateVariable(this.uidlId, "fontset", fonts, true);
+	}
+	
+	/**
+	 * Fetches the cached image(if any) from the server
+	 */
+	public void getServerCache(){
+		client.updateVariable(this.uidlId, "update-cache", true, true);
 	}
 	
 

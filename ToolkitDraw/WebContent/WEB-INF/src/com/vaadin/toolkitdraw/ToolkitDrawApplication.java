@@ -26,7 +26,8 @@ import com.vaadin.toolkitdraw.components.ConfirmPopup;
 import com.vaadin.toolkitdraw.components.OpenPopup;
 import com.vaadin.toolkitdraw.components.SavePopup;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.BrushType;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
@@ -110,7 +111,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		rightPanel.setWidth("250px");
 		rightPanel.setHeight("100%");
 				
-		leftPanel = new LeftPanel(currentCanvas,PaintCanvas.BrushType.PEN);
+		leftPanel = new LeftPanel(currentCanvas, BrushType.PEN);
 		leftPanel.setWidth("250px");
 		leftPanel.setHeight("100%");
 			
@@ -138,7 +139,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 
 	private PaintCanvas addNewFile(){
 		
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");					
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");			
+		canvas.setCacheMode(CacheMode.SERVER);
 		if(canvas == null){
 			System.err.println("ERROR: Creating canvas failed!");			
 		}
