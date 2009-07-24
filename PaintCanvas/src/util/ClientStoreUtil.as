@@ -52,8 +52,7 @@ package util
 			var sharedObject:SharedObject = SharedObject.getLocal(id);		
 			
 			// No catched object
-			if(sharedObject.data.object == null)			
-				sharedObject.data.object = new XML("<image></image>");									
+			if(sharedObject.data.object == null) return null;						
 										
 			return sharedObject.data.object;			
 		}

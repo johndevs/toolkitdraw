@@ -22,11 +22,7 @@ package brushes
 		public function Polygon(canvas:Canvas)
 		{
 			this.canvas = canvas;
-		
-			currentStroke = new BrushStroke();	
-			currentStroke.color = color;
-			currentStroke.width = width;
-			currentStroke.fillcolor = fillColor;		
+				
 		}
 
 		public function processPoint(p:Point):void
@@ -69,8 +65,12 @@ package brushes
 				selection.width = canvas.width;
 				selection.height = canvas.height;		
 				canvas.addChild(selection);		
-			}
-		
+			
+				currentStroke = new BrushStroke();	
+				currentStroke.color = color;
+				currentStroke.width = width;
+				currentStroke.fillcolor = fillColor;	
+			}				
 		}
 		
 		public function endStroke():void
@@ -214,9 +214,7 @@ package brushes
 			currentStroke = new BrushStroke();	
 			currentStroke.color = color;
 			currentStroke.width = width;
-			currentStroke.fillcolor = fillColor;	
-			
-			
+			currentStroke.fillcolor = fillColor;			
 		}
 		
 		public function getAlpha():Number{
@@ -259,44 +257,51 @@ package brushes
 		
 		public function setXML(brushXML:XML):void
 		{
-			if(brushXML.hasOwnProperty("@color")) setColor(brushXML.@color);
-			if(brushXML.hasOwnProperty("@width")) setWidth(brushXML.@width);
-			if(brushXML.hasOwnProperty("@fill")) setFillColor(brushXML.@fill);
-			
+			if(!brushXML.hasOwnProperty("@type")) return;
+										
+			var type:String = brushXML.@type;
+			if(type != getType()) return;
+																				
 			if(!brushXML.hasOwnProperty("stroke")) return;
-								
 			for each(var strokeXML:XML in brushXML.stroke)
-			{				
-				if(strokeXML == null) continue;
+			{
+				if(strokeXML.hasOwnProperty("@color"))
+					this.setColor(strokeXML.@color);
+				if(strokeXML.hasOwnProperty("@width"))
+					this.setWidth(strokeXML.@width);
+				if(strokeXML.hasOwnProperty("@alpha"))
+					this.setAlpha(strokeXML.@alpha);
+				if(strokeXML.hasOwnProperty("@fill"))
+					this.setFillColor(strokeXML.@fill);
+										
 				
-				if(strokeXML.hasOwnProperty("@color")) 	setColor(strokeXML.@color);
-				if(strokeXML.hasOwnProperty("@alpha")) 	setAlpha(strokeXML.@alpha);
-				if(strokeXML.hasOwnProperty("@width")) 	setWidth(strokeXML.@width);
-				if(strokeXML.hasOwnProperty("@fill"))	setFillColor(strokeXML.@fill);
-													
-				startStroke();						
-					
-				if(!strokeXML.hasOwnProperty("points")) continue;								
-				for each(var pointXML:String in strokeXML.points)
-				{										
-					if(pointXML == null) continue;
-								
-					// Point format is x,y;x,y;..
-					var points:Array = pointXML.split(";");
-					for each(var point:String in points)
-					{
-						var coord:Array = point.split(",");
-						
-						if(coord.length != 2) continue;
-						
-						processPoint(new Point(coord[0], coord[1]));
-					}							
-				}		
-				
-				endStroke();						
-			}
+				if(!strokeXML.hasOwnProperty("points")) continue;
+				var pointsStr:String = strokeXML.points;
+				var points:Array = pointsStr.split(";");
 			
-			endTool();				
+				for each(var point:String in points)
+				{
+					this.startStroke();
+					
+					var coords:Array = point.split(",");
+					if(coords.length != 2) continue;
+					
+					this.processPoint(new Point(new Number(coords[0]),new Number(coords[1])));
+					
+					this.endStroke();
+				}
+				
+				this.endTool();
+			}			
+			
+			if(brushXML.hasOwnProperty("@color"))
+				this.setColor(brushXML.@color);
+			if(brushXML.hasOwnProperty("@width"))
+				this.setWidth(brushXML.@width);
+			if(brushXML.hasOwnProperty("@alpha"))
+				this.setAlpha(brushXML.@alpha);	
+			if(brushXML.hasOwnProperty("@fill"))
+				this.setFillColor(brushXML.@fill);
 		}		
 	}
 }

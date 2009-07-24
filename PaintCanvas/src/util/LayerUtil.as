@@ -135,9 +135,13 @@ package util
 			for each(var layer:Layer in layers){				
 				if(layer.getName() == name){
 					
+					Alert.show("setting layer "+layer.getName());
+					
 					//Change layer
 					currentLayer = layer;		
 					currentLayer.getCanvas().setFocus();
+					
+					Application.application.addChild(currentLayer.getCanvas());
 					
 					//Set the brush for the current layer
 					GraphicsUtil.setBrush(painter.getType());
@@ -198,6 +202,8 @@ package util
 			controller.changeEvent();
 		}	
 		
-		
+		public static function removeAllLayers():void{
+			while(layers.length > 0) layers.pop();
+		}
 	}
 }

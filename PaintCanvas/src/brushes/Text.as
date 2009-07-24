@@ -3,11 +3,15 @@ package brushes
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	
 	import mx.containers.Canvas;
 	import mx.controls.TextArea;
 	import mx.core.ScrollPolicy;
 	import mx.graphics.ImageSnapshot;
+	import mx.utils.Base64Decoder;
+	import mx.utils.Base64Encoder;
 
 	public class Text implements IFillableBrush
 	{
@@ -116,8 +120,7 @@ package brushes
 		
 			this.canvas.removeChild(selection);
 			this.canvas.addChild(text);						
-			text.setFocus();
-			
+					
 			startPoint = null;
 			endPoint = null;				
 			selection = null;							
@@ -157,6 +160,7 @@ package brushes
 			stroke.color = this.current_color;
 			stroke.width = this.current_width;
 			stroke.text = this.current_text;
+			stroke.fontName = this.current_fontName;
 			stroke.data = d2;
 			
 			strokes.push(stroke);			
@@ -236,6 +240,22 @@ package brushes
 				this.text.setStyle("fontSize",this.current_width);
 		}		
 		
+		public function processData(data:BitmapData, p1:Point, p2:Point):void
+		{
+			//Create the stroke
+			var stroke:BrushStroke = new BrushStroke();
+			
+			stroke.points.push(p1);
+			stroke.points.push(p2);			
+			stroke.color = this.current_color;
+			stroke.width = this.current_width;
+			stroke.text = this.current_text;
+			stroke.fontName = this.current_fontName;
+			stroke.data = data;
+			
+			strokes.push(stroke);		
+		}
+		
 		public function getType():String
 		{
 			return Controller.TEXT;
@@ -303,12 +323,105 @@ package brushes
 		}
 		
 		public function getXML():XML
-		{
+		{			
 			var brushXML:XML = new XML("<brush></brush>");	
 			brushXML.@type = getType();
+			brushXML.@color = getColor();
+			brushXML.@width = getWidth();	
+			brushXML.@fill = getFillColor();
+			brushXML.@alpha = getAlpha();
+			
+			//generate brush strokes						
+			for each(var stroke:BrushStroke in getStrokes())
+			{
+				var strokeXML:XML = new XML("<stroke></stroke>");
+				strokeXML.@color = stroke.color;
+				strokeXML.@fill = stroke.fillcolor;
+				strokeXML.@alpha = stroke.alpha;
+				strokeXML.@width = stroke.width;
+				strokeXML.@orderNumber = getStrokes().indexOf(stroke);
+				strokeXML.@font = stroke.fontName;							
+				strokeXML.txt = new String(stroke.text);		
+				
+				var data:BitmapData = stroke.data as BitmapData;
+				var bytes:ByteArray = data.getPixels(new flash.geom.Rectangle(0,0,data.width,data.height));
+				
+				var encoder:Base64Encoder = new Base64Encoder();
+				encoder.insertNewLines = false;
+				encoder.encodeBytes(bytes);				
+				
+				strokeXML.data = encoder.flush();
+				strokeXML.@datawidth=data.width;
+				strokeXML.@dataheight=data.height;
+				
+				//Generate point list
+				var points:String = "";
+				for each(var p:Point in stroke.points)
+					points += p.x+","+p.y+";";
+				
+				strokeXML.points = points;				
+				brushXML.appendChild(strokeXML);
+			}			
 			
 			return brushXML;
 		}
-		public function setXML(xml:XML):void{ }
+		public function setXML(brushXML:XML):void
+		{ 
+			if(!brushXML.hasOwnProperty("@type")) return;
+										
+			var type:String = brushXML.@type;
+			if(type != getType()) return;
+						
+			if(!brushXML.hasOwnProperty("stroke")) return;
+			for each(var strokeXML:XML in brushXML.stroke)
+			{
+				if(!strokeXML.hasOwnProperty("data")) continue;
+				if(!strokeXML.hasOwnProperty("datawidth")) continue;
+				if(!strokeXML.hasOwnProperty("dataheight")) continue;
+				var dataObject:String = strokeXML.data;
+				var dwidth:int = strokeXML.@datawidth;
+				var dheight:int = strokeXML.@dataheight;
+				
+				var decoder:Base64Decoder = new Base64Decoder();
+				decoder.decode(dataObject);
+				
+				var bytes:ByteArray = decoder.flush();
+				var data:BitmapData = new BitmapData(dwidth, dheight);
+				data.setPixels(new flash.geom.Rectangle(0,0,dwidth,dheight),bytes);
+								
+				if(strokeXML.hasOwnProperty("@color"))
+					this.setColor(strokeXML.@color);
+				if(strokeXML.hasOwnProperty("@width"))
+					this.setWidth(strokeXML.@width);
+				if(strokeXML.hasOwnProperty("@alpha"))
+					this.setAlpha(strokeXML.@alpha);
+				if(strokeXML.hasOwnProperty("@fill"))
+					this.setFillColor(strokeXML.@fill);
+				if(strokeXML.hasOwnProperty("@font"))
+					this.setFont(strokeXML.@font);				
+				
+					
+				if(!strokeXML.hasOwnProperty("points")) continue;
+				var pointsStr:String = strokeXML.points;
+				
+				var points:Array = pointsStr.split(";");	
+				if(points.length < 2) continue;
+								
+				var point1:Array = (points[0] as String).split(",");				
+				if(point1.length != 2) continue;
+				
+				var point2:Array = (points[1] as String).split(",");
+				if(point2.length != 2) continue;
+																					
+				if(strokeXML.hasOwnProperty("txt"))
+					this.setText(strokeXML.txt);
+				
+				this.processData(	data, 
+									new Point(new Number(point1[0]), new Number(point1[1])),
+									new Point(new Number(point2[0]), new Number(point2[1])) 
+									);
+				this.redraw();						
+			}		
+		}
 	}
 }

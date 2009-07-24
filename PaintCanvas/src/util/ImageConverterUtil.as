@@ -1,6 +1,5 @@
 package util
 {
-	import brushes.BrushStroke;
 	import brushes.Ellipse;
 	import brushes.IBrush;
 	import brushes.Image;
@@ -96,71 +95,63 @@ package util
 		
 		/**
 		 * Converts an xml to history/layers information
-		 * The returned object has two parameters Object.history and Object.layers
-		 * 
+		 * NOTE: This function clear all previous drawn stuff and created layers 
 		 */ 
-		public static function convertFromXML(xml:XML):Object{
-					
-			var res:Object = new Object();
-			var history:Array = new Array();
-			var layers:Array = new Array();
+		public static function convertFromXML(xml:XML):Object
+		{
+			var result:Object = new Object;
 			
-			res.history = history;
-			res.layers = layers;		
+			var history:Array = new Array;
+			result.history = history;
 			
-			if(xml == null) return res;
-													
-			var layerCounter:int = 0;															
-			for each(var layerXML:XML in xml.layer)
-			{
-				var layer:Layer = new Layer(null,-1,-1);
-				layer.setXML(layerXML);
-								
-				if(layerXML == null || !layerXML.hasOwnProperty("brush")) continue;		
+			var layers:Array = new Array;
+			result.layers = layers;						
 						
-				var orderCounter:Number = 0;
+			if(!xml.hasOwnProperty("layer")) return result;			
+			
+			for each (var layerXML:XML in xml.layer)
+			{
+				if(!layerXML.hasOwnProperty("@id")) continue;
+				if(!layerXML.hasOwnProperty("@width")) continue;
+				if(!layerXML.hasOwnProperty("@height")) continue;
+				if(!layerXML.hasOwnProperty("@orderNumber")) continue;
+				
+				var layer:Layer = new Layer(layerXML.@id, layerXML.@width, layerXML.@height);
+				var layeridx:int = layerXML.@orderNumber;
+				layers[layeridx] = layer;
+								
+				if(!layerXML.hasOwnProperty("brush")) continue;
 				for each(var brushXML:XML in layerXML.brush)
-				{								
-					if(brushXML == null) continue;
-																
+				{
+					if(!brushXML.hasOwnProperty("@type")) continue;	
+					if(!brushXML.hasOwnProperty("@orderNumber")) continue;
+						
 					var brush:IBrush;
-											
-					//If brush type has not been defined, then skip it
-					if(!brushXML.hasOwnProperty("@type")) continue;		
-					var type:String = new String(brushXML.@type);			
-					switch(type)
+					var type:String = brushXML.@type;
+					switch(type as String)
 					{
-						case Controller.PEN: 		brush = new Pen(layer.getCanvas()); break;
+						case Controller.PEN:		brush = new Pen(layer.getCanvas()); break;
 						case Controller.LINE:		brush = new Line(layer.getCanvas()); break;
-						case Controller.ELLIPSE:	brush = new Ellipse(layer.getCanvas()); break;
 						case Controller.RECTANGLE:	brush = new Rectangle(layer.getCanvas()); break;
-						case Controller.TEXT:		brush = new Text(layer.getCanvas()); break;
+						case Controller.POLYGON:	brush = new Polygon(layer.getCanvas()); break;
+						case Controller.ELLIPSE:	brush = new Ellipse(layer.getCanvas()); break;
 						case Controller.IMAGE:		brush = new Image(layer.getCanvas()); break;
-						case Controller.POLYGON:	brush = new Polygon(layer.getCanvas()); break;										
+						case Controller.TEXT:		brush = new Text(layer.getCanvas()); break;
 					}
 					
-					if(brush == null)
-					{
-						Alert.show("Failed loading brush "+brushXML.@type);
+					if(brush == null){
+						Alert.show("brush was null ("+brushXML.@type+")");
 						continue;
-					}
-													
-					brush.setXML(brushXML);						
+					}					
 					
-					if(brushXML.hasOwnProperty("@orderNumber")) orderCounter = brushXML.@orderNumber;
-					else orderCounter++;																
+					var idx:int = brushXML.@orderNumber;
+					history[idx] = brush;
 					
-					history[orderCounter] = brush;								
-				}		
-				
-				if(layerXML.hasOwnProperty("@orderNumber")) layerCounter = layerXML.@orderNumber;
-				else layerCounter++;				
-				
-				layers[layerCounter] = layer;						
+					brush.setXML(brushXML);
+				}				
 			}			
-														
-			return res;
+			
+			return result;
 		}
-
 	}
 }

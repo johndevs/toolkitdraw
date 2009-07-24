@@ -20,7 +20,6 @@ package
 	import mx.effects.Fade;
 	import mx.events.EffectEvent;
 	
-	import util.ArrayUtil;
 	import util.ClientStoreUtil;
 	import util.DrawingUtil;
 	import util.GraphicsUtil;
@@ -44,6 +43,8 @@ package
 		
 		private var autosaveTimer:Timer = new Timer(1000);
 			
+		private var backgroundLayer:Layer;	
+			
 		//Tool constants	
 		public static const PEN:String = "Pen"; 
 		public static const RECTANGLE:String = "Rectangle";
@@ -62,41 +63,32 @@ package
 		{																				
 			//Get parameters				
 			clientID = Application.application.parameters.id;
-	
-			//Try to load previos data from the client cache
-			var loaded:Object = ImageConverterUtil.convertFromXML(ClientStoreUtil.readFromClient(clientID) as XML);
-						
-			ArrayUtil.assignArray(this.history, loaded.history);								
-			ArrayUtil.assignArray(this.layers, loaded.layers);
-										
-			var backgroundFound:Boolean = false;
-			var backgroundLayer:Layer;
-			for each(var layer:Layer in this.layers)
+			
+			if(!loadFromCache())
 			{
-				if(layer.getName() == "Background")
-				{
-					backgroundLayer = layer;
-					backgroundFound = true;					
-					break;
-				}
-			}
-			
-			if(!backgroundFound){				
-			
 				//Create the default layer
 				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
-				layers.push(backgroundLayer);		
-			}
-						
-			Application.application.frame.width = backgroundLayer.getWidth();
-			Application.application.frame.height = backgroundLayer.getHeight();		
-			Application.application.frame.addChild(backgroundLayer.getCanvas());	
-				
-			//Chreate the default brush
-			var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
-			this.history.push(defaultBrush);
-			this.painter = defaultBrush;		
+				layers.push(backgroundLayer);			
 			
+				Application.application.frame.width = backgroundLayer.getWidth();
+				Application.application.frame.height = backgroundLayer.getHeight();		
+				Application.application.frame.addChild(backgroundLayer.getCanvas());	
+			
+				//Chreate the default brush
+				var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
+				this.history.push(defaultBrush);
+				this.painter = defaultBrush;		
+			
+				//Check if we have valid dimensions and if not then set to fullsize
+				if(Application.application.parameters.width == null || Application.application.parameters.height == null){
+					Application.application.frame.width = Application.application.width;
+					Application.application.frame.height = Application.application.height;
+				} else {
+					Application.application.frame.width = Application.application.parameters.width;
+					Application.application.frame.height = Application.application.parameters.height;	
+				}	
+			}				
+												
 			//Init the utility classes
 			DrawingUtil.setController(this);
 			DrawingUtil.setPainter(this.painter);
@@ -108,27 +100,15 @@ package
 			LayerUtil.setController(this);
 			LayerUtil.setPainter(this.painter);
 			LayerUtil.setLayerArray(this.layers);
+			
 			LayerUtil.setCurrentLayer(backgroundLayer);
-							
-			//Check if we have valid dimensions and if not then set to fullsize
-			if(Application.application.parameters.width == null || Application.application.parameters.height == null){
-				Application.application.frame.width = Application.application.width;
-				Application.application.frame.height = Application.application.height;
-			} else {
-				Application.application.frame.width = Application.application.parameters.width;
-				Application.application.frame.height = Application.application.parameters.height;	
-			}	
-		
+								
 			//Set component in interactive mode(user-edit)
 			setInteractive(true);	
 			
 			//Add dropshadow to paper
 			Application.application.frame.filters = [new DropShadowFilter()];
-			
-			//Add keyboard listener
-			//Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
-						
-													
+															
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
 			{
@@ -187,15 +167,19 @@ package
 				Alert.show("External interface not availble");
 				return;	
 			}		
+					
+			//Load image from cache if there is a image available
+			
 								
 			var show:Fade = new Fade(Application.application.frame);
 			show.alphaFrom = 0;
 			show.alphaTo = 1;			
 			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
 			{
+			
 				//Notify the client implementation that the flash has loaded and is ready to recieve commands
 				isFlashReady = true;
-				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);	
+				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);					
 				
 				//Start the autosave timer
 				autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
@@ -203,6 +187,46 @@ package
 			});
 			show.play();						
 		}	
+		
+		
+		private function loadFromCache():Boolean
+		{			
+			var xml:XML = ClientStoreUtil.readFromClient(clientID) as XML;
+			if(xml == null) return false;
+						
+			var data:Object = ImageConverterUtil.convertFromXML(xml);
+			
+			//Data have to have the history and layers info
+			if(!data.hasOwnProperty("history") || !data.hasOwnProperty("layers"))
+				return false;
+								
+			//There has to be 1 layer and 1 brush at least
+			if(data.history.length == 0 || data.layers.length == 0)
+				return false;	
+								
+			//Add layers to scene
+			for each(var layer:Layer in data.layers)
+			{
+				this.layers.push(layer);
+				Application.application.frame.addChild(layer.getCanvas());
+				
+				if(layer.getName() == "Background")
+					backgroundLayer = layer;
+			}
+			
+			//Add the strokes
+			for each(var brush:IBrush in data.history)
+			{
+				this.history.push(brush);
+				this.painter = brush;
+			} 
+			
+			Application.application.frame.width = backgroundLayer.getWidth();
+			Application.application.frame.height = backgroundLayer.getHeight();
+			
+			return true;		
+		}
+		
 						
 		/**
 		 * Function for setting the height of the paper. 

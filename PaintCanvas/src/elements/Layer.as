@@ -110,5 +110,10 @@ package elements
 			if(layerXML.hasOwnProperty("@alpha")) setAlpha(new Number(layerXML.@alpha));
 			if(layerXML.hasOwnProperty("@color")) setBackgroundColor(new String(layerXML.@color));					
 		}
+		
+		public function toString():String
+		{
+			return "Layer: "+name+" "+width+"x"+height+" visible:"+visible+" alpha:"+alpha+" bgColor:"+backgroundColor;
+		}
 	}
 }

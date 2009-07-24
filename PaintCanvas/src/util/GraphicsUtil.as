@@ -26,6 +26,10 @@ package util
 			painter = p;	
 		}
 		
+		public static function getPainter():IBrush{
+			return painter;
+		}
+		
 		public static function setController(c:Controller):void{
 			controller = c;
 		}
@@ -121,6 +125,12 @@ package util
 			{
 				Text(painter).setFont(font);
 			}
+		}
+		
+		public static function clearHistory():void
+		{
+			while(history.length > 0) history.pop();
+			while(redo_history.length > 0) redo_history.pop();
 		}
 		
    		

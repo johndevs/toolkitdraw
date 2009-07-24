@@ -7,26 +7,23 @@ package brushes
 	public class Rectangle implements IFillableBrush
 	{
 		protected var canvas:Canvas;
-		protected var framePen:Pen;
-		protected var backgroundPen:Pen;
+		protected var selection:Canvas;
 		
 		protected var drawing:Boolean = false;
 		protected var startPoint:Point = null;				
 		protected var endPoint:Point = null;	
-		
-		protected var selection:Canvas;
+			
+		protected var current_stroke:BrushStroke;
 		protected var fillColor:Number = -1;
 		protected var color:Number = 0;
 		protected var width:int = 1;
 		
-		//protected var history:Array = new Array;
-		//protected var redohistory:Array = new Array;
+		protected var strokes:Array = new Array;
+		protected var redo_history:Array = new Array;
 		
 		public function Rectangle(canvas:Canvas)
 		{
-			this.canvas = canvas;	
-			framePen = new Pen(this.canvas);
-			backgroundPen = new Pen(this.canvas);		
+			this.canvas = canvas;			
 		}
 
 		public function processPoint(p:Point):void
@@ -68,94 +65,121 @@ package brushes
 			
 			canvas.addChildAt(selection, 0);	
 			
-			//redohistory = new Array();						
+			current_stroke = new BrushStroke();	
+			current_stroke.color = color;
+			current_stroke.width = width;
+			current_stroke.fillcolor = fillColor;
+			
+			redo_history = new Array;						
 		}
 		
 		public function endStroke():void
-		{
-			canvas.removeChild(selection);		
-								
-			//Draw the background
-			backgroundPen.setColor(fillColor);
-			backgroundPen.setWidth(1);								
-			backgroundPen.startStroke();			
-			
-			if(fillColor >= 0x0)
+		{								
+			if(current_stroke != null)
 			{
-				var width:int = selection.width;
-				var height:int = selection.height;
-				var x:int = selection.x;
-				var y:int = selection.y;					
-							
-				for(var h:int=0; h<height; h++)
-				{
-					backgroundPen.processPoint(new Point(x, y+h));
-					backgroundPen.processPoint(new Point(x+width, y+h));
-				}					
-			}			
+				current_stroke.points.push(startPoint);
+				current_stroke.points.push(endPoint);
+				strokes.push(current_stroke);
+				
+				var width:int = startPoint.x-endPoint.x;
+				var height:int = startPoint.y-endPoint.y;
+				
+				canvas.graphics.lineStyle(current_stroke.width, current_stroke.color, current_stroke.alpha);
+				
+				if(current_stroke.fillcolor != -1)
+					canvas.graphics.beginFill(current_stroke.fillcolor);
+				
+				//Sector 4
+				if(width <= 0 && height <= 0)					
+						canvas.graphics.drawRect(startPoint.x, startPoint.y, Math.abs(width),Math.abs(height));							
+				
+				//Sector 3
+				else if(width >= 0 && height <= 0)
+					canvas.graphics.drawEllipse(endPoint.x, startPoint.y, width, Math.abs(height));
+					
+				//Sector 2
+				else if(width <= 0 && height >= 0)
+					canvas.graphics.drawEllipse(startPoint.x, endPoint.y, Math.abs(width), height);
+				
+				//Sector 1
+				else
+					canvas.graphics.drawEllipse(endPoint.x, endPoint.y, width, height);	
+					
+				if(current_stroke.fillcolor != -1)
+					canvas.graphics.endFill();					
+			}					
 			
-			backgroundPen.endStroke();
-			//this.history.push(background);						
+			canvas.removeChild(selection);		
+			current_stroke = null;
 			
-			//Draw the border			
-			//Alert.show("PenColor: "+color+", PenSize: "+width);
-			framePen.setColor(color);
-			framePen.setWidth(this.width);								
-			framePen.startStroke();		
-	
-			framePen.processPoint(new Point(startPoint.x, startPoint.y));
-			framePen.processPoint(new Point(endPoint.x, startPoint.y));
-			framePen.processPoint(new Point(endPoint.x, endPoint.y));
-			framePen.processPoint(new Point(startPoint.x, endPoint.y));
-			framePen.processPoint(new Point(startPoint.x, startPoint.y));						
-			
-			framePen.endStroke();
-			//this.history.push(frame);
-									
 			startPoint = null;
-			endPoint = null;
+			endPoint = null;	
 		}
 		
 		public function redraw():void
 		{						
-			//for each(var p:Pen in this.history){			
-			//	p.redraw();
-			//}
-			
-			framePen.redraw();
-			backgroundPen.redraw(); 
+			for each(var stroke:BrushStroke in strokes)
+			{					
+				current_stroke = stroke;		
+				var topLeft:Point = current_stroke.points[0];
+				var bottomRight:Point = current_stroke.points[1];
+				
+				var width:int = topLeft.x-bottomRight.x;
+				var height:int = topLeft.y-bottomRight.y;
+				
+				canvas.graphics.lineStyle(current_stroke.width,current_stroke.color,current_stroke.alpha);
+				
+				if(current_stroke.fillcolor != -1)
+					canvas.graphics.beginFill(current_stroke.fillcolor);
+				
+				//Sector 4
+				if(width <= 0 && height <= 0)					
+					canvas.graphics.drawRect(topLeft.x,topLeft.y,Math.abs(width),Math.abs(height));							
+				
+				//Sector 3
+				else if(width >= 0 && height <= 0)
+					canvas.graphics.drawRect(bottomRight.x,topLeft.y,width,Math.abs(height));
+					
+				//Sector 2
+				else if(width <= 0 && height >= 0)
+					canvas.graphics.drawRect(topLeft.x,bottomRight.y,Math.abs(width),height);
+				
+				//Sector 1
+				else
+					canvas.graphics.drawRect(bottomRight.x,bottomRight.y,width,height);				
+					
+					
+				if(current_stroke.fillcolor != -1)
+					canvas.graphics.endFill();					
+				
+			}				
+			current_stroke = null;
 		}
 		
 		public function undo():Boolean
 		{		
-			return framePen.undo() && backgroundPen.undo();
-				
-			/*
-			if(this.history.length >= 2)
+			if(strokes.length > 0)
 			{
-				this.redohistory.push(this.history.pop());
-				this.redohistory.push(this.history.pop());
+				redo_history.push(strokes.pop());
 				return true;
-			} else{
-				return false;
 			}
-			*/			
+			else
+			{		
+				return false;	
+			}			
 		}
 		
 		public function redo():Boolean
 		{
-			return framePen.redo() && backgroundPen.redo();
-			/*
-			if(this.redohistory.length >= 2)
+			if(redo_history.length > 0)
 			{
-				this.history.push(this.redohistory.pop());
-				this.history.push(this.redohistory.pop());
+				strokes.push(redo_history.pop());
 				return true;
-			} else{
-				return false;
 			}
-			
-			*/									
+			else
+			{				
+				return false;	
+			}					
 		}
 		
 		public function getColor():Number
@@ -195,9 +219,14 @@ package brushes
 		
 		public function scale(x_ratio:Number, y_ratio:Number):void
 		{
-			framePen.scale(x_ratio,y_ratio);
-			backgroundPen.scale(x_ratio,y_ratio);
-			//for each(var p:Pen in history) p.scale(x_ratio,y_ratio);			
+			for each(var stroke:BrushStroke in strokes)
+			{
+				for each(var p:Point in stroke.points)
+				{
+					p.x = p.x*x_ratio;
+					p.y = p.y*y_ratio;
+				}
+			}		
 		}
 		
 		public function getCanvas():Canvas
@@ -207,12 +236,7 @@ package brushes
 		
 		public function getStrokes():Array
 		{
-			return framePen.getStrokes();
-		}
-		
-		public function getBackgroundStrokes():Array
-		{
-			return backgroundPen.getStrokes();
+			return strokes;
 		}
 		
 		public function getCursor():Class
@@ -259,67 +283,55 @@ package brushes
 				strokeXML.points = points;							
 				brushXML.appendChild(strokeXML);							
 			}		
-			
-			//Generate background strokes
-			for each(var backgroundStroke:BrushStroke in getBackgroundStrokes())
-			{
-				var bstrokeXML:XML = new XML("<backgroundstroke></backgroundstroke>");
-				bstrokeXML.@color = backgroundStroke.color;
-				bstrokeXML.@fill = backgroundStroke.fillcolor;
-				bstrokeXML.@alpha = backgroundStroke.alpha;
-				bstrokeXML.@width = backgroundStroke.width;
-				
-				//Generate point list
-				var bpoints:String = "";
-				for each(var bp:Point in backgroundStroke.points)
-					bpoints += bp.x+","+bp.y+";";
-				
-				bstrokeXML.points = bpoints;				
-				brushXML.appendChild(bstrokeXML);
-			}					
-			
+						
 			return brushXML;
 		}
 		
 		// TODO Processing of background points
 		public function setXML(brushXML:XML):void
 		{
-			if(brushXML.hasOwnProperty("@color")) setColor(brushXML.@color);
-			if(brushXML.hasOwnProperty("@width")) setWidth(brushXML.@width);
-			if(brushXML.hasOwnProperty("@fill")) setFillColor(brushXML.@fill);
-			
+			if(!brushXML.hasOwnProperty("@type")) return;
+										
+			var type:String = brushXML.@type;
+			if(type != getType()) return;
+																				
 			if(!brushXML.hasOwnProperty("stroke")) return;
-								
 			for each(var strokeXML:XML in brushXML.stroke)
-			{				
-				if(strokeXML == null) continue;
-				
-				if(strokeXML.hasOwnProperty("@color")) setColor(strokeXML.@color);
-				if(strokeXML.hasOwnProperty("@alpha")) setAlpha(strokeXML.@alpha);
-				if(strokeXML.hasOwnProperty("@width")) setWidth(strokeXML.@width);
-				if(strokeXML.hasOwnProperty("@fill"))  setFillColor(strokeXML.@fill);
-													
-				startStroke();						
+			{
+				if(strokeXML.hasOwnProperty("@color"))
+					this.setColor(strokeXML.@color);
+				if(strokeXML.hasOwnProperty("@width"))
+					this.setWidth(strokeXML.@width);
+				if(strokeXML.hasOwnProperty("@alpha"))
+					this.setAlpha(strokeXML.@alpha);
+				if(strokeXML.hasOwnProperty("@fill"))
+					this.setFillColor(strokeXML.@fill);
+										
+				this.startStroke();
+				if(!strokeXML.hasOwnProperty("points")) continue;
+				var pointsStr:String = strokeXML.points;
+				var points:Array = pointsStr.split(";");
+			
+				for each(var point:String in points)
+				{
+					var coords:Array = point.split(",");
+					if(coords.length != 2) continue;
 					
-				if(!strokeXML.hasOwnProperty("points")) continue;								
-				for each(var pointXML:String in strokeXML.points)
-				{										
-					if(pointXML == null) continue;
-								
-					// Point format is x,y;x,y;..
-					var points:Array = pointXML.split(";");
-					for each(var point:String in points)
-					{
-						var coord:Array = point.split(",");
-						
-						if(coord.length != 2) continue;
-						
-						processPoint(new Point(coord[0], coord[1]));
-					}							
-				}		
+					this.processPoint(new Point(new Number(coords[0]),new Number(coords[1])));
+				}
 				
-				endStroke();						
-			}				
+				this.endStroke();
+			}
+			this.endTool();
+			
+			if(brushXML.hasOwnProperty("@color"))
+				this.setColor(brushXML.@color);
+			if(brushXML.hasOwnProperty("@width"))
+				this.setWidth(brushXML.@width);
+			if(brushXML.hasOwnProperty("@alpha"))
+				this.setAlpha(brushXML.@alpha);	
+			if(brushXML.hasOwnProperty("@fill"))
+				this.setFillColor(brushXML.@fill);
 		}		
 		
 	}
