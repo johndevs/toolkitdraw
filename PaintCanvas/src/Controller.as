@@ -6,7 +6,6 @@ package
 	
 	import elements.Layer;
 	
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
@@ -40,10 +39,11 @@ package
 		private var isInteractive:Boolean = false;
 		private var isFlashReady:Boolean = false;
 		private var hasChanged:Boolean = false;
-		
+		private var cacheMode:String = "cache-auto";
 		private var autosaveTimer:Timer = new Timer(1000);
 			
 		private var backgroundLayer:Layer;	
+		
 			
 		//Tool constants	
 		public static const PEN:String = "Pen"; 
@@ -58,56 +58,54 @@ package
 		public static const LAYERS_OBJECT:String = "PaintCnavas-layers";
 		
 		public static const RECTANGLE_SELECT:String = "Rectangle-Select";
+		
+		public static const CACHE_AUTO:String = "cache-auto";
+		public static const CACHE_CLIENT:String  = "cache-client";
+		public static const CACHE_SERVER:String  = "cache-server";
+		public static const CACHE_NONE:String = "cache-none";
 	
 		public function Controller()
 		{																				
 			//Get parameters				
 			clientID = Application.application.parameters.id;
 			
-			if(!loadFromCache())
+			//Get cache mode
+			cacheMode = Application.application.parameters.cacheMode;
+						
+			//No caching
+			if(cacheMode == CACHE_NONE) createPage();			
+						
+			//Client cache mode
+			else if(cacheMode == CACHE_CLIENT) createPage(!loadFromCache(CACHE_CLIENT));
+			
+			//Server cache mode
+			else if(cacheMode == CACHE_SERVER)
 			{
-				//Create the default layer
-				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
-				layers.push(backgroundLayer);			
+				if(ExternalInterface.available)
+					ClientStoreUtil.requestCacheFromServer(clientID);
+				else 
+				{
+					Alert.show("ExternalInterface not available");
+					createPage();	
+				}
+			}					
 			
-				Application.application.frame.width = backgroundLayer.getWidth();
-				Application.application.frame.height = backgroundLayer.getHeight();		
-				Application.application.frame.addChild(backgroundLayer.getCanvas());	
-			
-				//Chreate the default brush
-				var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
-				this.history.push(defaultBrush);
-				this.painter = defaultBrush;		
-			
-				//Check if we have valid dimensions and if not then set to fullsize
-				if(Application.application.parameters.width == null || Application.application.parameters.height == null){
-					Application.application.frame.width = Application.application.width;
-					Application.application.frame.height = Application.application.height;
-				} else {
-					Application.application.frame.width = Application.application.parameters.width;
-					Application.application.frame.height = Application.application.parameters.height;	
-				}	
-			}				
-												
-			//Init the utility classes
-			DrawingUtil.setController(this);
-			DrawingUtil.setPainter(this.painter);
-			
-			GraphicsUtil.setController(this);
-			GraphicsUtil.setPainter(this.painter);
-			GraphicsUtil.setHistory(this.history, this.redo_history);
-			
-			LayerUtil.setController(this);
-			LayerUtil.setPainter(this.painter);
-			LayerUtil.setLayerArray(this.layers);
-			
-			LayerUtil.setCurrentLayer(backgroundLayer);
-								
-			//Set component in interactive mode(user-edit)
-			setInteractive(true);	
-			
-			//Add dropshadow to paper
-			Application.application.frame.filters = [new DropShadowFilter()];
+			else if(cacheMode == CACHE_AUTO)
+			{
+				//Try client cache
+				if(loadFromCache(CACHE_CLIENT)) createPage(false);	
+				
+				//Try server cache
+				else {
+					if(ExternalInterface.available)
+						ClientStoreUtil.requestCacheFromServer(clientID);
+					else 
+					{
+						Alert.show("ExternalInterface not available");
+						createPage();	
+					}
+				}				
+			}		
 															
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
@@ -118,6 +116,8 @@ package
 				ExternalInterface.addCallback("setInteractive",					setInteractive);
 				ExternalInterface.addCallback("setComponentBackgroundColor", 	GraphicsUtil.setApplicationColor);
 				ExternalInterface.addCallback("isReady",						isReady);
+				ExternalInterface.addCallback("setCacheMode",					setCacheMode);
+				ExternalInterface.addCallback("setImageCache",					ClientStoreUtil.cacheFromServerRecieved);
 				
 				//Filetypes
 				ExternalInterface.addCallback("getImageXML",					getImageXML);
@@ -160,41 +160,87 @@ package
 				//Send available fonts to the server
 				var fonts:Array = new Array();
 				for each(var font:Font in Font.enumerateFonts(true)) fonts.push(font.fontName);					
-				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);	
-			}	
-			else
-			{
-				Alert.show("External interface not availble");
-				return;	
-			}		
-					
-			//Load image from cache if there is a image available
+				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);				
+				
+				//Notify the client implementation that the flash has loaded and is ready to recieve commands
+				isFlashReady = true;
+				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);							
+			}									
+		}	
+		
+		public function createPage(newPage:Boolean=true):void
+		{			
+			Alert.show("Creating page!");
 			
-								
+			if(newPage)
+			{
+				//Create the default layer
+				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
+				layers.push(backgroundLayer);			
+			
+				Application.application.frame.width = backgroundLayer.getWidth();
+				Application.application.frame.height = backgroundLayer.getHeight();		
+				Application.application.frame.addChild(backgroundLayer.getCanvas());	
+			
+				//Chreate the default brush
+				var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
+				this.history.push(defaultBrush);
+				this.painter = defaultBrush;		
+			
+				//Check if we have valid dimensions and if not then set to fullsize
+				if(Application.application.parameters.width == null || Application.application.parameters.height == null){
+					Application.application.frame.width = Application.application.width;
+					Application.application.frame.height = Application.application.height;
+				} else {
+					Application.application.frame.width = Application.application.parameters.width;
+					Application.application.frame.height = Application.application.parameters.height;	
+				}	
+				
+			} 
+			
+			//Init the utility classes
+			DrawingUtil.setController(this);
+			DrawingUtil.setPainter(this.painter);
+			
+			GraphicsUtil.setController(this);
+			GraphicsUtil.setPainter(this.painter);
+			GraphicsUtil.setHistory(this.history, this.redo_history);
+			
+			LayerUtil.setController(this);
+			LayerUtil.setPainter(this.painter);
+			LayerUtil.setLayerArray(this.layers);
+			
+			LayerUtil.setCurrentLayer(backgroundLayer);
+			
+			//Set component in interactive mode(user-edit)
+			setInteractive(true);	
+			
+			//Add dropshadow to paper
+			Application.application.frame.filters = [new DropShadowFilter()];
+			
 			var show:Fade = new Fade(Application.application.frame);
 			show.alphaFrom = 0;
 			show.alphaTo = 1;			
 			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
-			{
-			
-				//Notify the client implementation that the flash has loaded and is ready to recieve commands
-				isFlashReady = true;
-				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);					
+			{									
 				
 				//Start the autosave timer
 				autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
 				autosaveTimer.start();		
 			});
-			show.play();						
-		}	
+			show.play();				
+		}
 		
 		
-		private function loadFromCache():Boolean
-		{			
-			var xml:XML = ClientStoreUtil.readFromClient(clientID) as XML;
-			if(xml == null) return false;
-						
-			var data:Object = ImageConverterUtil.convertFromXML(xml);
+		public function loadFromCache(cache:String, xml:XML=null):Boolean
+		{							
+			//Client side cache
+			if(cache == CACHE_CLIENT && xml == null)			
+				xml = ClientStoreUtil.readFromClient(clientID) as XML;			
+					
+			if(xml == null) return false;	
+			
+			var data:Object = ImageConverterUtil.convertFromXML(xml);			
 			
 			//Data have to have the history and layers info
 			if(!data.hasOwnProperty("history") || !data.hasOwnProperty("layers"))
@@ -342,40 +388,7 @@ package
 			changeEvent();	
 		}
 			
-		/**
-		 * This function listens to the keyboard events
-		 */ 		
-		private function keyboard(k:KeyboardEvent):void
-		{
-			/*
-			if(k.ctrlKey && String.fromCharCode(k.charCode) != "")
-			{
-				switch(String.fromCharCode(k.charCode))
-				{
-					case "s":	Alert.show(getImageXML());	break;
-					default:	trace("Warning: CTRL+"+String.fromCharCode(k.charCode)+" unassigned.");
-				}
-			}
-			
-			else
-			{			
-				switch(String.fromCharCode(k.charCode))
-				{
-					case "u":	undo(); break;			
-					case "r":	redo(); break;								
-					case "b":	painter.setWidth(painter.getWidth()+1); break;
-					case "x":	Alert.show("XML"+getImageXML().toString()); break;
-					case "f":	setPaperHeight(-1); break;
-					case "p":	setBrush(POLYGON); break;
-													
-					default:	trace("Warning: "+String.fromCharCode(k.charCode)+" unassigned.");
-				}
-			}
-			*/		
-		}
 		
-		
-
 		/**
 		 * Calling this function undoes the previous brush stroke
 		 */ 
@@ -433,15 +446,13 @@ package
 			{
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
-				Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);			
-				Application.application.frame.addEventListener(KeyboardEvent.KEY_DOWN, keyboard);
+				Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);						
 				isInteractive = true;
 				
 			} else if(!interactive && isInteractive){
 				Application.application.frame.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 				Application.application.frame.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
-				Application.application.frame.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);
-				Application.application.frame.removeEventListener(KeyboardEvent.KEY_DOWN, keyboard);
+				Application.application.frame.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);			
 				
 				isInteractive = false;				
 			}
@@ -493,6 +504,14 @@ package
 			LayerUtil.setPainter(this.painter);
 		}
 		
+		/**
+		 * This controlls what cache is used, default is AUTO where first client cache is tried
+		 * then server cache and fallback to none
+		 */
+		public function setCacheMode(mode:String):void
+		{
+			this.cacheMode = mode;
+		}
 		
 	}
 }

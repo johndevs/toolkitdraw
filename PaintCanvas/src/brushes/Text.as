@@ -162,7 +162,7 @@ package brushes
 			stroke.text = this.current_text;
 			stroke.fontName = this.current_fontName;
 			stroke.data = d2;
-			
+						
 			strokes.push(stroke);			
 		}
 		
@@ -344,6 +344,9 @@ package brushes
 				strokeXML.txt = new String(stroke.text);		
 				
 				var data:BitmapData = stroke.data as BitmapData;
+				strokeXML.@datawidth=data.width;
+				strokeXML.@dataheight=data.height;				
+				
 				var bytes:ByteArray = data.getPixels(new flash.geom.Rectangle(0,0,data.width,data.height));
 				
 				var encoder:Base64Encoder = new Base64Encoder();
@@ -351,8 +354,7 @@ package brushes
 				encoder.encodeBytes(bytes);				
 				
 				strokeXML.data = encoder.flush();
-				strokeXML.@datawidth=data.width;
-				strokeXML.@dataheight=data.height;
+				
 				
 				//Generate point list
 				var points:String = "";
