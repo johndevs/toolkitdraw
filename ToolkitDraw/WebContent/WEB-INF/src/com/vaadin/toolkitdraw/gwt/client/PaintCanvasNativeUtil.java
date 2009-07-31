@@ -5,14 +5,19 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dev.GWTMain;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PaintCanvasNativeUtil.
+ */
 public class PaintCanvasNativeUtil {
 	
+	/** The canvases. */
 	private static IPaintCanvas[] canvases = new IPaintCanvas[10];
 	
 	/**
-	 * Undo last brush stroke
-	 * @param id
-	 * 		The id of the paintcanvas
+	 * Undo last brush stroke.
+	 * 
+	 * @param id The id of the paintcanvas
 	 */
 	public static native void undo(String id) /*-{
 		var canvas = $wnd.document.getElementById(id);		
@@ -28,9 +33,9 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Redo previously undoed brush stroke
-	 * @param id
-	 * 		The id of the paintcanvas
+	 * Redo previously undoed brush stroke.
+	 * 
+	 * @param id The id of the paintcanvas
 	 */
 	public static native void redo(String id) /*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -46,11 +51,10 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Set the drawing areas height inside the paintcanvas component
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param height
-	 * 		The height in pixels
+	 * Set the drawing areas height inside the paintcanvas component.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param height The height in pixels
 	 */
 	public static native void setPaperHeight(String id, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -66,11 +70,10 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Set the drawing areas width inside the paintcanvas component
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param width
-	 * 		The width in pixels
+	 * Set the drawing areas width inside the paintcanvas component.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param width The width in pixels
 	 */
 	public static native void setPaperWidth(String id, int width)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -86,19 +89,19 @@ public class PaintCanvasNativeUtil {
 	}-*/;	
 
 	/**
-	 * Display an error message
-	 * @param message
+	 * Display an error message.
+	 * 
+	 * @param message the message
 	 */
 	public static native void error(String message)/*-{
 		alert(message);
 	}-*/;
 
 	/**
-	 * Sets the size of the active brush. 
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param s
-	 * 		The size in pixels of the brush
+	 * Sets the size of the active brush.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param s The size in pixels of the brush
 	 */
 	public static native void setPenSize(String id, double s)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -115,10 +118,9 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Set the color of the active brush.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param color
-	 * 		The color in hexadecimal format. For instance FFFFFF(white).
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param color The color in hexadecimal format. For instance FFFFFF(white).
 	 */
 	public static native void setPenColor(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -134,11 +136,10 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Set the currently active brush
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param brush
-	 * 		The brush id
+	 * Set the currently active brush.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param brush The brush id
 	 */
 	public static native void setBrush(String id, String brush)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -154,11 +155,12 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Sets the fillcolor of the active brush. 
+	 * Sets the fillcolor of the active brush.
 	 * Not all brushes support this feature and if it is not supported then this will not
-	 * do anything. 
-	 * @param id
-	 * @param color
+	 * do anything.
+	 * 
+	 * @param id the id
+	 * @param color the color
 	 */
 	public static native void setFillColor(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -175,8 +177,9 @@ public class PaintCanvasNativeUtil {
 	
 	/**
 	 * Sets the brush alpha. This has different effects on different brushes
-	 * @param id
-	 * @param color
+	 * 
+	 * @param id the id
+	 * @param alpha the alpha
 	 */
 	public static native void setPenAlpha(String id, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -191,6 +194,12 @@ public class PaintCanvasNativeUtil {
 		}				
 	}-*/;
 
+	/**
+	 * Sets the font.
+	 * 
+	 * @param id the id
+	 * @param font the font
+	 */
 	public static native void setFont(String id, String font)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
@@ -206,11 +215,10 @@ public class PaintCanvasNativeUtil {
 	
 	/**
 	 * Adds a layer to the canvas.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param name
-	 * 		The name/id of the layer. This is used to identify the layer and must be unique.
-	 * 		The layer name Background is reserved and should not be used
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param name The name/id of the layer. This is used to identify the layer and must be unique.
+	 * The layer name Background is reserved and should not be used
 	 */
 	public static native void addLayer(String id, String name)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -227,13 +235,11 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Set the visibility of the layer
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param name
-	 * 		The name of the layer
-	 * @param visibility
-	 * 		The visibility of the layer. true means the layer is visible and false that it is not visble.
+	 * Set the visibility of the layer.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param name The name of the layer
+	 * @param visibility The visibility of the layer. true means the layer is visible and false that it is not visble.
 	 */
 	public static native void setLayerVisibility(String id, String name, boolean visibility)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -250,10 +256,9 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Select the active layer. All drawing operations are perfomed on the active layer.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param name
-	 * 		The name of the layer
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param name The name of the layer
 	 */
 	public static native void selectLayer(String id, String name)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -269,11 +274,10 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Set the background color of the layer
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param color
-	 * 		The color in hexadecimal format. For instance FFFFFF (white).
+	 * Set the background color of the layer.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param color The color in hexadecimal format. For instance FFFFFF (white).
 	 */
 	public static native void setLayerColor(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -290,11 +294,10 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Set the transparency of the layer.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param alpha
-	 * 		The alpha channel value. Value must be between 0 and 1 where 0 means no 
-	 * 		transparency and 1 means full transparency.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param alpha The alpha channel value. Value must be between 0 and 1 where 0 means no
+	 * transparency and 1 means full transparency.
 	 */
 	public static native void setLayerAlpha(String id, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -310,11 +313,13 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Requests an XML representation of the image. 
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @return
-	 * 		An XML string with the image represented in XML
+	 * Requests an XML representation of the image.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * 
+	 * @return the image xml
+	 * 
+	 * An XML string with the image represented in XML
 	 */
 	public static native String getImageXML(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -324,14 +329,15 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Requests an PNG image from the component
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param dpi
-	 * 		The dots per inch of the image. 72dpi returns the image
-	 *      as seen on the screen.
-	 * @return
-	 * 		An Base64 encoded PNG image.
+	 * Requests an PNG image from the component.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param dpi The dots per inch of the image. 72dpi returns the image
+	 * as seen on the screen.
+	 * 
+	 * @return the image png
+	 * 
+	 * An Base64 encoded PNG image.
 	 */
 	public static native String getImagePNG(String id, int dpi)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -341,14 +347,15 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Requests an JPG image from the component
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param dpi
-	 * 		The dots per inch of the image. 72dpi returns the image
-	 *      as seen on the screen.
-	 * @return
-	 * 		An Base64 encoded JPG image.
+	 * Requests an JPG image from the component.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param dpi The dots per inch of the image. 72dpi returns the image
+	 * as seen on the screen.
+	 * 
+	 * @return the image jpg
+	 * 
+	 * An Base64 encoded JPG image.
 	 */
 	public static native String getImageJPG(String id, int dpi)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -360,12 +367,11 @@ public class PaintCanvasNativeUtil {
 	/**
 	 * Sets the component in interactive mode. Interactive mode means the the
 	 * user can draw on the canvas using the mouse.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param interactive
-	 * 		The state of the component. If this is set to true then the user can
-	 *      draw with the mouse on the component. If this is set to false then only
-	 *      the server can draw on the component. 		
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param interactive The state of the component. If this is set to true then the user can
+	 * draw with the mouse on the component. If this is set to false then only
+	 * the server can draw on the component.
 	 */
 	public static native void setInteractive(String id, boolean interactive)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -382,16 +388,12 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Draw a line on the current layer using the current width and color settings.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param x1
-	 * 		The first points x-value in pixels.
-	 * @param y1
-	 * 		The first points y-value in pixels.
-	 * @param x2
-	 * 		The second points x-value in pixels.
-	 * @param y2
-	 * 		The second points y-value in pixels.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param x1 The first points x-value in pixels.
+	 * @param y1 The first points y-value in pixels.
+	 * @param x2 The second points x-value in pixels.
+	 * @param y2 The second points y-value in pixels.
 	 */
 	public static native void drawLine(String id, int x1, int y1, int x2, int y2)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -408,16 +410,12 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Draws a square on the current layer using the current width and color settings.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param x
-	 * 		The x-value of the upper left corner of the square in pixels
-	 * @param y
-	 * 		The y-value of the upper left corner of the square in pixels
-	 * @param width
-	 * 		The width of the square in pixels
-	 * @param height
-	 * 		The height of the square in pixels
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param x The x-value of the upper left corner of the square in pixels
+	 * @param y The y-value of the upper left corner of the square in pixels
+	 * @param width The width of the square in pixels
+	 * @param height The height of the square in pixels
 	 */
 	public static native void drawSquare(String id, int x, int y, int width, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -434,8 +432,8 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Clears the current layer of any previous drawings.
-	 * @param id
-	 * 		The id of the paintcanvas
+	 * 
+	 * @param id The id of the paintcanvas
 	 */
 	public static native void clear(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -454,12 +452,10 @@ public class PaintCanvasNativeUtil {
 	 * Draws a polygon on the current layer using current color and width settings.
 	 * If the last point is not the same as the first point an additional edge will be made connecting
 	 * the first point with the last point.
-	 * @param id
-	 * 		The id of the paintcanvas.
-	 * @param x
-	 * 		An array of x-values for the polygons corners.
-	 * @param y
-	 * 		An array of y-values for the polygons corners.
+	 * 
+	 * @param id The id of the paintcanvas.
+	 * @param x An array of x-values for the polygons corners.
+	 * @param y An array of y-values for the polygons corners.
 	 */
 	public static native void drawPolygon(String id, int[]x, int[]y)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -475,13 +471,14 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 
 	/**
-	 * Draws text using the current brush settings
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param x
-	 * 		The x-coordinate where the text should be
-	 * @param y
-	 * 		The y-coordinate where the text should be
+	 * Draws text using the current brush settings.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param x The x-coordinate where the text should be
+	 * @param y The y-coordinate where the text should be
+	 * @param text the text
+	 * @param width the width
+	 * @param height the height
 	 */
 	public static native void drawText(String id, String text, int x, int y, int width, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -497,17 +494,13 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 	
 	/**
-	 * Draws an image on the current canvas
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param image
-	 * 		The image in base64 encoding
-	 * @param x
-	 * 		The x-position of the top left corner of the image
-	 * @param y
-	 * 		The y-position of the top left corner of the image
-	 * @param alpha
-	 * 		The alpha value of the image
+	 * Draws an image on the current canvas.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param image The image in base64 encoding
+	 * @param x The x-position of the top left corner of the image
+	 * @param y The y-position of the top left corner of the image
+	 * @param alpha The alpha value of the image
 	 */
 	public static native void drawImage(String id, String image, int x, int y, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -524,11 +517,10 @@ public class PaintCanvasNativeUtil {
 	
 
 	/**
-	 * Sets the background color of the component
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @param color
-	 * 		The color in hexadecimal format. For instance FFFFFF (white).
+	 * Sets the background color of the component.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * @param color The color in hexadecimal format. For instance FFFFFF (white).
 	 */
 	public static native void setComponentBackground(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -545,10 +537,12 @@ public class PaintCanvasNativeUtil {
 
 	/**
 	 * Check state of the component. Returns true if the component has loaded and is ready to be used.
-	 * @param id
-	 * 		The id of the paintcanvas
-	 * @return
-	 * 		The state of the component. If the state is true then the component is ready to be used.
+	 * 
+	 * @param id The id of the paintcanvas
+	 * 
+	 * @return true, if checks if is ready
+	 * 
+	 * The state of the component. If the state is true then the component is ready to be used.
 	 */
 	public static native boolean isReady(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -563,10 +557,9 @@ public class PaintCanvasNativeUtil {
 	
 	
 	/**
-	 * Removes the current selection
-	 * @param id
-	 * 		The id of the canvas
-	 * @return
+	 * Removes the current selection.
+	 * 
+	 * @param id The id of the canvas
 	 */
 	public static native void removeSelection(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -583,10 +576,9 @@ public class PaintCanvasNativeUtil {
 	
 	
 	/**
-	 * Select the whole image
-	 * @param id
-	 * 		The id of the canvas
-	 * @return
+	 * Select the whole image.
+	 * 
+	 * @param id The id of the canvas
 	 */
 	public static native void selectAll(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
@@ -601,6 +593,12 @@ public class PaintCanvasNativeUtil {
 		}		
 	}-*/;	
 	
+	/**
+	 * Sets the cache mode.
+	 * 
+	 * @param id the id
+	 * @param mode the mode
+	 */
 	public static native void setCacheMode(String id, String mode)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
@@ -614,6 +612,12 @@ public class PaintCanvasNativeUtil {
 		}		
 	}-*/;	
 	
+	/**
+	 * Sets the image cache.
+	 * 
+	 * @param id the id
+	 * @param cache the cache
+	 */
 	public static native void setImageCache(String id, String cache)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
@@ -630,20 +634,19 @@ public class PaintCanvasNativeUtil {
 	/**
 	 * Set the available fonts. This is done by the Flash component and should
 	 * not be done manually
-	 * @param id
-	 * 		The id of the canvas
-	 * @param fonts
-	 * 		The available font names
+	 * 
+	 * @param id The id of the canvas
+	 * @param fonts The available font names
 	 */
 	public static void setAvailableFonts(String id, String[] fonts){
 		getCanvas(id).setFonts(fonts);
 	}	
 	
 	/**
-	 * Set the canvas in a ready state. This is done by the Flash component and should 
+	 * Set the canvas in a ready state. This is done by the Flash component and should
 	 * not be not manually
-	 * @param id
-	 * 		The id of the canvas which is ready
+	 * 
+	 * @param id The id of the canvas which is ready
 	 */
 	public static void setCanvasReady(String id){
 		getCanvas(id).setReady(true);
@@ -652,8 +655,8 @@ public class PaintCanvasNativeUtil {
 	/**
 	 * Register a new canvas with this utility. This is done automatically by the client
 	 * side of the component and should not be done manually.
-	 * @param canvas
-	 * 		The canvas which should be registred
+	 * 
+	 * @param canvas The canvas which should be registred
 	 */
 	public static void registerCanvas(IPaintCanvas canvas){
 		for(int i=0; i<canvases.length; i++){
@@ -665,11 +668,13 @@ public class PaintCanvasNativeUtil {
 	}
 	
 	/**
-	 * Returns a registred canvas
-	 * @param id
-	 * 		The id of the canvas.
-	 * @return
-	 * 		A client side canvas implementation.
+	 * Returns a registred canvas.
+	 * 
+	 * @param id The id of the canvas.
+	 * 
+	 * @return the canvas
+	 * 
+	 * A client side canvas implementation.
 	 */
 	public static IPaintCanvas getCanvas(String id){
 		for(int i=0; i<canvases.length; i++){
@@ -680,11 +685,17 @@ public class PaintCanvasNativeUtil {
 		return null;
 	}
 	
-	/** Fetches the cached image from the server
+	/**
+	 * Fetches the cached image from the server.
 	 * 
+	 * @param id the id
 	 */
 	public static void getServerCache(String id){
 		getCanvas(id).getServerCache();
+	}
+	
+	public static void setServerCache(String id, String xml){
+		getCanvas(id).setServerCache(xml);
 	}
 	
 	/**
@@ -725,6 +736,7 @@ public class PaintCanvasNativeUtil {
 			this.setAvailableFonts = function(id, fonts){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setAvailableFonts(Ljava/lang/String;[Ljava/lang/String;)(id, fonts); };
 			this.setFont = function(id, font){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFont(Ljava/lang/String;Ljava/lang/String;)(id, font); };
 			this.getServerCache = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getServerCache(Ljava/lang/String;)(id); };
+			this.setServerCache = function(id, xml){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setServerCache(Ljava/lang/String;Ljava/lang/String;)(id, xml); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		

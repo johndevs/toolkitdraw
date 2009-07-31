@@ -36,6 +36,8 @@ public class OpenPopup extends Window implements ClickListener, Receiver, Upload
 	private Button ok;
 	
 	private Button cancel;
+	
+	private String filename;
 
 	public OpenPopup(String caption, Window parent){
 		this.parent = parent;
@@ -93,6 +95,7 @@ public class OpenPopup extends Window implements ClickListener, Receiver, Upload
 	@Override
 	public OutputStream receiveUpload(String filename, String MIMEType) {		
 		recievedImage = new ByteArrayOutputStream();	
+		this.filename = filename;
 		return recievedImage;
 	}
 
@@ -110,6 +113,10 @@ public class OpenPopup extends Window implements ClickListener, Receiver, Upload
 	
 	public byte[] getImage(){
 		return image;
+	}
+	
+	public String getFilename(){
+		return this.filename;
 	}
 
 }

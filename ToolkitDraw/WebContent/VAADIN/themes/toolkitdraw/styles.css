@@ -176,6 +176,7 @@
 
 }
 
+
 .v-window{
 	color:#EEEEEE;
 	background:#717171;	
@@ -185,10 +186,11 @@
 	background:none;	
 }
 
+
 .v-window-outerheader{
-	background:#515151;
-	margin-left:0px;		
-	border-bottom:1px solid black;
+	background:#717171;
+	border:0px solid #717171;	
+	z-index:100;
 }
 
 .v-window-contents{
@@ -203,6 +205,7 @@
 .v-window-resizebox{
 	background:none;	
 }
+
 
 .v-window-modalitycurtain{
 	background:black;	

@@ -139,12 +139,13 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 
 	private PaintCanvas addNewFile(){
 		
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");			
-		canvas.setCacheMode(CacheMode.SERVER);
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");					
 		if(canvas == null){
-			System.err.println("ERROR: Creating canvas failed!");			
+			System.err.println("ERROR: Creating canvas failed!");	
+			return null;
 		}
 		
+		canvas.setCacheMode(CacheMode.AUTO);
 		canvas.setInteractive(true);
 		
 		//Set the canvas as the current canvas
@@ -172,25 +173,50 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private PaintCanvas openFile(){
 		
 		//Create a new image
-		PaintCanvas canvas = addNewFile();
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");			
+		
+		if(canvas == null){
+			System.err.println("ERROR: Creating canvas failed!");	
+			return null;
+		}
+		
+		canvas.setCacheMode(CacheMode.AUTO);	
 		
 		final OpenPopup selectFile = new OpenPopup("Open file", mainWindow);
 		selectFile.setData(canvas);
 		selectFile.addListener(new Window.CloseListener(){
 			public void windowClose(CloseEvent e) {
-				
+																
 				//Get the uploaded image
 				byte[] bytes = selectFile.getImage();
+				
+				//No image was selected
+				if(bytes == null) return;
+				
+				//Get the canvas and set the caption
 				PaintCanvas canvas = (PaintCanvas)selectFile.getData();
+				canvas.setCaption(selectFile.getFilename());
 				
 				//Draw the image onto the canvas
 				BASE64Encoder enc = new BASE64Encoder();
 				String encString = enc.encode(bytes);
 											
+				//Draw the loaded image onto the image
 				canvas.getGraphics().drawImage(encString, 0, 0, 1.0);
+								
+				//Put the canvas in the map and create a tab for it
+				openFiles.put(selectFile.getFilename(), canvas);		
+				savedStatusFiles.put(selectFile.getFilename(), true);		
+				openFilesTabs.addTab(canvas,selectFile.getFilename(),null);			
+				
+				//Set the canvas as the current canvas
+				leftPanel.setCanvas(canvas);
+				rightPanel.setCanvas(canvas);
+				currentCanvas = canvas;
 			}			
 		});		
 		
+		//Show poup
 		selectFile.show();
 		
 		return canvas;

@@ -25,6 +25,7 @@ import com.vaadin.ui.Component;
 
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.util.XMLUtil;
 
 @SuppressWarnings("unchecked")
 public class PaintCanvas extends AbstractField implements Component, Serializable{
@@ -771,7 +772,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         
         target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
         target.addVariable(this, "values", values.toArray(new String[values.size()]));
-            
+                    
         //Send update flag. If this is not sent(false) then the flash
         //will refresh itself from the local cache
         if(configuration.isInitializationComplete()){
@@ -830,8 +831,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	//Send cached image data
     	if(variables.containsKey("update-cache")){
     		System.out.println("Cache content requested");
-    		if(configuration.isInitializationComplete()){
-    			System.out.println("Sending cached content");
+    		if(configuration.isInitializationComplete()){    			
     			addToQueue("cache", imageCache.toString());    		
     			requestRepaint();
     		} else {
@@ -846,9 +846,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		
     		//Send cache content if it has been requested under initialization
     		if(cacheContentNeeded){
-    			System.out.println("Sending delayed cached content");
-    			cacheContentNeeded =false;
-    			addToQueue("cache", imageCache.toString());    		
+    			System.out.println("Sending delayed cached content"); 
+    			cacheContentNeeded =false;    			
+    			String cacheContent = XMLUtil.escapeXML(imageCache.toString());    		
+    			addToQueue("cache", cacheContent);    		
     			requestRepaint();    			
     		}    		
     	}
@@ -869,6 +870,15 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	if(variables.containsKey("fontset")){
     		String[] fonts = (String[])variables.get("fontset");
     		configuration.setAvailableFonts(new HashSet<String>(Arrays.asList(fonts)));
+    	}
+    	
+    	//Cache data recieved
+    	if(variables.containsKey("set-cache")){
+    		Object[] objects = (Object[])variables.get("set-cache");    		
+    		if(objects.length > 0){
+    			System.out.println("Cache updated");
+        		imageCache = new StringBuilder(objects[0].toString());
+    		}  		    	
     	}
     }    
      

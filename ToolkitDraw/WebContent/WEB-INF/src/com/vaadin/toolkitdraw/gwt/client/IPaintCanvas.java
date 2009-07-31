@@ -179,8 +179,9 @@ public class IPaintCanvas extends HTML implements Paintable {
 		}		
 		
 		else if(command.equals("cache")){		
-			PaintCanvasNativeUtil.error(value);
-			PaintCanvasNativeUtil.setImageCache(id, value);
+			
+			String val = value.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");			
+			PaintCanvasNativeUtil.setImageCache(id, val);
 		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
@@ -198,6 +199,16 @@ public class IPaintCanvas extends HTML implements Paintable {
 		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor, cacheMode);		
 	}
 	
+	/**
+	 * Creates the swf object.
+	 * 
+	 * @param swfUrl the swf url
+	 * @param id the id
+	 * @param pageWidth the page width
+	 * @param pageHeight the page height
+	 * @param bgColor the bg color
+	 * @param cacheMode the cache mode
+	 */
 	private native void createSWFObject(String swfUrl, String id, String pageWidth, String pageHeight, String bgColor, String cacheMode)/*-{
 		var flashvars = {};
 		flashvars.id = id;
@@ -208,7 +219,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		
 		var params = {};
 		params.menu = "false";
-		params.wmode = "transparent";
+		params.wmode = "opaque";
 		params.movie = swfUrl;
 		params.allowScriptAccess = "always";
 		params.bgcolor = "#"+bgColor.substr(2,6);
@@ -221,12 +232,15 @@ public class IPaintCanvas extends HTML implements Paintable {
 	}-*/;
 		
 	 /**
-    * This method must be implemented to update the client-side component from
-    * UIDL data received from server.
-    * 
-    * This method is called when the page is loaded for the first time, and
-    * every time UI changes in the component are received from the server.
-    */
+ 	 * This method must be implemented to update the client-side component from
+ 	 * UIDL data received from server.
+ 	 * 
+ 	 * This method is called when the page is loaded for the first time, and
+ 	 * every time UI changes in the component are received from the server.
+ 	 * 
+ 	 * @param uidl the uidl
+ 	 * @param client the client
+ 	 */
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 			
 		// This call should be made first. Ensure correct implementation,
@@ -262,7 +276,6 @@ public class IPaintCanvas extends HTML implements Paintable {
         	PaintCanvasNativeUtil.error("Transmission error!");
         	return;
         }
-    
         
         //check if the plugin has been added
         if(!init){
@@ -292,7 +305,6 @@ public class IPaintCanvas extends HTML implements Paintable {
         	}       	
         }    
        
-        
         //Check if plugin is ready, this will happen at initial call    
         //Ready state is set by the flash when it has completely loaded
         if(!ready){           	
@@ -357,6 +369,13 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 */
 	public void getServerCache(){
 		client.updateVariable(this.uidlId, "update-cache", true, true);
+	}
+	
+	/**
+	 * Sets the cached image on the server
+	 */
+	public void setServerCache(String xml){				
+		client.updateVariable(this.uidlId, "set-cache", new Object[]{xml}, true);
 	}
 	
 
