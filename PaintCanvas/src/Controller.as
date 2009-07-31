@@ -19,7 +19,7 @@ package
 	import mx.effects.Fade;
 	import mx.events.EffectEvent;
 	
-	import util.ClientStoreUtil;
+	import util.CacheUtil;
 	import util.DrawingUtil;
 	import util.GraphicsUtil;
 	import util.ImageConverterUtil;
@@ -71,6 +71,9 @@ package
 			
 			//Get cache mode
 			cacheMode = Application.application.parameters.cacheMode;
+			
+			//Notify ClientStoreUtil of controller
+			CacheUtil.setController(this);
 						
 			//No caching
 			if(cacheMode == CACHE_NONE) createPage();			
@@ -82,7 +85,7 @@ package
 			else if(cacheMode == CACHE_SERVER)
 			{
 				if(ExternalInterface.available)
-					ClientStoreUtil.requestCacheFromServer(clientID);
+					CacheUtil.requestCacheFromServer(clientID);
 				else 
 				{
 					Alert.show("ExternalInterface not available");
@@ -98,7 +101,7 @@ package
 				//Try server cache
 				else {
 					if(ExternalInterface.available)
-						ClientStoreUtil.requestCacheFromServer(clientID);
+						CacheUtil.requestCacheFromServer(clientID);
 					else 
 					{
 						Alert.show("ExternalInterface not available");
@@ -117,7 +120,7 @@ package
 				ExternalInterface.addCallback("setComponentBackgroundColor", 	GraphicsUtil.setApplicationColor);
 				ExternalInterface.addCallback("isReady",						isReady);
 				ExternalInterface.addCallback("setCacheMode",					setCacheMode);
-				ExternalInterface.addCallback("setImageCache",					ClientStoreUtil.cacheFromServerRecieved);
+				ExternalInterface.addCallback("setImageCache",					CacheUtil.cacheFromServerRecieved);
 				
 				//Filetypes
 				ExternalInterface.addCallback("getImageXML",					getImageXML);
@@ -169,11 +172,9 @@ package
 		}	
 		
 		public function createPage(newPage:Boolean=true):void
-		{			
-			Alert.show("Creating page!");
-			
+		{											
 			if(newPage)
-			{
+			{				
 				//Create the default layer
 				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
 				layers.push(backgroundLayer);			
@@ -222,11 +223,13 @@ package
 			show.alphaFrom = 0;
 			show.alphaTo = 1;			
 			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
-			{									
-				
-				//Start the autosave timer
-				autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
-				autosaveTimer.start();		
+			{	
+				if(cacheMode != CACHE_NONE)
+				{
+					//Start the autosave timer
+					autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
+					autosaveTimer.start();		
+				}											
 			});
 			show.play();				
 		}
@@ -236,7 +239,7 @@ package
 		{							
 			//Client side cache
 			if(cache == CACHE_CLIENT && xml == null)			
-				xml = ClientStoreUtil.readFromClient(clientID) as XML;			
+				xml = CacheUtil.readFromClient(clientID) as XML;			
 					
 			if(xml == null) return false;	
 			
@@ -280,6 +283,16 @@ package
 		 */
 		public function setPaperHeight(height:int):void
 		{ 				
+			if(Application.application == null) 
+				return;
+			
+			if(Application.application.frame == null)
+				return;
+				
+			if(LayerUtil.getCurrentLayer() == null)
+				return;
+			
+			
 			//If height <0 then set it to 100%
 			if(height < 0) height = Application.application.height;
 			
@@ -302,13 +315,23 @@ package
 		 * Width is in pixels.
 		 */
 		public function setPaperWidth(width:int):void
-		{ 			
+		{ 		
+			if(Application.application == null) 
+				return;
+			
+			if(Application.application.frame == null)
+				return;
+				
+			if(LayerUtil.getCurrentLayer() == null)
+				return;
+									
+				
 			if(width < 0) width = Application.application.width;
 			
 			var ratio:Number = width/Application.application.frame.width;
 			for each(var brush:IBrush in history)
 			{
-				brush.scale(ratio,1.0);
+				if(brush != null) brush.scale(ratio,1.0);
 			}				
 						
 			Application.application.frame.width=width; 
@@ -480,10 +503,28 @@ package
 		 * in the browsers cache if possible.
 		 */ 
 		private function autosave(e:TimerEvent):void
-		{
+		{			
 			if(hasChanged)
 			{				
-				ClientStoreUtil.storeOnClient(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+				switch(cacheMode)
+				{
+					case CACHE_CLIENT: 
+						CacheUtil.storeOnClient(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+					break;
+					
+					case CACHE_SERVER:
+						CacheUtil.storeOnServer(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+					break;
+					
+					case CACHE_AUTO:
+						var client:Boolean = CacheUtil.storeOnClient(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+						if(!client) CacheUtil.storeOnServer(clientID, ImageConverterUtil.convertToXML(this.history,this.layers));
+					break;
+					
+					case CACHE_NONE:
+						//Nop
+					break;
+				}				
 			
 				autosaveTimer.reset();
 				autosaveTimer.start();	

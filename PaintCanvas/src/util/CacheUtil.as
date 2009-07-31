@@ -6,7 +6,7 @@ package util
 	
 	import mx.controls.Alert;
 	
-	public class ClientStoreUtil
+	public class CacheUtil
 	{		 
 		private static var controller:Controller;
 		
@@ -65,6 +65,11 @@ package util
 			return true;
 		}
 		
+		public static function storeOnServer(id:String, obj:Object):Boolean
+		{				
+			ExternalInterface.call("PaintCanvasNativeUtil.setServerCache",id, obj.toString());
+			return true;
+		}		
 		
 		public static function readFromClient(id:String):Object
 		{		
@@ -83,16 +88,17 @@ package util
 		}
 		
 		public static function cacheFromServerRecieved(cache:String):void
-		{						
-			Alert.show(cache);
+		{									
 			try{			
 				var xml:XML = new XML(cache);							
 				var res:Boolean = controller.loadFromCache(Controller.CACHE_SERVER, xml);	
 																
 				//If parsing failed then create an empty page
 				controller.createPage(!res);
-				
-			}catch(e:Error){			
+					
+			}catch(e:Error){
+				//The xml the server returned is not valid XML		
+				ExternalInterface.call("PaintCanvasNativeUtil.error", e.message);	
 				controller.createPage(true);
 			}
 		}
