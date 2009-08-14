@@ -30,6 +30,8 @@ public class IPaintCanvas extends HTML implements Paintable {
     /** Indicates if the initial UIDL has been processed **/
     private boolean init = false;
     
+    private Long transactionCount = 0L;
+    
 	public IPaintCanvas(){		
 		super();				
 								
@@ -255,76 +257,61 @@ public class IPaintCanvas extends HTML implements Paintable {
         
         // Save the UIDL identifier for the component        
         uidlId = uidl.getId();        
-               
-        
-        //Check if we are refreshing the component, if so then requast initialization data
-        boolean initFlag = uidl.getBooleanAttribute("init");
-        if(!init && initFlag){
-        	client.updateVariable(uidlId, "initData", true, true);
-        	return;
-        }
-        
+                      
         // Save the component id
-        this.id = uidl.getStringVariable("flashIdentifier");
+        this.id = uidl.getStringVariable("flashIdentifier");      
         
-        //Parse the commands and their values from the UIDL
-        String[] commands = uidl.getStringArrayVariable("commands");
-        String[] values = uidl.getStringArrayVariable("values");       
-        
-        //check that all values came with the transmission
-        if(commands.length != values.length){
-        	PaintCanvasNativeUtil.error("Transmission error!");
+        //Check if the transaction id is the same as we have
+        if(uidl.getLongVariable("transactionId") != transactionCount){
+        	
+        	// If the transaction id is not the same then a refresh has happend
+        	// and we need to initialize the component again
+        	client.updateVariable(uidlId, "readyStatus", false, true);   
+        	transactionCount = 0L;
         	return;
         }
         
-        //check if the plugin has been added
-        if(!init){
-        
-        	//Check that the uidl contains all needed info
-        	String pageWidth = null;
-        	String pageHeight = null;
-        	String bgColor = null;
-        	String cacheMode = "cache-auto";
-        	for(int c=0; c<commands.length; c++){
-        		if(commands[c].equals("paperWidth"))
-        			pageWidth = values[c];
-        		else if(commands[c].equals("paperHeight"))
-        			pageHeight = values[c];        		
-        		else if(commands[c].equals("componentColor"))
-        			bgColor = values[c];
-        		else if(commands[c].equals("cache-mode"))
-        			cacheMode = values[c];
-        	}
-        	
-        	//If all info is recieved the init the flash
-        	if(pageWidth != null && pageHeight != null && bgColor != null ){
-        		//Add the SWF path
-        		String url = GWT.getModuleBaseURL() + SWFPATH;	       		           	
-            	createFlashComponent(url, pageWidth, pageHeight, bgColor,cacheMode);
-            	init = true;       		
-        	}       	
-        }    
-       
-        //Check if plugin is ready, this will happen at initial call    
-        //Ready state is set by the flash when it has completely loaded
-        if(!ready){           	
+        transactionCount++;
+                
+        //Parse the commands and their values from the UIDL
+        if(uidl.hasVariable("commands") && uidl.hasVariable("values") && init){
         	       	
-        	//Try to run the commands after one second if the plugin is not ready
-        	final UIDL u = uidl;
-        	final ApplicationConnection conn = client;
-        	Timer t = new Timer(){			
-        		public void run() { updateFromUIDL(u, conn); }        		
-        	};
+        	String[] commands = uidl.getStringArrayVariable("commands");
+            String[] values = uidl.getStringArrayVariable("values");       
+            
+            //check that all values came with the transmission
+            if(commands.length != values.length){
+            	PaintCanvasNativeUtil.error("Transmission error!");
+            	return;
+            }        
+                        
+            //execute commands
+            for(int i=0; i<commands.length; i++)
+       		 executeCommand(commands[i], values[i]);           
+        }
+        
+        // Cache recieived at initialization, pass it on
+        else if(uidl.hasAttribute("cache")){
+        	executeCommand("cache", uidl.getStringAttribute("cache"));
+        }
+        
+        // The component is initializing, get the init data
+        else if(!init){        
         	
-        	t.schedule(100);       	
-        	
-        } else {        
-        	
-        	//execute commands
-        	 for(int i=0; i<commands.length; i++)
-        		 executeCommand(commands[i], values[i]);
-        }        
-        	
+           		int pageWidth = uidl.getIntAttribute("pageWidth");
+            	int pageHeight = uidl.getIntAttribute("pageHeight");
+            	String bgColor = uidl.getStringAttribute("componentColor");
+            	String cacheMode = uidl.getStringAttribute("cache-mode");
+            	
+            	//Add the SWF path
+        		String url = GWT.getModuleBaseURL() + SWFPATH;	       		 
+        		
+        		//Initialize the flash component
+        		createFlashComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode);
+            	
+        		//Mark initialization done
+        		init = true;       	
+        }	         	
 	}
 	
 	/**

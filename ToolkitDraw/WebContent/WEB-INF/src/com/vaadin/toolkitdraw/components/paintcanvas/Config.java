@@ -1,11 +1,14 @@
 package com.vaadin.toolkitdraw.components.paintcanvas;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 
-public class Config {
+public class Config implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	private CacheMode cacheMode = CacheMode.AUTO;
 	

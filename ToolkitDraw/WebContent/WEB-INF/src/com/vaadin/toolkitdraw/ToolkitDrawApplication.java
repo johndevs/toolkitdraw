@@ -145,7 +145,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			return null;
 		}
 		
-		canvas.setCacheMode(CacheMode.AUTO);
+		canvas.setCacheMode(CacheMode.SERVER);
 		canvas.setInteractive(true);
 		
 		//Set the canvas as the current canvas

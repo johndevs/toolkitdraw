@@ -573,31 +573,34 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private StringBuilder imageCache = new StringBuilder("Hello world");
 	
 	private boolean cacheContentNeeded = false;
+	
+	private Long transactionCount = 0L;
 				
 	public PaintCanvas(){	
 		
+		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
-			
+		
+		//Set Full size paper width
+		configuration.setPaperWidth(-1);
+		configuration.setPaperHeight(-1);
+				
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
-		
-		//Set the paper height and width of the component to full
-		interactive.setPaperHeight(-1);		
-		interactive.setPaperWidth(-1);
-		
+			
 		setImmediate(true);		
-		requestRepaint();		
-		
+		requestRepaint();				
 	}
 	
 	public PaintCanvas(String width, String height){				
 		super.setWidth(width);
 		super.setHeight(height);	
 		
+		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
 		
@@ -608,8 +611,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 		
 		//Set the paper height and width of the component to full
-		interactive.setPaperHeight(-1);		
-		interactive.setPaperWidth(-1);	
+		configuration.setPaperWidth(-1);
+		configuration.setPaperHeight(-1);
 		
 		setImmediate(true);
 		requestRepaint();
@@ -620,6 +623,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		super.setWidth(width);
 		super.setHeight(height);
 		
+		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
 		
@@ -630,8 +634,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 		
 		//Set the paper height and width of the component to full
-		interactive.setPaperHeight(-1);		
-		interactive.setPaperWidth(-1);	
+		configuration.setPaperWidth(-1);
+		configuration.setPaperHeight(-1);
 		
 		//Set the background color
 		setComponentBackgroundColor(color);		
@@ -645,6 +649,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		super.setWidth(width);
 		super.setHeight(height);
 		
+		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
 			
@@ -654,9 +659,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		Layer background = new Layer("Background", this);
 		layers.add(background);
 		
-		//Set the paper height and width of the component to full
-		interactive.setPaperHeight(paperHeight);		
-		interactive.setPaperWidth(paperWidth);	
+		//Set the paper height and width
+		configuration.setPaperWidth(paperWidth);
+		configuration.setPaperHeight(paperHeight);
 			
 		setImmediate(true);
 		requestRepaint();
@@ -667,6 +672,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		super.setWidth(width);
 		super.setHeight(height);	
 		
+		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
 		
@@ -677,11 +683,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		layers.add(background);
 				
 		//Set the paper height and width(layer size)
-		interactive.setPaperHeight(paperHeight);
-		interactive.setPaperWidth(paperWidth);		
+		configuration.setPaperWidth(paperWidth);
+		configuration.setPaperHeight(paperHeight);
 		
 		//Set the background color
-		setComponentBackgroundColor(color);
+		configuration.setComponentColor(color);	
 		
 		setImmediate(true);
 		requestRepaint();
@@ -692,6 +698,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		super.setWidth(width);
 		super.setHeight(height);
 		
+		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
 		
@@ -709,7 +716,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 * Set the component in interactive mode which means that the user can draw on it
 		 * with the mouse
 		 */
-		setInteractive(interactive);
+		configuration.setInteractive(interactive);	
 		
 		setImmediate(true);
 		requestRepaint();	
@@ -754,30 +761,48 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	// Superclass writes any common attributes in the paint target.
         super.paintContent(target);              
         
-        // Add id to all messages
+        // Add id and transactionCount to all messages
         target.addVariable(this, "flashIdentifier", configuration.getComponentIdentifer());
-           	
-        List<String> commands = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
-                
-        //Add the changed values
-        while(!changedValues.isEmpty()){
-        	Map<String, String> entry = changedValues.poll();
-        	for(String command : entry.keySet()){
-        		commands.add(command);
-        		values.add(entry.get(command));
-        	}
-        	commandHistory.add(entry);
+        target.addVariable(this, "transactionId", transactionCount);   	          
+        transactionCount++;
+        
+        //If the plugin has been initialized then it is okay to send the commands
+        if(configuration.isInitializationComplete()){
+        	List<String> commands = new ArrayList<String>();
+            List<String> values = new ArrayList<String>();
+            
+        	//Add the changed values
+            while(!changedValues.isEmpty()){
+            	Map<String, String> entry = changedValues.poll();
+            	for(String command : entry.keySet()){
+            		commands.add(command);
+            		values.add(entry.get(command));
+            	}
+            	commandHistory.add(entry);
+            }
+            
+            target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
+            target.addVariable(this, "values", values.toArray(new String[values.size()]));          
+            
+            System.out.println("sending "+commands.size()+" commands to be executed");
+        }        
+        
+        //Allow cached content to be sent even if initialization is incomplete
+        //This might be needed in the initialization process
+        else if(cacheContentNeeded && !configuration.isInitializationComplete()){
+        	System.out.println("Sending initialization cache");
+        	String cacheContent = XMLUtil.escapeXML(imageCache.toString());    		
+        	target.addAttribute("cache", cacheContent);
         }
         
-        target.addVariable(this, "commands", commands.toArray(new String[commands.size()]));
-        target.addVariable(this, "values", values.toArray(new String[values.size()]));
-                    
-        //Send update flag. If this is not sent(false) then the flash
-        //will refresh itself from the local cache
-        if(configuration.isInitializationComplete()){
-        	target.addAttribute("init", configuration.isInitializationComplete());
-        }   	        	
+        //Else we sent the init data so it can initialize
+        else{
+        	System.out.println("Sending initialization data..");
+        	target.addAttribute("pageWidth", configuration.getPaperWidth());
+        	target.addAttribute("pageHeight", configuration.getPaperHeight());
+        	target.addAttribute("componentColor", configuration.getComponentColor());
+        	target.addAttribute("cache-mode", configuration.getCacheMode().toString());           	
+        }                  	
     }
     
     /** Deserialize changes received from client. */
@@ -831,27 +856,42 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	//Send cached image data
     	if(variables.containsKey("update-cache")){
     		System.out.println("Cache content requested");
-    		if(configuration.isInitializationComplete()){    			
+    		
+    		//cache requested from refresh
+    		if(variables.containsKey("init") && (Boolean)variables.get("init") == false && configuration.isInitializationComplete()){
+    			System.out.println("Cache refresh");
+    			cacheContentNeeded = true;
+    			configuration.setInitializationComplete(false);
+    			requestRepaint();
+    		}    		
+    		
+    		// Cache requested after initialisation but not at a refresh
+    		else if(configuration.isInitializationComplete()){    			
     			addToQueue("cache", imageCache.toString());    		
     			requestRepaint();
+    		
+    		// cache requested at component creation
     		} else {
     			cacheContentNeeded = true;
+    			requestRepaint();
     		}
     	}
     	
     	//Flash is ready event recieved
     	if(variables.containsKey("readyStatus")){    		
-    		configuration.setInitializationComplete(true);    
-    		System.out.println("Flash is ready");
+    		 
+    		boolean status = (Boolean)variables.get("readyStatus");
+    		System.out.println("New ready status recieved "+status);
+    		    		    		
+    		if(!status){
+    			cacheContentNeeded = false;
+    			transactionCount=0L;
+    		}
     		
-    		//Send cache content if it has been requested under initialization
-    		if(cacheContentNeeded){
-    			System.out.println("Sending delayed cached content"); 
-    			cacheContentNeeded =false;    			
-    			String cacheContent = XMLUtil.escapeXML(imageCache.toString());    		
-    			addToQueue("cache", cacheContent);    		
-    			requestRepaint();    			
-    		}    		
+    		configuration.setInitializationComplete(status);      
+    		    	
+    		//Flush commands
+    		requestRepaint();    	
     	}
     	
     	//Send the initialization data
@@ -911,6 +951,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	if(isImmediate()) requestRepaint();
     }
     
+    public Interactive getInteractive() {
+    	if(configuration.isInteractive()) 
+    		return interactive;
+    	else 
+    		return null;
+	}
+    
     public void setComponentBackgroundColor(String color){
     	if(color.contains("#")){
     		color.replaceAll("#", "0x");
@@ -925,12 +972,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	if(isImmediate()) requestRepaint();
     }        
     
-    public Interactive getInteractive() {
-    	if(configuration.isInteractive()) 
-    		return interactive;
-    	else 
-    		return null;
-	}
+    
     
     public Layers getLayers(){
     	return Ilayers;

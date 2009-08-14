@@ -19,6 +19,7 @@ import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.toolkitdraw.components.paintcanvas.Layer;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
@@ -51,8 +52,12 @@ public class SimpleGraphDemo extends Window {
 		
 		//Create a paintcanvas 
 		canvas = new PaintCanvas("300px","300px", "515151");	
+		
+		//Disable drawing on the canvas
 		canvas.setInteractive(false);
 		
+		//Disable caching
+		canvas.setCacheMode(CacheMode.NONE);		
 				
 		layout.addComponent(canvas,0,0);
 		
@@ -147,19 +152,16 @@ public class SimpleGraphDemo extends Window {
 		//Get the graphics object
 		PaintCanvas.Graphics gc = canvas.getGraphics();
 				
-		gc.drawImage("HELLO WORLD", 10, 20, 1.0);
-		
-		
 		//Clear the earlier drawings and set the canvas in batch mode
-		gc.setBatchMode(true);		
+		gc.setBatchMode(true);				
+		
 		
 		//TODO This clears the whole screen and does not work FIX ASAP
 		//gc.clear();	
 						
 		//Draw the background
 		gc.drawSquare(0, 0, 300, 300, "515151", "515151");
-		
-			
+				
 		//Draw the bars to the component in one batch
 		int counter = 0;
 		for(Object id : table.getItemIds()){			
