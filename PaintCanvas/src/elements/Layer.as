@@ -38,8 +38,7 @@ package elements
 			this.alpha = 1;
 		}
 		
-		public function setCanvas(canvas:Canvas):void{
-			Alert.show("Changing layer canvas. This is not advicable!");
+		public function setCanvas(canvas:Canvas):void{		
 			this.canvas = canvas;
 			this.canvas.id = this.name;
 			this.canvas.width = this.width;

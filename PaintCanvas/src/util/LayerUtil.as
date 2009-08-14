@@ -134,9 +134,7 @@ package util
 			//Search for layer
 			for each(var layer:Layer in layers){				
 				if(layer.getName() == name){
-					
-					Alert.show("setting layer "+layer.getName());
-					
+									
 					//Change layer
 					currentLayer = layer;		
 					currentLayer.getCanvas().setFocus();
@@ -156,14 +154,25 @@ package util
 		}
 				
 		public static function getLayerNames():Array
-		{	
+		{							
 			var names:Array = new Array;
+					
 			for(var i:int=0; i<layers.length; i++){
 				var layer:Layer = layers[i];
 				names.push(layer.getName());
 			}
 			return names;			
 		}	
+		
+		public static function getLayer(name:String):Layer
+		{
+			for(var i:int=0; i<layers.length; i++){
+				var layer:Layer = layers[i];
+				if(layer.getName() == name)
+					return layer;
+			}
+			return null;
+		}
 		
 		public static function setLayerBackgroundColor(color:String):void
 		{
@@ -193,8 +202,7 @@ package util
 			{			
 				if(brush.getCanvas() != currentLayer.getCanvas())
 					newHistory.push(brush);					
-			}
-				
+			}				
 			
 			ArrayUtil.assignArray(history, newHistory);			
 			GraphicsUtil.redraw();

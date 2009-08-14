@@ -19,7 +19,7 @@
 			
 			private static var  controller:Controller;
 			private static function init():void
-			{
+			{								
 				if(Application.application !=  null)
 				{					
 					Application.application.setStyle("backgroundColor", Application.application.parameters.bgColor);
@@ -29,10 +29,16 @@
 					Application.application.frame.width = Application.application.parameters.width;
 					Application.application.frame.height = Application.application.parameters.height;	
 					Application.application.frame.filters = [new DropShadowFilter()];
-														
-					controller = new Controller();												
+									
+					//Delay controller creation until the application has refreshed									
+					Application.application.callLater(initController);															
 				}
 			}			
+			
+			private static function initController():void
+			{
+				controller = new Controller();		
+			}
 		]]>
 	</mx:Script>
 

@@ -88,12 +88,12 @@ package util
 		}
 		
 		public static function cacheFromServerRecieved(cache:String):void
-		{									
-			try{			
+		{													
+			try{											
 				var xml:XML = new XML(cache);							
 				var res:Boolean = controller.loadFromCache(Controller.CACHE_SERVER, xml);	
 																
-				//If parsing failed then create an empty page
+				//If parsing failed then create an empty page				
 				controller.createPage(!res);
 					
 			}catch(e:Error){

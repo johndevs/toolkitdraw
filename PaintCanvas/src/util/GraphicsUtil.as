@@ -81,6 +81,11 @@ package util
 		{				
 			var brush:IBrush;
 			
+			if(LayerUtil.getCurrentLayer() == null){
+				Alert.show("setBrush failed! No layer selected.");
+				return;
+			}
+			
 			switch(type)
 			{
 				case Controller.PEN: 		brush = new Pen(LayerUtil.getCurrentLayer().getCanvas()); break;				
@@ -109,14 +114,27 @@ package util
 		
 		public static function redraw():void
 		{
-			if(LayerUtil.getCurrentLayer() == null) Alert.show("No layer selected!");
+			if(LayerUtil.getCurrentLayer() == null) 
+				Alert.show("Redraw: No layer selected!");
 						
 			LayerUtil.getCurrentLayer().getCanvas().graphics.clear();
 			
 			for each(var brush:IBrush in history)
-			{											
-				brush.redraw();
+			{					
+				if(brush.getCanvas() == LayerUtil.getCurrentLayer().getCanvas())				
+					brush.redraw();
 			}	
+		}
+		
+		public static function redrawAll():void
+		{
+			//Erase all previous drawings
+			for each(var layerName:String in LayerUtil.getLayerNames())			
+				LayerUtil.getLayer(layerName).getCanvas().graphics.clear();
+			
+			//Redraw all history steps
+			for each(var brush:IBrush in history)						
+				brush.redraw();			
 		}
 
 		public static function setBrushFont(font:String):void

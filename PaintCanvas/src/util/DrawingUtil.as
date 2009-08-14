@@ -90,7 +90,7 @@ package util
 			Text(painter).setEditable(true);								
 		}
 		
-		//Draw functions
+	
 		public static function drawLine(x1:int, y1:int, x2:int, y2:int):void
 		{
 			GraphicsUtil.setBrush(Controller.LINE);
@@ -106,21 +106,7 @@ package util
 		//Can only draw JPG and PNG images
 		public static function drawImage(img:String, x:int, y:int, alpha:Number):void
 		{
-			//Decode image to bitmapData
-			var decoder1:Base64Decoder = new Base64Decoder();
-			decoder1.decode(img);
-			
-			var bytes:ByteArray = decoder1.toByteArray();
-			
-			var loader:Loader = new Loader();
-			loader.loadBytes(decoder1.toByteArray());
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void
-			{				
-				GraphicsUtil.setBrush(Controller.IMAGE);
-						
-				painter.setAlpha(alpha);
-				Image(painter).drawImage(new Point(x,y), Bitmap(loader.content).bitmapData);				
-			});				
+			//Image adding not supported yet!
 		}	
 		
 	}

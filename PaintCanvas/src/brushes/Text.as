@@ -239,23 +239,7 @@ package brushes
 			if(this.text != null) 
 				this.text.setStyle("fontSize",this.current_width);
 		}		
-		
-		public function processData(data:BitmapData, p1:Point, p2:Point):void
-		{
-			//Create the stroke
-			var stroke:BrushStroke = new BrushStroke();
-			
-			stroke.points.push(p1);
-			stroke.points.push(p2);			
-			stroke.color = this.current_color;
-			stroke.width = this.current_width;
-			stroke.text = this.current_text;
-			stroke.fontName = this.current_fontName;
-			stroke.data = data;
-			
-			strokes.push(stroke);		
-		}
-		
+				
 		public function getType():String
 		{
 			return Controller.TEXT;
@@ -342,20 +326,7 @@ package brushes
 				strokeXML.@orderNumber = getStrokes().indexOf(stroke);
 				strokeXML.@font = stroke.fontName;							
 				strokeXML.txt = new String(stroke.text);		
-				
-				var data:BitmapData = stroke.data as BitmapData;
-				strokeXML.@datawidth=data.width;
-				strokeXML.@dataheight=data.height;				
-				
-				var bytes:ByteArray = data.getPixels(new flash.geom.Rectangle(0,0,data.width,data.height));
-				
-				var encoder:Base64Encoder = new Base64Encoder();
-				encoder.insertNewLines = false;
-				encoder.encodeBytes(bytes);				
-				
-				strokeXML.data = encoder.flush();
-				
-				
+								
 				//Generate point list
 				var points:String = "";
 				for each(var p:Point in stroke.points)
@@ -376,21 +347,7 @@ package brushes
 						
 			if(!brushXML.hasOwnProperty("stroke")) return;
 			for each(var strokeXML:XML in brushXML.stroke)
-			{
-				if(!strokeXML.hasOwnProperty("data")) continue;
-				if(!strokeXML.hasOwnProperty("datawidth")) continue;
-				if(!strokeXML.hasOwnProperty("dataheight")) continue;
-				var dataObject:String = strokeXML.data;
-				var dwidth:int = strokeXML.@datawidth;
-				var dheight:int = strokeXML.@dataheight;
-				
-				var decoder:Base64Decoder = new Base64Decoder();
-				decoder.decode(dataObject);
-				
-				var bytes:ByteArray = decoder.flush();
-				var data:BitmapData = new BitmapData(dwidth, dheight);
-				data.setPixels(new flash.geom.Rectangle(0,0,dwidth,dheight),bytes);
-								
+			{								
 				if(strokeXML.hasOwnProperty("@color"))
 					this.setColor(strokeXML.@color);
 				if(strokeXML.hasOwnProperty("@width"))
@@ -400,8 +357,7 @@ package brushes
 				if(strokeXML.hasOwnProperty("@fill"))
 					this.setFillColor(strokeXML.@fill);
 				if(strokeXML.hasOwnProperty("@font"))
-					this.setFont(strokeXML.@font);				
-				
+					this.setFont(strokeXML.@font);								
 					
 				if(!strokeXML.hasOwnProperty("points")) continue;
 				var pointsStr:String = strokeXML.points;
@@ -413,16 +369,19 @@ package brushes
 				if(point1.length != 2) continue;
 				
 				var point2:Array = (points[1] as String).split(",");
-				if(point2.length != 2) continue;
-																					
-				if(strokeXML.hasOwnProperty("txt"))
-					this.setText(strokeXML.txt);
+				if(point2.length != 2) continue;													
+													
+				this.startStroke();		
+				this.processPoint(new Point(new Number(point1[0]), new Number(point1[1]) ));
+				this.processPoint(new Point(new Number(point2[0]), new Number(point2[1]) ));
+				this.endStroke();
 				
-				this.processData(	data, 
-									new Point(new Number(point1[0]), new Number(point1[1])),
-									new Point(new Number(point2[0]), new Number(point2[1])) 
-									);
-				this.redraw();						
+				if(strokeXML.hasOwnProperty("txt"))
+					this.setText(strokeXML.txt);	
+								
+				this.endTool();
+				
+											
 			}		
 		}
 	}

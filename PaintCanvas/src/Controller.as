@@ -74,12 +74,14 @@ package
 			
 			//Notify ClientStoreUtil of controller
 			CacheUtil.setController(this);
-						
+			
 			//No caching
-			if(cacheMode == CACHE_NONE) createPage();			
+			if(cacheMode == CACHE_NONE) 
+				createPage();			
 						
 			//Client cache mode
-			else if(cacheMode == CACHE_CLIENT) createPage(!loadFromCache(CACHE_CLIENT));
+			else if(cacheMode == CACHE_CLIENT) 
+				createPage(!loadFromCache(CACHE_CLIENT));
 			
 			//Server cache mode
 			else if(cacheMode == CACHE_SERVER)
@@ -96,7 +98,8 @@ package
 			else if(cacheMode == CACHE_AUTO)
 			{
 				//Try client cache
-				if(loadFromCache(CACHE_CLIENT)) createPage(false);	
+				if(loadFromCache(CACHE_CLIENT)) 
+					createPage(false);	
 				
 				//Try server cache
 				else {
@@ -163,40 +166,28 @@ package
 				//Send available fonts to the server
 				var fonts:Array = new Array();
 				for each(var font:Font in Font.enumerateFonts(true)) fonts.push(font.fontName);					
-				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);				
-				
-				//Notify the client implementation that the flash has loaded and is ready to recieve commands
-				isFlashReady = true;
-				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);							
+				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);													
 			}									
 		}	
 		
 		public function createPage(newPage:Boolean=true):void
-		{											
+		{									
 			if(newPage)
-			{				
+			{		
+				var width:int = Application.application.parameters.width;		
+				if(width == -1) width = Application.application.width;
+				
+				var height:int = Application.application.parameters.height;
+				if(height == -1) height = Application.application.height;
+															
 				//Create the default layer
-				backgroundLayer = new Layer("Background", Application.application.frame.width, Application.application.frame.height);
-				layers.push(backgroundLayer);			
-			
-				Application.application.frame.width = backgroundLayer.getWidth();
-				Application.application.frame.height = backgroundLayer.getHeight();		
-				Application.application.frame.addChild(backgroundLayer.getCanvas());	
-			
+				backgroundLayer = new Layer("Background", width, height);									
+				layers.push(backgroundLayer);						
+																				
 				//Chreate the default brush
 				var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
 				this.history.push(defaultBrush);
-				this.painter = defaultBrush;		
-			
-				//Check if we have valid dimensions and if not then set to fullsize
-				if(Application.application.parameters.width == null || Application.application.parameters.height == null){
-					Application.application.frame.width = Application.application.width;
-					Application.application.frame.height = Application.application.height;
-				} else {
-					Application.application.frame.width = Application.application.parameters.width;
-					Application.application.frame.height = Application.application.parameters.height;	
-				}	
-				
+				this.painter = defaultBrush;					
 			} 
 			
 			//Init the utility classes
@@ -209,9 +200,8 @@ package
 			
 			LayerUtil.setController(this);
 			LayerUtil.setPainter(this.painter);
-			LayerUtil.setLayerArray(this.layers);
-			
-			LayerUtil.setCurrentLayer(backgroundLayer);
+			LayerUtil.setLayerArray(this.layers);			
+			LayerUtil.selectLayer("Background");
 			
 			//Set component in interactive mode(user-edit)
 			setInteractive(true);	
@@ -229,7 +219,12 @@ package
 					//Start the autosave timer
 					autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
 					autosaveTimer.start();		
-				}											
+				}							
+				
+				//Notify the client implementation that the flash has loaded and is ready to recieve commands
+				isFlashReady = true;
+				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);
+														
 			});
 			show.play();				
 		}
@@ -260,7 +255,7 @@ package
 				Application.application.frame.addChild(layer.getCanvas());
 				
 				if(layer.getName() == "Background")
-					backgroundLayer = layer;
+					backgroundLayer = layer;					
 			}
 			
 			//Add the strokes
@@ -272,7 +267,7 @@ package
 			
 			Application.application.frame.width = backgroundLayer.getWidth();
 			Application.application.frame.height = backgroundLayer.getHeight();
-			
+												
 			return true;		
 		}
 		
