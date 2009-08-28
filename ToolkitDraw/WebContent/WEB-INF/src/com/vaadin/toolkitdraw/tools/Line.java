@@ -25,6 +25,7 @@ public class Line extends Tool {
 		this.canvas = canvas;
 		
 		button = new Button();
+		button.setStyleName(Button.STYLE_LINK);
 		button.setData(BrushType.LINE);
 		button.setIcon(IconFactory.getIcon(Icons.ICON_LINE));
 		

@@ -1,20 +1,18 @@
 package com.vaadin.toolkitdraw.gwt.client;
 
-import com.google.gwt.core.client.GWT;
-import com.vaadin.terminal.gwt.client.ApplicationConfiguration;
-import com.vaadin.terminal.gwt.client.DefaultWidgetSet;
+import com.vaadin.colorpicker.gwt.client.ColorPickerWidgetSet;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 
 
-public class PaintCanvasWidgetSet extends DefaultWidgetSet {
+public class PaintCanvasWidgetSet extends ColorPickerWidgetSet {
 
 	/** Resolves UIDL tag name to widget class. */
     protected Class resolveWidgetType(UIDL uidl) {
         final String tag = uidl.getTag();
         if ("paintcanvas".equals(tag))
             return IPaintCanvas.class;
-        
+           
         // Let the DefaultWidgetSet handle resolution of
         // default widgets
         return super.resolveWidgetType(uidl);

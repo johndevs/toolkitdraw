@@ -1,6 +1,9 @@
 <module>
 	<!-- Inherit the NoEntry version to avoid multiple entrypoints -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSetNoEntry" /> 
+			
+	<!-- Inherit the ColorPicker widgetset so it is also available -->		
+	<inherits name="com.vaadin.colorpicker.gwt.ColorPickerWidgetSet" />
 	
 	<!-- Add SWFObject library -->
 	<script src="paintcanvas/swfobject.js" />

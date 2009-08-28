@@ -25,16 +25,18 @@ import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-public class LeftPanel extends Accordion implements ClickListener {
+public class LeftPanel extends VerticalLayout implements ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private Layout tab1;
-	private Layout tab2;
+	private Panel toolPanel;
+	
+	private Panel optionPanel;
 		
 	private List<Tool>  tools = new ArrayList<Tool>();			
 	private PaintCanvas canvas;
@@ -43,24 +45,27 @@ public class LeftPanel extends Accordion implements ClickListener {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
-		
+				
 		tools = createToolset(canvas);
 		this.canvas = canvas;
 	
 		//Create the tools tab
-		tab1 = new GridLayout(4,4);	
-		tab1.setCaption("Tools");				
-		addComponent(tab1);		
+		GridLayout toolGrid = new GridLayout(4,4);
+		toolGrid.setSizeFull();
+		toolPanel = new Panel("Tools",toolGrid);
+		addComponent(toolPanel);
+		setExpandRatio(toolPanel, 1);
 		
 		for(Tool tool : tools)
-			tab1.addComponent(tool.getButton());
+			toolGrid.addComponent(tool.getButton());
 		
 		
 		//Create the too options
-		tab2 = new VerticalLayout();
-		tab2.setCaption("Tool Options");	
-		tab2.setSizeFull();
-		addComponent(tab2);										
+		optionPanel = new Panel("Tool Options");	
+		optionPanel.setSizeFull();
+		addComponent(optionPanel);		
+		setExpandRatio(optionPanel, 2);
+		
 	}	
 	
 	/**
@@ -117,9 +122,11 @@ public class LeftPanel extends Accordion implements ClickListener {
 		for(Tool t : tools){
 			if(t.getType() == tool){
 				selected = t;
-				t.getButton().setStyleName("tool-selected");
+				t.getButton().removeStyleName("tool-unselected");
+				t.getButton().addStyleName("tool-selected");
 			} else {				
-				t.getButton().setStyleName("tool-unselected");
+				t.getButton().removeStyleName("tool-selected");
+				t.getButton().addStyleName("tool-unselected");
 			}
 		}
 		
@@ -129,9 +136,8 @@ public class LeftPanel extends Accordion implements ClickListener {
 			return;		
 		}
 		
-		//Set the tool
-		tab2.removeAllComponents();		
-		tab2.addComponent(selected.createToolOptions()); 
+		//Set the tool	
+		optionPanel.setContent(selected.createToolOptions());
 		
 		Interactive i = this.canvas.getInteractive();
 		

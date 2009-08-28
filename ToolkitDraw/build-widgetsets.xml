@@ -1,30 +1,7 @@
 <?xml version="1.0"?>
 
-<!-- 
-
-Client-side code is compiled by using GWTCompiler which compiles client-side Java code into
-JavaScript. Generated files are located under WebContent/ITMILL/widgetsets/*.
-
-Client-side compilation is required if you create new or modify existing widgets.
-You may use either this script or IT Mill Toolkit Hosted Mode.launch (in Eclipse)
-to compile your client-side java code. 
-
-By default IT Mill Toolkit first tries to serve widgetset resources from the file system, if that
-fails then files are streamed from itmill-toolkit-5.2.9.jar. 
-
-See configure target to adjust this buildfile.
-
--->
-
-<project name="IT Mill Toolkit Widgetset" basedir="." default="compile-all-widgetsets">
-
-	<!-- 
-		Update based on your project structure, by default this buildfile assumes that you 
-		1. use WebContent under your project's root directory
-		2. WebContent/WEB-INF/lib/itmill-toolkit-5.2.9.jar exists
-		3. WebContent/WEB-INF/src contains your project source files
-		4. gwt directory contains extracted GWT distribution for your platform (windows, linux or mac)
-	-->
+<project name="Toolkit Draw Widgetset" basedir="." default="compile-all-widgetsets">
+	
 	<target name="configure">
 		<!-- which platform we are in, possible values are windows, linux and mac -->
 		<property name="gwt-platform" value="linux" />
@@ -33,13 +10,17 @@ See configure target to adjust this buildfile.
 		<property name="gwt-location" value="gwt" />
 		
 		<!-- where Toolkit jar is located -->
-		<property name="toolkit-jar-location" value="WebContent/WEB-INF/lib/vaadin-6.0.0-pre2.jar" />
+		<property name="toolkit-jar-location" value="WebContent/WEB-INF/lib/vaadin-6.0.1.jar" />
+		
+		<!-- where ColorPicker jar is located -->
+		<property name="colorpicker-jar-location" value="WebContent/WEB-INF/lib/colorpicker-0.0.1.jar" />
 		
 		<!-- where project client-side widgetset source files are located -->
 		<property name="client-side-src-location" value="WebContent/WEB-INF/src" />
 			
 		<!-- where to generate compiled javascript and theme files -->
 		<property name="client-side-destination" value="WebContent/VAADIN/widgetsets" />
+		
 	</target>
 
 	
@@ -50,6 +31,7 @@ See configure target to adjust this buildfile.
 		<echo>  ${gwt-location}/gwt-dev-${gwt-platform}.jar</echo>
 		<echo>  ${gwt-location}/gwt-user.jar</echo>
 		<echo>  ${toolkit-jar-location}</echo>
+		<echo>  ${colorpicker-jar-location}</echo>
 		<echo>  ${client-side-src-location}</echo>
 		<echo>Output will be written into ${client-side-destination}</echo>
 		<echo>Note, if you have created your own widgetset, please modify target compile-my-widgetset first.</echo>
@@ -58,6 +40,7 @@ See configure target to adjust this buildfile.
 		<path id="compile.classpath">
 			<pathelement path="${client-side-src-location}" />
 			<pathelement path="${toolkit-jar-location}" />
+			<pathelement path="${colorpicker-jar-location}" />
 			<pathelement path="${gwt-location}/gwt-user.jar" />
 			<pathelement path="${gwt-location}/gwt-dev-${gwt-platform}.jar" />
 		</path>
@@ -67,8 +50,8 @@ See configure target to adjust this buildfile.
 	
 	<!-- Compiles the PaintCanvas widgetset -->
 	<target name="compile-paintcanvas" depends="init">		
-		<java classname="com.google.gwt.dev.GWTCompiler" failonerror="yes" fork="yes" maxmemory="512m">
-			<arg value="-out" />
+		<java classname="com.google.gwt.dev.Compiler" failonerror="yes" fork="yes" maxmemory="512m">
+			<arg value="-war" />
 			<arg value="${client-side-destination}" />			
 			<arg value="com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet" />
 		    <jvmarg value="-Xmx1G" />
@@ -78,9 +61,24 @@ See configure target to adjust this buildfile.
 				<path refid="compile.classpath"/>
 			</classpath>
 		</java>
-	</target>			
-
+	</target>	
 	
-	<target name="compile-all-widgetsets" depends="compile-paintcanvas" />
+	<!-- Compiles the ColorPicker widgetset -->
+	<target name="compile-colorpicker" depends="init">			
+			<java classname="com.google.gwt.dev.Compiler" failonerror="yes" fork="yes" maxmemory="512m">
+				<arg value="-war" />
+				<arg value="${client-side-destination}" />			
+				<arg value="com.vaadin.colorpicker.gwt.ColorPickerWidgetSet" />
+				<jvmarg value="-Djava.awt.headless=true"/>			
+				<jvmarg value="-Xmx1G" />
+				<jvmarg value="-Xss1024k"/>
+				<jvmarg value="-Xms64M"/> 
+				<classpath>
+					<path refid="compile.classpath"/>
+				</classpath>
+			</java>
+	</target>
+	
+	<target name="compile-all-widgetsets" depends="compile-paintcanvas,compile-colorpicker" />
 	
 </project>

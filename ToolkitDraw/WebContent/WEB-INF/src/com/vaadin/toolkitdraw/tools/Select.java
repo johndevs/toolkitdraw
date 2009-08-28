@@ -55,6 +55,7 @@ public class Select extends Tool {
 		
 		//Create the button
 		button = new Button();
+		button.setStyleName(Button.STYLE_LINK);
 		button.setData(getType());		
 		button.setIcon(IconFactory.getIcon(Icons.SELECT));		
 		

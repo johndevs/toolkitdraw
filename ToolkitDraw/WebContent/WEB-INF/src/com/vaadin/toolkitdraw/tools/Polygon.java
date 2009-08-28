@@ -24,8 +24,10 @@ public class Polygon extends Tool implements ValueChangeListener {
 	private Layout layout = new VerticalLayout();
 	
 	public Polygon(PaintCanvas canvas){
-		this.canvas = canvas;		
+		this.canvas = canvas;
+		
 		button = new Button();
+		button.setStyleName(Button.STYLE_LINK);
 		button.setData(BrushType.POLYGON);
 		button.setIcon(IconFactory.getIcon(Icons.ICON_POLY));
 			
