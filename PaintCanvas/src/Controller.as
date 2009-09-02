@@ -111,6 +111,10 @@ package
 						createPage();	
 					}
 				}				
+			}
+			
+			else {
+				Alert.show("Unkown cache mode ("+cacheMode+")");
 			}		
 															
 			//Bind to javascript
@@ -171,19 +175,16 @@ package
 		}	
 		
 		public function createPage(newPage:Boolean=true):void
-		{									
+		{				
+			LayerUtil.setController(this);			
+			LayerUtil.setLayerArray(this.layers);
+								
 			if(newPage)
 			{		
-				var width:int = Application.application.parameters.width;		
-				if(width == -1) width = Application.application.width;
-				
-				var height:int = Application.application.parameters.height;
-				if(height == -1) height = Application.application.height;
-															
-				//Create the default layer
-				backgroundLayer = new Layer("Background", width, height);									
-				layers.push(backgroundLayer);						
-																				
+				//Create background layer
+				LayerUtil.addNewLayer("Background");
+				backgroundLayer = LayerUtil.getCurrentLayer();
+																											
 				//Chreate the default brush
 				var defaultBrush:IBrush = new Pen(backgroundLayer.getCanvas());	
 				this.history.push(defaultBrush);
@@ -197,12 +198,9 @@ package
 			GraphicsUtil.setController(this);
 			GraphicsUtil.setPainter(this.painter);
 			GraphicsUtil.setHistory(this.history, this.redo_history);
-			
-			LayerUtil.setController(this);
+						
 			LayerUtil.setPainter(this.painter);
-			LayerUtil.setLayerArray(this.layers);			
-			LayerUtil.selectLayer("Background");
-			
+				
 			//Set component in interactive mode(user-edit)
 			setInteractive(true);	
 			
@@ -215,10 +213,10 @@ package
 			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
 			{	
 				if(cacheMode != CACHE_NONE)
-				{
+				{										
 					//Start the autosave timer
 					autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
-					autosaveTimer.start();		
+					autosaveTimer.start();							
 				}							
 				
 				//Notify the client implementation that the flash has loaded and is ready to recieve commands
@@ -341,7 +339,10 @@ package
 		 */ 				
 		private function mouseDown(e:MouseEvent):void
 		{
-			if(LayerUtil.getCurrentLayer() == null) Alert.show("No layer selected!");
+			//Check if we have a layer, if not select the Background layer
+			if(LayerUtil.getCurrentLayer() == null){
+				LayerUtil.selectLayer("Background");
+			} 
 			
 			if(e.ctrlKey){
 				painter.endTool();	
@@ -373,7 +374,9 @@ package
 		 */ 
 		private function mouseMove(e:MouseEvent):void
 		{
-			if(LayerUtil.getCurrentLayer() == null) Alert.show("No layer selected!");			
+			if(LayerUtil.getCurrentLayer() == null){
+				LayerUtil.selectLayer("Background");
+			} 
 		
 			Application.application.stage.focus = LayerUtil.getCurrentLayer().getCanvas();
 			

@@ -50,11 +50,27 @@ package util
 					return;
 				}
 			}
-			
-			var width:int  = new int(currentLayer.getWidth());
-			var height:int = new int(currentLayer.getHeight());
-			
-			var newLayer:Layer = new Layer(name,width,height );
+						
+			var width:int = 0;
+			var height:int = 0;
+			if(currentLayer == null){
+				width = Application.application.parameters.width;		
+				if(width == -1){
+					
+					width = Application.application.width;
+				} 
+				
+				height = Application.application.parameters.height;
+				if(height == -1){					
+					width = Application.application.width;
+				} 
+				
+			} else {
+				width = new int(currentLayer.getWidth());
+				height = new int(currentLayer.getHeight());
+			}
+						
+			var newLayer:Layer = new Layer(name, width, height );
 			layers.push(newLayer);
 			Application.application.frame.addChild(newLayer.getCanvas());
 			
@@ -138,11 +154,10 @@ package util
 					//Change layer
 					currentLayer = layer;		
 					currentLayer.getCanvas().setFocus();
-					
-					Application.application.addChild(currentLayer.getCanvas());
-					
+															
 					//Set the brush for the current layer
-					GraphicsUtil.setBrush(painter.getType());
+					if(painter != null)
+						GraphicsUtil.setBrush(painter.getType());
 							
 					controller.changeEvent();		
 					return;

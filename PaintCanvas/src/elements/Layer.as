@@ -3,6 +3,12 @@ package elements
 	import mx.containers.Canvas;
 	import mx.controls.Alert;
 	
+	/**
+	 * This class represents an Image layer
+	 *
+	 *  @author John Ahlroos
+	 * 
+	 */ 
 	public class Layer
 	{
 		protected var canvas:Canvas;
@@ -13,6 +19,9 @@ package elements
 		protected var backgroundColor:Number;
 		protected var alpha:Number;
 				
+		/**
+		 * The Constructor 
+		 */
 		public function Layer(name:String, width:int, height:int)
 		{
 			if(name == null){
@@ -24,7 +33,7 @@ package elements
 			this.canvas = new Canvas();
 			this.canvas.cacheAsBitmap = true;
 			this.canvas.id = this.name;
-			
+						
 			if(width > 0) this.canvas.width = width;
 			else this.canvas.percentWidth = 100;
 			
@@ -38,56 +47,118 @@ package elements
 			this.alpha = 1;
 		}
 		
+		/**
+		 * Set the canvas the layer represents
+		 * Please use with caution!
+		 */ 
 		public function setCanvas(canvas:Canvas):void{		
 			this.canvas = canvas;
 			this.canvas.id = this.name;
 			this.canvas.width = this.width;
 			this.canvas.height = this.height;		
 		}
-		public function getCanvas():Canvas{ return canvas; }
 		
+		/**
+		 * Get the canvas component the layer represents
+		 */ 
+		public function getCanvas():Canvas{ 
+			return this.canvas; 
+		}
+		
+		/**
+		 * Set the width of the layer
+		 */ 
 		public function setWidth(width:int):void
 		{ 
 			this.width = width;
 			this.canvas.width = width;
 		}
+		
+		/**
+		 * Retursn the width of the layer
+		 */ 
 		public function getWidth():int{ return width; }
 		
+		/**
+		 * Set the height of the layer
+		 */ 
 		public function setHeight(height:int):void
 		{ 
 			this.height = height; 
 			this.canvas.height = height;
 		}
+		
+		/**
+		 * Returns the height of the layer 
+		 */ 
 		public function getHeight():int{ return height; }
 		
+		/**
+		 * Set the name of the layer. The name should be unique and it
+		 * is used to identify the layer.
+		 */ 
 		public function setName(name:String):void
 		{ 
 			this.name = name;
 			this.canvas.id = name;
 		}
+		
+		/**
+		 * Returns the name of the layer
+		 */ 
 		public function getName():String{ return name; }
 		
+		/**
+		 * Define if the layer should be visible
+		 */
 		public function setVisible(visible:Boolean):void
 		{ 
 			this.visible = visible;
 			this.canvas.setVisible(visible);
 		}
-		public function getVisible():Boolean{return visible; }
 		
+		/**
+		 * Is the layer visible
+		 */ 
+		public function getVisible():Boolean{
+			return visible; 
+		}
+		
+		/**
+		 * Set the background color of the layer. 
+		 * An empty string represents no background color
+		 */ 
 		public function setBackgroundColor(color:String):void
 		{ 
 			this.backgroundColor = new Number(color);
 			this.canvas.setStyle("backgroundColor",color);
 		}
-		public function getBackgroundColor():Number{ return backgroundColor; }
 		
+		/**
+		 * Get the background color
+		 */ 
+		public function getBackgroundColor():Number{ 
+			return backgroundColor; 
+		}
+		
+		/** 
+		 * Set the alpha value of the layer. The layer transparancy can be controlled
+		 * with this value.
+		 */
 		public function setAlpha(alpha:Number):void
 		{
 			this.alpha = alpha;
 			this.canvas.alpha = alpha;
 		}
+		
+		/**
+		 * Returns the alpha value of the layer
+		 */ 
 		public function getAlpha():Number{ return alpha; }
 		
+		/**
+		 * Returns an XML representation of the layer
+		 */ 
 		public function getXML():XML
 		{
 			var layerXML:XML = new XML("<layer></layer>");
@@ -101,6 +172,10 @@ package elements
 			return layerXML;
 		}
 		
+		/**
+		 * Creates the layer based on XML. XML must use the same format that
+		 * getXML() creates.
+		 */ 
 		public function setXML(layerXML:XML):void
 		{ 				
 			if(layerXML.hasOwnProperty("@id")) setName(new String(layerXML.@id));						
@@ -110,6 +185,9 @@ package elements
 			if(layerXML.hasOwnProperty("@color")) setBackgroundColor(new String(layerXML.@color));					
 		}
 		
+		/**
+		 * Returns a string representation of the layer
+		 */ 
 		public function toString():String
 		{
 			return "Layer: "+name+" "+width+"x"+height+" visible:"+visible+" alpha:"+alpha+" bgColor:"+backgroundColor;
