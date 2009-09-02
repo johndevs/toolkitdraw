@@ -305,7 +305,7 @@ public class IPaintCanvas extends HTML implements Paintable {
             	
             	//Add the SWF path
         		String url = GWT.getModuleBaseURL() + SWFPATH;	       		 
-        		
+        		        		        		
         		//Initialize the flash component
         		createFlashComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode);
             	

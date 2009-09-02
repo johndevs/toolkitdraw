@@ -1,5 +1,6 @@
 package com.vaadin.toolkitdraw;
 
+import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	private void createHistograms()
 	{
 		//Create RGB channel histogram
-		PaintCanvas rgb = new PaintCanvas("300px","250px","515151");
+		PaintCanvas rgb = new PaintCanvas("300px","250px", new Color(51,51,51));
 		
 		//Set all layer backgrounds
 		for(Layer layer : rgb.getLayers().getLayers())

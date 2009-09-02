@@ -1,5 +1,6 @@
 package com.vaadin.toolkitdraw.components.paintcanvas;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -619,7 +620,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 	
-	public PaintCanvas(String width, String height, String color){				
+	public PaintCanvas(String width, String height, Color color){				
 		super.setWidth(width);
 		super.setHeight(height);
 		
@@ -668,7 +669,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 	
-	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, String color){
+	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, Color color){
 		super.setWidth(width);
 		super.setHeight(height);	
 		
@@ -686,7 +687,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		configuration.setPaperWidth(paperWidth);
 		configuration.setPaperHeight(paperHeight);
 		
-		//Set the background color
+		//Set the background color		
 		configuration.setComponentColor(color);	
 		
 		setImmediate(true);
@@ -799,9 +800,21 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         else{
         	System.out.println("Sending initialization data..");
         	target.addAttribute("pageWidth", configuration.getPaperWidth());
-        	target.addAttribute("pageHeight", configuration.getPaperHeight());
-        	target.addAttribute("componentColor", configuration.getComponentColor());
+        	target.addAttribute("pageHeight", configuration.getPaperHeight());        	
         	target.addAttribute("cache-mode", configuration.getCacheMode().toString());           	
+        	
+        	Color bgColor = configuration.getComponentColor();
+                	
+        	String red = Integer.toHexString(bgColor.getRed());
+        	red = red.length() < 2 ? "0"+red : red;
+        	
+        	String green = Integer.toHexString(bgColor.getGreen());
+        	green = green.length() < 2 ? "0"+green : green;
+        	
+        	String blue = Integer.toHexString(bgColor.getBlue());
+        	blue = blue.length() < 2 ? "0"+blue : blue;        	    	
+        	
+        	target.addAttribute("componentColor", "0x"+red+green+blue);       	        	
         }                  	
     }
     
@@ -958,17 +971,19 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		return null;
 	}
     
-    public void setComponentBackgroundColor(String color){
-    	if(color.contains("#")){
-    		color.replaceAll("#", "0x");
-    	}
-    	
-    	if(!color.contains("x")){
-    		color = "0x"+color;
-    	}
-    	        	
+    public void setComponentBackgroundColor(Color color){    	    	
     	configuration.setComponentColor(color);    
-    	addToQueue("componentColor", color);
+    	
+    	String red = Integer.toHexString(color.getRed());
+    	red = red.length() < 2 ? "0"+red : red;
+    	
+    	String green = Integer.toHexString(color.getGreen());
+    	green = green.length() < 2 ? "0"+green : green;
+    	
+    	String blue = Integer.toHexString(color.getBlue());
+    	blue = blue.length() < 2 ? "0"+blue : blue;
+    	    	
+    	addToQueue("componentColor", "0x"+red+green+blue);
     	if(isImmediate()) requestRepaint();
     }        
     

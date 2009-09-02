@@ -1,5 +1,6 @@
 package com.vaadin.toolkitdraw.components.paintcanvas;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Config implements Serializable{
 	
 	private int paperWidth = -1;
 	
-	private String componentColor = "000000";
+	private Color componentColor = Color.WHITE;
 	
 	private Set<String> availableFonts = new HashSet<String>();
 
@@ -74,11 +75,11 @@ public class Config implements Serializable{
 		this.paperWidth = paperWidth;
 	}
 
-	public String getComponentColor() {
+	public Color getComponentColor() {
 		return componentColor;
 	}
 
-	public void setComponentColor(String componentColor) {
+	public void setComponentColor(Color componentColor) {
 		this.componentColor = componentColor;
 	}
 

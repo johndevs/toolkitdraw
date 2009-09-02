@@ -1,5 +1,6 @@
 package com.vaadin.toolkitdraw;
 
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -139,13 +140,16 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 
 	private PaintCanvas addNewFile(){
 		
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");					
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400, new Color(51,51,51));					
 		if(canvas == null){
 			System.err.println("ERROR: Creating canvas failed!");	
 			return null;
 		}
 		
+		//Set the caching mode of the canvas
 		canvas.setCacheMode(CacheMode.SERVER);
+		
+		//Set the canvas in intactive mode
 		canvas.setInteractive(true);
 		
 		//Set the canvas as the current canvas
@@ -173,7 +177,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private PaintCanvas openFile(){
 		
 		//Create a new image
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400,"515151");			
+		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400, new Color(51,51,51));			
 		
 		if(canvas == null){
 			System.err.println("ERROR: Creating canvas failed!");	

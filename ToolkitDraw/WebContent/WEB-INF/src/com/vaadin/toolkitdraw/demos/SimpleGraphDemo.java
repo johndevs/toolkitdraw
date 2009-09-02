@@ -1,5 +1,6 @@
 package com.vaadin.toolkitdraw.demos;
 
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
@@ -51,7 +52,7 @@ public class SimpleGraphDemo extends Window {
 		setLayout(layout);	
 		
 		//Create a paintcanvas 
-		canvas = new PaintCanvas("300px","300px", "515151");	
+		canvas = new PaintCanvas("300px","300px",  new Color(51,51,51));	
 		
 		//Disable drawing on the canvas
 		canvas.setInteractive(false);
