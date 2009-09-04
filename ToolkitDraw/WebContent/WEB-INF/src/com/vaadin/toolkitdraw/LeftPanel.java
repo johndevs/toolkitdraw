@@ -15,6 +15,7 @@ import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.tools.Ellipse;
+import com.vaadin.toolkitdraw.tools.Fill;
 import com.vaadin.toolkitdraw.tools.Line;
 import com.vaadin.toolkitdraw.tools.Pen;
 import com.vaadin.toolkitdraw.tools.Polygon;
@@ -106,6 +107,10 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		Select select = new Select(canvas);
 		select.getButton().addListener((ClickListener)this);
 		toolset.add(select);
+		
+		Fill fill = new Fill(canvas);
+		fill.getButton().addListener((ClickListener)this);
+		toolset.add(fill);
 		
 		return toolset;
 	}

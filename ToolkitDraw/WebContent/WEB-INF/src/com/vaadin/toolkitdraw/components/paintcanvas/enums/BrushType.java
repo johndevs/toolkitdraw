@@ -7,6 +7,7 @@ public enum BrushType {
 	LINE("Line"),
 	POLYGON("Polygon"),
 	TEXT("Text"),
+	FILL("Fill"),
 	
 	SELECT("Generic-Select"),
 	RECTANGLE_SELECT("Rectangle-Select");

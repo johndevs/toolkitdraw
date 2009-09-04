@@ -594,6 +594,25 @@ public class PaintCanvasNativeUtil {
 	}-*/;	
 	
 	/**
+	 * Crop the current image to the selection
+	 * 
+	 * @param id the canvas id
+	 */
+	public static native void selectCrop(String id)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.cropSelected == 'function' && canvas.isReady() ){
+			canvas.selectAll();
+		}else{
+			var func = function() { canvas.cropSelected(); };		
+		setTimeout(func,1000);
+		}		
+	}-*/;	
+	
+	
+	/**
 	 * Sets the cache mode.
 	 * 
 	 * @param id the id

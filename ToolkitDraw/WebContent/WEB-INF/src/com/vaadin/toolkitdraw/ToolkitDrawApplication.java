@@ -375,8 +375,10 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 					break;
 				}
 				
+				//Selection releted actions
 				case SELECTION_REMOVE: currentCanvas.getInteractive().removeSelection(); break;
 				case SELECTION_ALL: currentCanvas.getInteractive().selectAll(); break;
+				case CROP: currentCanvas.getInteractive().crop(); setStatusbarText("Cropping done."); break;				
 					
 				//Demos
 				case DEMO1:{

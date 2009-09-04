@@ -160,6 +160,9 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("selectionAll")){
 			PaintCanvasNativeUtil.selectAll(id);
 		}
+		else if(command.equals("selectionCrop")){
+			PaintCanvasNativeUtil.selectCrop(id);
+		}		
 		else if(command.equals("setCurrentFont")){
 			String fontName = value;
 			PaintCanvasNativeUtil.setFont(id, fontName);

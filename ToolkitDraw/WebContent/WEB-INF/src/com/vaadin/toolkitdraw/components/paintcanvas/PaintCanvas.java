@@ -476,7 +476,17 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    		requestRepaint();
 	    	}
 	    }
-		
+	    
+	    /**
+	     * Crop to selection
+	     */
+		public void crop(){
+			addToQueue("selectionCrop", "");
+			if(isImmediate()){    	
+	    		requestRepaint();
+	    	}
+		}
+	    
 	}
 	
 	/**
