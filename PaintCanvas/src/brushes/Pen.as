@@ -108,9 +108,7 @@ package brushes
 		public function setWidth(width:Number):void
 		{					
 			current_width = width;
-		}
-		
-		
+		}		
 		
 		public function redraw():void
 		{

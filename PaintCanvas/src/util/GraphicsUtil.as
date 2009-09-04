@@ -1,6 +1,7 @@
 package util
 {
 	import brushes.Ellipse;
+	import brushes.Fill;
 	import brushes.IBrush;
 	import brushes.IFillableBrush;
 	import brushes.Image;
@@ -95,6 +96,7 @@ package util
 				case Controller.POLYGON:	brush = new Polygon(LayerUtil.getCurrentLayer().getCanvas()); break;
 				case Controller.TEXT:		brush = new Text(LayerUtil.getCurrentLayer().getCanvas()); break;		
 				case Controller.IMAGE:		brush = new Image(LayerUtil.getCurrentLayer().getCanvas()); break;
+				case Controller.FILL:		brush = new Fill(LayerUtil.getCurrentLayer().getCanvas()); break;
 				
 				case Controller.RECTANGLE_SELECT:	brush = new RectangleSelect(LayerUtil.getCurrentLayer().getCanvas()); break;	
 				

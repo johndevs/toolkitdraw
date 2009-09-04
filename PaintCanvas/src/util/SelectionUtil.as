@@ -14,20 +14,34 @@ package util
 		private static const foreground:Canvas = new Canvas();	
 		private static var hitTestBitmap:BitmapData;
 		
+		/**
+		 * Sets the selection
+		 */ 
 		public static function setSelection(pts:Array):void
 		{			
 			//Old selection is overwritten
 			ArrayUtil.assignArray(points, pts);		
 		}	
 		
+		/**
+		 * Returns the currently selected points
+		 */ 
 		public static function getSelection():Array{
 			return points;
 		}
 		
+		/**
+		 * Do we have a selection?
+		 * 
+		 */ 
 		public static function hasSelection():Boolean{
 			return currentCanvas != null;
 		}
 		
+		/**
+		 * Show the currently selected area
+		 * 
+		 */ 
 		public static function showSelection(canvas:Canvas):void{
 						
 			//Hide possible previous selection
@@ -68,6 +82,9 @@ package util
 			currentCanvas.addChild(selection);
 		}
 		
+		/**
+		 * Remove the selection preview
+		 */ 
 		public static function hideSelection():void{			
 			if(currentCanvas != null){
 				currentCanvas.removeChild(selection);				
@@ -77,6 +94,9 @@ package util
 			currentCanvas = null;
 		}
 		
+		/**
+		 * Select the whole screen area(paper area)
+		 */ 
 		public static function selectAll():void{
 			hideSelection();
 								
@@ -91,12 +111,23 @@ package util
 			
 			SelectionUtil.showSelection(canv);
 		}
-				
-				
+								
+		/**
+		 * Determines if a coordinate inside or outside the selection
+		 */ 		
 		public static function inSelection(x:int, y:int):Boolean{							
 			var p1:Point = new Point(0,0);
 			var p2:Point = new Point(x,y);			
 			return hitTestBitmap.hitTest(p1,0xFF,p2);
+		}
+		
+		/**
+		 * Resizes the image(paper) to the current selection
+		 */  
+		public static function cropSelection():void{
+			
+			
+			
 		}
 		
 	}

@@ -53,6 +53,7 @@ package
 		public static const POLYGON:String = "Polygon";
 		public static const TEXT:String = "Text";
 		public static const IMAGE:String = "Image";
+		public static const FILL:String = "Fill";
 		
 		public static const HISTORY_OBJECT:String = "PaintCanvas-history";
 		public static const LAYERS_OBJECT:String = "PaintCnavas-layers";
@@ -165,7 +166,8 @@ package
 				
 				//Selection functions
 				ExternalInterface.addCallback("removeSelection",				SelectionUtil.hideSelection);
-				ExternalInterface.addCallback("selectAll",						SelectionUtil.selectAll);				
+				ExternalInterface.addCallback("selectAll",						SelectionUtil.selectAll);			
+				ExternalInterface.addCallback("cropSelected",					SelectionUtil.cropSelection);	
 				
 				//Send available fonts to the server
 				var fonts:Array = new Array();
