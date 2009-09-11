@@ -112,4 +112,9 @@ public class Text extends Tool {
 		return BrushType.TEXT;
 	}
 
+	@Override
+	public String getName() {
+		return "Text";
+	}
+
 }

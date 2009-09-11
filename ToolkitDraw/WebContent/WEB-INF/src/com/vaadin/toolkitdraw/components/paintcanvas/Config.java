@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.Plugin;
 
 public class Config implements Serializable{
 
@@ -13,6 +14,8 @@ public class Config implements Serializable{
 
 	private CacheMode cacheMode = CacheMode.AUTO;
 	
+	private Plugin plugin = Plugin.FLASH;
+
 	private String componentIdentifer = "";
 	
 	private boolean initializationComplete = false;
@@ -91,6 +94,12 @@ public class Config implements Serializable{
 		this.availableFonts = availableFonts;
 	}
 	
-	
+	public Plugin getPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(Plugin plugin) {
+		this.plugin = plugin;
+	}
 	
 }

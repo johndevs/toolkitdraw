@@ -26,6 +26,7 @@ import com.vaadin.ui.Component;
 
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.Plugin;
 import com.vaadin.toolkitdraw.util.XMLUtil;
 
 @SuppressWarnings("unchecked")
@@ -811,7 +812,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         	System.out.println("Sending initialization data..");
         	target.addAttribute("pageWidth", configuration.getPaperWidth());
         	target.addAttribute("pageHeight", configuration.getPaperHeight());        	
-        	target.addAttribute("cache-mode", configuration.getCacheMode().toString());           	
+        	target.addAttribute("cache-mode", configuration.getCacheMode().getId());           	
+        	target.addAttribute("plugin", configuration.getPlugin().getId());
         	
         	Color bgColor = configuration.getComponentColor();
                 	
@@ -900,7 +902,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		}
     	}
     	
-    	//Flash is ready event recieved
+    	//Plugin is ready event recieved
     	if(variables.containsKey("readyStatus")){    		
     		 
     		boolean status = (Boolean)variables.get("readyStatus");
@@ -925,6 +927,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		setComponentBackgroundColor(configuration.getComponentColor());
     		setInteractive(configuration.isInteractive());
     		setCacheMode(configuration.getCacheMode());
+    		setPlugin(configuration.getPlugin());
     		configuration.setInitializationComplete(false);    		
     		requestRepaint();    		
     	}   	
@@ -1009,7 +1012,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     
     public void setCacheMode(CacheMode mode){
     	configuration.setCacheMode(mode);
-    	addToQueue("cache-mode", mode.toString());
+    	addToQueue("cache-mode", mode.getId());
+    	if(isImmediate()) requestRepaint();
+    }
+    
+    public void setPlugin(Plugin plugin){
+    	configuration.setPlugin(plugin);
+    	addToQueue("plugin", plugin.getId());
     	if(isImmediate()) requestRepaint();
     }
     

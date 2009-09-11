@@ -87,4 +87,9 @@ public class Select extends Tool {
 
 	}
 
+	@Override
+	public String getName() {
+		return "Select";
+	}
+
 }

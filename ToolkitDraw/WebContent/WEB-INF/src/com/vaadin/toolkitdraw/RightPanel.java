@@ -16,8 +16,10 @@ import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -35,8 +37,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 
 	private PaintCanvas canvas;	
 	
-	private Layout tab1;
-	private Layout tab2;
+	private GridLayout tab1;
+	private VerticalLayout tab2;
 	
 	private TextField paperHeight;
 	private TextField paperWidth;
@@ -60,8 +62,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		this.canvas = canvas;
 		
 		//Add the histograms
-		createHistograms();
-		createHistogramsTab();
+		addComponent(createHistogramsTab());
+		setExpandRatio(histograms, 1);
 		
 		//Add the tabs
 		this.tabs = new Accordion();
@@ -70,27 +72,28 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		setExpandRatio(this.tabs, 2);
 		
 		//Create the layers tab
-		createLayersTab();
-		
+		this.tabs.addComponent(createLayersTab());
+				
 		//Create the paper options
-		createPaperOptionsTab();
+		this.tabs.addComponent(createPaperOptionsTab());
 	}
 	
 	private void createHistograms()
 	{
 		//Create RGB channel histogram
-		PaintCanvas rgb = new PaintCanvas("300px","250px", new Color(51,51,51));
-		
-		//Set all layer backgrounds
-		for(Layer layer : rgb.getLayers().getLayers())
-			rgb.getLayers().setLayerBackground(layer,"0x414141", 0);	
+		PaintCanvas rgb = new PaintCanvas("300px","250px", new Color(Integer.parseInt("44",16),
+																	 Integer.parseInt("44",16),
+																	 Integer.parseInt("44",16) ));
+		;	
 		
 		String caption = "Histogram";
 		histogramCanvases.put(caption, rgb);		
 	}
 	
-	private void createHistogramsTab()
+	private Component createHistogramsTab()
 	{
+		createHistograms();		
+		
 		histograms = new TabSheet();
 		histograms.setSizeFull();		
 		
@@ -106,11 +109,10 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			histograms.addTab(layout);
 		}
 		
-		addComponent(histograms);
-		setExpandRatio(histograms, 1);
+		return histograms;
 	}
 	
-	private void createPaperOptionsTab(){
+	private Component createPaperOptionsTab(){
 		GridLayout grid = new GridLayout(4,1);
 		grid.setCaption("Paper Options");	
 		
@@ -135,13 +137,14 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		grid.addComponent(paperHeight,3,0);
 		
 		tab1 = grid;
-		tabs.addComponent(tab1);	
+		return tab1;
 	}
 	
-	private void createLayersTab()
+	private Component createLayersTab()
 	{
 		tab2 = new VerticalLayout();		
 		tab2.setCaption("Layers");	
+		tab2.setSizeFull();
 			
 		HorizontalLayout layerTools = new HorizontalLayout();
 		
@@ -151,13 +154,13 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		addLayer.setStyleName(Button.STYLE_LINK);
 		addLayer.addListener((ClickListener)this);
 		layerTools.addComponent(addLayer);
-	
+		
 		removeLayer = new Button();
 		removeLayer.setDescription("Remove layer");
 		removeLayer.setIcon(IconFactory.getIcon(Icons.MINUS));
 		removeLayer.setStyleName(Button.STYLE_LINK);
 		removeLayer.addListener((ClickListener)this);
-		layerTools.addComponent(removeLayer);
+		layerTools.addComponent(removeLayer);	
 		
 		upLayer = new Button();
 		upLayer.setDescription("Move layer up");
@@ -171,24 +174,29 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		downLayer.setIcon(IconFactory.getIcon(Icons.DOWN_ARROW));
 		downLayer.setStyleName(Button.STYLE_LINK);
 		downLayer.addListener((ClickListener)this);
-		layerTools.addComponent(downLayer);
+		layerTools.addComponent(downLayer);	
 		
-		tab2.addComponent(layerTools);		
+		HorizontalLayout layerToolsContainer = new HorizontalLayout();
+		layerToolsContainer.setSizeFull();
+		layerToolsContainer.addComponent(layerTools);
+		layerToolsContainer.setComponentAlignment(layerTools, Alignment.MIDDLE_LEFT);
+		tab2.addComponent(layerToolsContainer);
+		tab2.setExpandRatio(layerToolsContainer, 1);
 		
 		layerTable = new Table();
 		layerTable.setStyleName("layer-table");
-		layerTable.setHeight("300px");
-		layerTable.setWidth("100%");
+		layerTable.setSizeFull();
 		layerTable.setSelectable(true);
 		layerTable.addListener((ItemClickListener)this);
 		layerTable.addContainerProperty("Visible", CheckBox.class, null);		
 		layerTable.setColumnWidth("Visible", 30);
 		layerTable.setColumnHeader("Visible", "");
 		layerTable.addContainerProperty("Name",String.class, "");
-				
+						
+		tab2.addComponent(layerTable);	
+		tab2.setExpandRatio(layerTable, 20);
 		
-		tab2.addComponent(layerTable);		
-		tabs.addComponent(tab2);			
+		return tab2;
 	}
 	
 	private void refreshLayers(){

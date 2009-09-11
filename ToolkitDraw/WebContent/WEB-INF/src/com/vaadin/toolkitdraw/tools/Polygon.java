@@ -74,4 +74,9 @@ public class Polygon extends Tool implements ValueChangeListener {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "Polygon";
+	}
+
 }

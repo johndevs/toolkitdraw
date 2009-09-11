@@ -73,4 +73,9 @@ public class Square extends Tool implements ValueChangeListener{
 				canvas.getInteractive().setFillColor(String.valueOf(event.getProperty().getValue()));
 			}
 		}
+
+		@Override
+		public String getName() {
+			return "Rectangle";
+		}
 }

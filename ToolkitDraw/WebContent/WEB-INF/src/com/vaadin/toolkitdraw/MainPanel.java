@@ -20,7 +20,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 	private Map<String, Type> typeMap = new HashMap<String, Type>();
 	
 	public static enum Type { 
-		NEW, SAVE, UNDO, REDO, CLOSE,OPEN,
+		NEW, SAVE, UNDO, REDO, CLOSE,OPEN,PREFERENCES,
 		DEMO1, 
 		SELECTION_ALL, SELECTION_REMOVE, CROP
 	};
@@ -40,6 +40,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		typeMap.put("Select all", Type.SELECTION_ALL);
 		typeMap.put("Remove selection", Type.SELECTION_REMOVE);
 		typeMap.put("Crop to selection", Type.CROP);
+		typeMap.put("Preferences", Type.PREFERENCES);
 		
 		//Create the file menu
 		MenuBar.MenuItem file = addItem("File",null,null);
@@ -52,6 +53,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		MenuBar.MenuItem edit = addItem("Edit",null,null);
 		MenuBar.MenuItem undo = edit.addItem("Undo", null, this);
 		MenuBar.MenuItem redo = edit.addItem("Redo", null, this);	
+		MenuBar.MenuItem prefs = edit.addItem("Preferences", null, this);
 		
 		//Create the select menu
 		MenuBar.MenuItem select = addItem("Selection",null,null);

@@ -2,17 +2,22 @@ package com.vaadin.toolkitdraw.components.paintcanvas.enums;
 
 public enum CacheMode {
 	
-	AUTO("cache-auto"),
-	CLIENT("cache-client"),
-	SERVER("cache-server"),
-	NONE("cache-none");	
+	AUTO("cache-auto", "Autoselect cache"),
+	CLIENT("cache-client", "Use client cache"),
+	SERVER("cache-server", "Use server cache"),
+	NONE("cache-none", "Disable caching");	
 	
 	
-	private final String str;
-	private CacheMode(String s) {
-		this.str = s;
+	private final String caption;
+	private final String id;
+	private CacheMode(String id, String caption) {
+		this.id = id;
+		this.caption = caption;
 	}
 	public String toString(){
-		return str;
+		return caption;
 	}		
+	public String getId(){
+		return id;
+	}
 }

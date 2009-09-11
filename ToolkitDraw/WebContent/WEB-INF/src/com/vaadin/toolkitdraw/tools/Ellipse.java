@@ -75,4 +75,9 @@ public class Ellipse extends Tool implements ValueChangeListener {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "Ellipse";
+	}
+
 }

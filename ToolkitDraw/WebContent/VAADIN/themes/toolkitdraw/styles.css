@@ -1,7 +1,79 @@
 @import "../reindeer/styles.css";
 
-.v-panel-caption{
+.v-window-contents{
+	background:#222222;	
+}
+
+.v-panel-caption, .v-accordion-item-caption{
 	line-height: 29px;
+	height:29px;
+	background:none;
+	color:white;
+	text-shadow:0px;
+}
+
+.v-captiontext{
+	color:white;	
+	text-shadow:none;
+	border:0;
+}
+
+.v-panel-content .v-verticallayout, 
+.v-panel-content .v-gridlayout, 
+.v-accordion-item,
+.v-table-body,
+.v-tabsheet-tabsheetpanel {
+	background: #444444;
+	border:0;
+}
+
+.v-tabsheet-content{
+	border:0px;	
+}
+
+.v-tabsheet-deco{
+	height:0px;
+	border:0px;	
+}
+
+.v-tabsheet-tabitem .v-caption{
+	background:none;
+}
+
+.v-tabsheet-tabitemcell, 
+.v-tabsheet-spacertd div {
+	background: #222222;	
+	margin-right: 0px;
+}
+
+
+.v-accordion, 
+.v-accordion-item-open 
+.v-accordion-item-caption, 
+.v-accordion-item-caption, 
+.v-panel-caption {
+	background: #222222;	
+	border:0px solid black;		
+	font-weight: normal;
+}
+
+.v-panel-caption {
+	height:30px;	
+	padding-left:10px;
+}
+
+
+.openfiletabsheet .v-tabsheet-tabitemcell, 
+.openfiletabsheet .v-tabsheet-spacertd div{
+	background: #222222;
+}
+
+.leftpanel{
+	border-right:1px solid #333333;
+}
+
+.rightpanel{
+	border-left:1px solid #333333;
 }
 
 .tool-selected{
@@ -9,5 +81,38 @@
 }
 
 .tool-unselected{
+}
 
+.mainwindow{
+	background-color:#555555;
+}
+
+.openfiletabsheet {
+	background-color: #222222;
+}
+
+.twin-colorpicker .v-button[style*="width"] .v-icon, .v-ie7 .v-button .v-icon{
+	position:inherit;	
+	top:0px;
+	margin:0px;
+}
+
+.twin-colorpicker .colorpicker-button{
+	border:0px;	
+}
+
+.v-tabsheet-tabitem, .v-tabsheet-tabitem-selected{
+	background:none;
+}
+
+.v-tabsheet-tabitem-selected .v-caption{
+	background: #333333;
+}
+
+.v-tabsheet-tabitem .v-captiontext{
+	text-shadow: 0 1px 0 black;
+}
+
+.preferences-popup-layout .v-gridlayout-margin{
+	padding:2px;
 }

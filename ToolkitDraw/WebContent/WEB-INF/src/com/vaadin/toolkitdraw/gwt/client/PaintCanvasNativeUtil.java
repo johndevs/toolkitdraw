@@ -650,6 +650,11 @@ public class PaintCanvasNativeUtil {
 		}		
 	}-*/;	
 	
+	public static native boolean isIE()/*-{
+		var _app = navigator.appName;		
+		if (_app == 'Microsoft Internet Explorer') return true;
+		else return false;		
+	}-*/;
 	/**
 	 * Set the available fonts. This is done by the Flash component and should
 	 * not be done manually

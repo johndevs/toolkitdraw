@@ -46,35 +46,35 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 	 */
 	public TwinColorPicker(){
 		
-		setWidth("100px");
-		setHeight("100px");
+		setWidth("50px");
+		setHeight("50px");
 		setStyleName("twin-colorpicker");
 				
 		background = new ColorPicker("Background", Color.WHITE);
 		background.addListener(this);
-		background.setWidth("55px");
-		background.setHeight("35px");
-		addComponent(background, "top:20px;left:30px");
+		background.setWidth("33px");
+		background.setHeight("30px");
+		addComponent(background, "top:15px;left:15px");
 		
 		foreground = new ColorPicker("Foreground", Color.BLACK);
 		foreground.addListener(this);
-		foreground.setWidth("55px");
-		foreground.setHeight("35px");
+		foreground.setWidth("33px");
+		foreground.setHeight("30px");
 		addComponent(foreground, "top:0px;left:0px");
 		
 		resetButton = new Button("", this);	
 		resetButton.setIcon(IconFactory.getIcon(Icons.RESET_COLOR_BUTTON));
 		resetButton.setStyleName(Button.STYLE_LINK);
-		resetButton.setWidth("30px");
-		resetButton.setHeight("20px");
-		addComponent(resetButton, "top:35px;left:0px");
+		resetButton.setWidth("15px");
+		resetButton.setHeight("15px");
+		addComponent(resetButton, "top:31px;left:0px");
 		
 		switchButton = new Button("", this);	
 		switchButton.setIcon(IconFactory.getIcon(Icons.SWITCH_COLOR_BUTTON));
 		switchButton.setStyleName(Button.STYLE_LINK);
-		switchButton.setWidth("30px");
-		switchButton.setHeight("20px");
-		addComponent(switchButton, "top:0px;left:55px");		
+		switchButton.setWidth("15px");
+		switchButton.setHeight("15px");
+		addComponent(switchButton, "top:0px;left:34px");		
 	}
 
 	/* (non-Javadoc)
@@ -154,6 +154,8 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 			background.setColor(Color.WHITE);
 			foreground.requestRepaint();
 			background.requestRepaint();
+			changed(foreground, Color.BLACK);
+			changed(background, Color.WHITE);
 		} 
 		else if(event.getButton() == switchButton){
 			Color fgColor = foreground.getColor();
@@ -163,6 +165,8 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 			background.setColor(fgColor);
 			foreground.requestRepaint();
 			background.requestRepaint();
+			changed(foreground, bgColor);
+			changed(background, fgColor);
 		}		
 	}	
 }

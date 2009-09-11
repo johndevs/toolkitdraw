@@ -54,4 +54,10 @@ public class Fill extends Tool implements ValueChangeListener, ColorChangeListen
 		colorpicker.selectForegroundColorPicker();	
 		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));			
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -65,4 +65,9 @@ public class Line extends Tool {
 		
 	}
 
+	@Override
+	public String getName() {
+		return "Line";
+	}
+
 }

@@ -25,10 +25,12 @@ import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.toolkitdraw.components.ConfirmPopup;
 import com.vaadin.toolkitdraw.components.OpenPopup;
+import com.vaadin.toolkitdraw.components.PreferencesPopup;
 import com.vaadin.toolkitdraw.components.SavePopup;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.paintcanvas.enums.Plugin;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
@@ -69,6 +71,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private Map<String, Boolean> savedStatusFiles = new HashMap<String, Boolean>();
 	
 	private PaintCanvas currentCanvas;
+	
+	private Preferences preferences = new Preferences();
 	
 	/** Supported filetypes **/
 	public enum FileType{
@@ -147,7 +151,10 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		}
 		
 		//Set the caching mode of the canvas
-		canvas.setCacheMode(CacheMode.SERVER);
+		canvas.setCacheMode(preferences.getCacheMode());
+		
+		//Set the plugin to use
+		canvas.setPlugin(preferences.getPlugin());
 		
 		//Set the canvas in intactive mode
 		canvas.setInteractive(true);
@@ -371,6 +378,12 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 							}
 						}						
 					});
+					pop.show();
+					break;
+				}
+				
+				case PREFERENCES:{
+					final PreferencesPopup pop = new PreferencesPopup(mainWindow, preferences);
 					pop.show();
 					break;
 				}

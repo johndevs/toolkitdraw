@@ -1,6 +1,10 @@
 package com.vaadin.toolkitdraw.gwt.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.ObjectElement;
+import com.google.gwt.dom.client.ParamElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
@@ -23,6 +27,9 @@ public class IPaintCanvas extends HTML implements Paintable {
     
     /** Relative path to the executable Flash **/ 
     public static String SWFPATH = "paintcanvas/PaintCanvas.swf";
+    
+    /** Relative path to the executable Java Applet **/
+    public static String JAVAPATH = "paintcanvas/PaintCanvas.jar";
           
     /** Indicates if the flash has been inited and is ready to be used **/
     private boolean ready = false;
@@ -189,6 +196,10 @@ public class IPaintCanvas extends HTML implements Paintable {
 			PaintCanvasNativeUtil.setImageCache(id, val);
 		}
 		
+		else if(command.equals("plugin")){
+			//Plugin change while editing not supported at this time. 
+		}
+		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
 	
@@ -201,7 +212,71 @@ public class IPaintCanvas extends HTML implements Paintable {
 		this.getElement().setId(id+"-canvas");	
 		setHTML("<DIV id='"+id+"'></DIV>");
 		
+		//Embed the flash with SWFObject
 		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor, cacheMode);		
+	}
+	
+	/**
+	 * This method create the Java Applet when loading is complete
+	 * @param url
+	 * 		The path to the executable jar
+	 * @param pageWidth
+	 * 		THe width of the image
+	 * @param pageHeight
+	 * 		The height of the image
+	 * @param bgColor
+	 * 		The background color of the component
+	 * @param cacheMode
+	 * 		The cachemode of the component
+	 */
+	private void createJavaComponent(String url, String pageWidth, String pageHeight, String bgColor, String cacheMode){
+		this.getElement().setId(id+"-canvas");	
+						
+		//Create the object element
+		ObjectElement obj = Document.get().createObjectElement();
+		obj.setId(id);
+		obj.setName(id);
+		obj.setWidth("100%");
+		obj.setHeight("100%");
+		obj.setAttribute("archive", url);
+		obj.setAttribute("MAYSCRIPT", "true");
+		obj.setType("application/x-java-applet;version=1.6.0");		
+		obj.setCode("java:com.vaadin.paintcanvas.PaintCanvasApplet.class");
+		
+		if(PaintCanvasNativeUtil.isIE()){			
+			obj.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
+		} else {			
+			obj.setAttribute("classid", "java:com.vaadin.paintcanvas.PaintCanvasApplet.class");		
+		}
+		
+		//Add the parameters
+		ParamElement param1 = Document.get().createParamElement();
+		param1.setName("bgColor");
+		param1.setValue(bgColor);
+		obj.appendChild(param1);
+		
+		ParamElement param2 = Document.get().createParamElement();
+		param2.setName("id");
+		param2.setValue(id);
+		obj.appendChild(param2);
+		
+		ParamElement param3 = Document.get().createParamElement();
+		param3.setName("width");
+		param3.setValue(pageWidth);
+		obj.appendChild(param3);
+		
+		ParamElement param4 = Document.get().createParamElement();
+		param4.setName("height");
+		param4.setValue(pageHeight);
+		obj.appendChild(param4);
+		
+		ParamElement param5 = Document.get().createParamElement();
+		param5.setName("cacheMode");
+		param5.setValue(cacheMode);
+		obj.appendChild(param5);
+		
+		setHTML("");
+		this.getElement().appendChild(obj);		
 	}
 	
 	/**
@@ -274,6 +349,7 @@ public class IPaintCanvas extends HTML implements Paintable {
         	return;
         }
         
+        //Increase the transaction counter by one
         transactionCount++;
                 
         //Parse the commands and their values from the UIDL
@@ -305,15 +381,35 @@ public class IPaintCanvas extends HTML implements Paintable {
             	int pageHeight = uidl.getIntAttribute("pageHeight");
             	String bgColor = uidl.getStringAttribute("componentColor");
             	String cacheMode = uidl.getStringAttribute("cache-mode");
+            	String plugin = uidl.getStringAttribute("plugin");
+            	           	
+            	//Use flash plugin
+            	if(plugin.equals("plugin-flash")){
+            		//Add the SWF path
+            		String url = GWT.getModuleBaseURL() + SWFPATH;	       		 
+            		        		        		
+            		//Initialize the flash component
+            		createFlashComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode);
+            		init = true;
+            	}
             	
-            	//Add the SWF path
-        		String url = GWT.getModuleBaseURL() + SWFPATH;	       		 
-        		        		        		
-        		//Initialize the flash component
-        		createFlashComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode);
+            	//Use java plugin
+            	else if(plugin.equals("plugin-java")){
+            		//Add the JAR path
+            		String url = GWT.getModuleBaseURL() + JAVAPATH;
+            		
+            		//Initialize the java applet
+            		createJavaComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode);
+            		
+            		init = true; 
+            	}     
             	
-        		//Mark initialization done
-        		init = true;       	
+            	//No suitable plugin found
+            	else{
+            		PaintCanvasNativeUtil.error("No suitable plugin \""+plugin+"\" found!");
+            		init = false;
+            	}
+            	
         }	         	
 	}
 	

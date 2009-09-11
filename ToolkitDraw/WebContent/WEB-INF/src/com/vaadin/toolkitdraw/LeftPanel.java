@@ -52,20 +52,20 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 	
 		//Create the tools tab
 		GridLayout toolGrid = new GridLayout(4,4);
-		toolGrid.setSizeFull();
-		toolPanel = new Panel("Tools",toolGrid);
-		addComponent(toolPanel);
-		setExpandRatio(toolPanel, 1);
-		
 		for(Tool tool : tools)
 			toolGrid.addComponent(tool.getButton());
 		
-		
-		//Create the too options
+		//Create the tool panel
+		toolPanel = new Panel("Tools",toolGrid);
+		toolPanel.setSizeFull();
+		addComponent(toolPanel);
+		setExpandRatio(toolPanel, 1);
+					
+		//Create the tool options
 		optionPanel = new Panel("Tool Options");	
 		optionPanel.setSizeFull();
 		addComponent(optionPanel);		
-		setExpandRatio(optionPanel, 2);
+		setExpandRatio(optionPanel, 4);
 		
 	}	
 	
@@ -141,9 +141,11 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 			return;		
 		}
 		
-		//Set the tool	
+		//Set the tool options
 		optionPanel.setContent(selected.createToolOptions());
+		optionPanel.setCaption(selected.getName());
 		
+		//Check for interactivity
 		Interactive i = this.canvas.getInteractive();
 		
 		if(i != null) i.setBrush(tool);
