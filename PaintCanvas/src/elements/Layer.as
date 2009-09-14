@@ -33,6 +33,7 @@ package elements
 			this.canvas = new Canvas();
 			this.canvas.cacheAsBitmap = true;
 			this.canvas.id = this.name;
+			this.canvas.alpha = 1;
 						
 			if(width > 0) this.canvas.width = width;
 			else this.canvas.percentWidth = 100;

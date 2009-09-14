@@ -9,7 +9,6 @@ package
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
-	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
 	import flash.text.Font;
 	import flash.utils.Timer;
@@ -202,14 +201,14 @@ package
 			GraphicsUtil.setHistory(this.history, this.redo_history);
 						
 			LayerUtil.setPainter(this.painter);
+			LayerUtil.setHistory(this.history, this.redo_history);
 				
 			//Set component in interactive mode(user-edit)
 			setInteractive(true);	
-			
-			//Add dropshadow to paper
-			Application.application.frame.filters = [new DropShadowFilter()];
-			
-			var show:Fade = new Fade(Application.application.frame);
+					
+			//Fadein the paper
+			var show:Fade = new Fade();
+			show.targets = [Application.application.frame, backgroundLayer.getCanvas()];
 			show.alphaFrom = 0;
 			show.alphaTo = 1;			
 			show.addEventListener(EffectEvent.EFFECT_END, function(e:EffectEvent):void
@@ -223,8 +222,7 @@ package
 				
 				//Notify the client implementation that the flash has loaded and is ready to recieve commands
 				isFlashReady = true;
-				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);
-														
+				ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady",clientID);													
 			});
 			show.play();				
 		}
@@ -265,6 +263,7 @@ package
 				this.painter = brush;
 			} 
 			
+			//Set size of the frame
 			Application.application.frame.width = backgroundLayer.getWidth();
 			Application.application.frame.height = backgroundLayer.getHeight();
 												

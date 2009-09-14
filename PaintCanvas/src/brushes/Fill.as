@@ -18,31 +18,43 @@ package brushes
 		protected var strokes:Array = new Array();
 		protected var currentStroke:BrushStroke;
 				
+		/**
+		 * Constructor
+		 */ 		
 		public function Fill(canvas:Canvas)
 		{
 			this.canvas = canvas;			
 		}
 
+		/**
+		 * Sets the fill color
+		 */ 
 		public function setFillColor(color:Number):void
 		{
 			this.fillcolor = color;
 		}
 		
+		/**
+		 * Process a point.
+		 */ 
 		public function processPoint(p:Point):void
 		{
 			selectedPoint = p;
 		}
 		
+		/**
+		 * Returns the fill color.
+		 */ 
 		public function getFillColor():Number
 		{
 			return fillcolor;
 		}
 		
+		/**
+		 * Start a new fill
+		 */ 
 		public function startStroke():void
 		{
-			//Don't do anything when we push the
-			//mouse button down
-			
 			currentStroke = new BrushStroke();
 		}
 		

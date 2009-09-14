@@ -9,7 +9,7 @@
 		width="100%" height="100%" 
 		horizontalAlign="center" verticalAlign="middle"  
 		paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-		<mx:Canvas backgroundColor="white" id="frame" cacheAsBitmap="true" alpha="0"/>
+		<mx:Canvas id="frame" cacheAsBitmap="true" alpha="0"/>
 	</mx:VBox>	
 	
 	<mx:Script>
@@ -21,7 +21,8 @@
 			private static function init():void
 			{								
 				if(Application.application !=  null)
-				{														
+				{								
+					Application.application.frame.setStyle("BackgroundColor", Application.application.parameters.bgColor);						
 					Application.application.setStyle("backgroundColor", Application.application.parameters.bgColor);
 					Application.application.setStyle("backgroundGradientColors",[Application.application.parameters.bgColor, Application.application.parameters.bgColor]); 
 					Application.application.setStyle("backgroundGradientAlphas",[1,1]);
@@ -33,10 +34,19 @@
 			
 			private static function initController():void
 			{
-				Application.application.frame.width = Application.application.parameters.width;
-				Application.application.frame.height = Application.application.parameters.height;	
+				// Set the initial width of the frame
+				var width:int = Application.application.parameters.width;
+				if(width < 0)	Application.application.frame.width = Application.application.width;
+				else			Application.application.frame.width = Application.application.parameters.width;	
+				
+				// Set the initial height of the frame
+				var height:int = Application.application.parameters.height;
+				if(height < 0)	Application.application.frame.width = Application.application.height;
+				else			Application.application.frame.height = Application.application.parameters.height;	
+				
 				Application.application.frame.filters = [new DropShadowFilter()];											
-				Application.application.frameContainer.validateNow();									
+				Application.application.frameContainer.validateNow();	
+												
 				controller = new Controller();		
 			}
 		]]>

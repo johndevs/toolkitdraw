@@ -6,34 +6,34 @@ package brushes
 	
 	public interface IBrush
 	{	
-		function processPoint(p:Point):void;	//Mouse move
-		function startStroke():void;			//Mouse down
-		function endStroke():void;				//Mouse up
-		function endTool():void;				//CTRL+Mouse down
+		function processPoint(p:Point):void;						// Mouse move
+		function startStroke():void;								// Mouse down
+		function endStroke():void;									// Mouse up
+		function endTool():void;									// CTRL+Mouse down
 		
-		function redraw():void;
-		function scale(x_ratio:Number, y_ratio:Number):void;
+		function redraw():void;										// Redraw the strokes onto the canvas
+		function scale(x_ratio:Number, y_ratio:Number):void;		// Scale the strokes
 		
-		function undo():Boolean;
-		function redo():Boolean;
+		function undo():Boolean;									// Undo last stroke
+		function redo():Boolean;									// Redo last stroke
 		
-		function getColor():Number;
-		function setColor(color:Number):void;
+		function getColor():Number;									// Get color in use
+		function setColor(color:Number):void;						// Set color in use
 		
-		function getWidth():Number;
-		function setWidth(width:Number):void;
+		function getWidth():Number;									// Get the width of the tool in pixels
+		function setWidth(width:Number):void;						// Set the width of the tool in pixels
 		
-		function getAlpha():Number;
-		function setAlpha(alpha:Number):void;
+		function getAlpha():Number;									// Get the alpha channel value
+		function setAlpha(alpha:Number):void;						// Set the alpha channel value (0-1)
 		
-		function getType():String;		
-		function getCanvas():Canvas;
-		function getStrokes():Array;
+		function getType():String;									// Returns id of the tool
+		function getCanvas():Canvas;								// Returns the canvas the tools draws on
+		function getStrokes():Array;								// Get the drawn strokes
 		
-		function getCursor():Class;
+		function getCursor():Class;									// Deprecated.
 		
-		function getXML():XML;
-		function setXML(xml:XML):void;
+		function getXML():XML;										// Returns the xml representation of the drawn strokes
+		function setXML(xml:XML):void;								// Generates strokes of the given xml.
 
 	}
 }

@@ -2,6 +2,10 @@ package brushes
 {
 	import flash.geom.Point;
 	
+	/**
+	 * This class represents a single brush stroke of a tool.
+	 * How the values are used is up to the tool.
+	 */ 
 	public class BrushStroke
 	{
 		//Default brush properties

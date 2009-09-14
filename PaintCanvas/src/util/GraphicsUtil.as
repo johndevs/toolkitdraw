@@ -81,7 +81,7 @@ package util
 		public static function setBrush(type:String):void
 		{				
 			var brush:IBrush;
-			
+					
 			if(LayerUtil.getCurrentLayer() == null){
 				Alert.show("setBrush failed! No layer selected.");
 				return;
@@ -110,8 +110,10 @@ package util
 			painter = history[history.length-1];
 			
 			//Notify controller of the painter change
-			controller.setPainter(painter);						
-			controller.changeEvent();
+			if(controller != null){
+				controller.setPainter(painter);						
+				controller.changeEvent();
+			}
 		}	
 		
 		public static function redraw():void

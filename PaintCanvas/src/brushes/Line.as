@@ -4,6 +4,9 @@ package brushes
 	
 	import mx.containers.Canvas;
 
+	/**
+	 * This class represents the line tool
+	 */ 
 	public class Line implements IBrush
 	{
 		protected var canvas:Canvas;

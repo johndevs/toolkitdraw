@@ -55,16 +55,14 @@ package util
 			var height:int = 0;
 			if(currentLayer == null){
 				width = Application.application.parameters.width;		
-				if(width == -1){
-					
+				if(width < 0){					
 					width = Application.application.width;
 				} 
 				
 				height = Application.application.parameters.height;
-				if(height == -1){					
-					width = Application.application.width;
-				} 
-				
+				if(height < 0){					
+					height = Application.application.height;
+				} 				
 			} else {
 				width = new int(currentLayer.getWidth());
 				height = new int(currentLayer.getHeight());
@@ -211,15 +209,27 @@ package util
 		
 		public static function clearCurrentLayer():void{
 					
-			var newHistory:Array = new Array;
-									
+			var newHistory:Array = new Array();
+																		
 			for each(var brush:IBrush in history)
 			{			
 				if(brush.getCanvas() != currentLayer.getCanvas())
 					newHistory.push(brush);					
 			}				
 			
-			ArrayUtil.assignArray(history, newHistory);			
+			//Set new history as history
+			ArrayUtil.assignArray(history, newHistory);		
+			
+			//reset redo history		
+			ArrayUtil.assignArray(redo_history, new Array());
+			
+			if(history == null){
+				Alert.show("History null");
+				return;
+			}
+			
+			GraphicsUtil.setHistory(history, redo_history);								
+			GraphicsUtil.setBrush(Controller.PEN);									
 			GraphicsUtil.redraw();
 			
 			controller.changeEvent();
