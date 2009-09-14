@@ -5,12 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.core.ext.typeinfo.HasMetaData;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Widget;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -18,7 +13,6 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.toolkitdraw.components.paintcanvas.Layer;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
@@ -29,7 +23,9 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class SimpleGraphDemo extends Window {
-	
+
+	private static final long serialVersionUID = 1L;
+
 	private PaintCanvas canvas;
 	
 	private Table table;
@@ -59,6 +55,9 @@ public class SimpleGraphDemo extends Window {
 		
 		//Disable caching
 		canvas.setCacheMode(CacheMode.NONE);		
+		
+		//Enable batch mode
+		canvas.getGraphics().setBatchMode(true);
 				
 		layout.addComponent(canvas,0,0);
 		
@@ -75,7 +74,8 @@ public class SimpleGraphDemo extends Window {
 		
 		//Create the refresh button
 		refresh = new Button("Refresh");
-		refresh.addListener(new Button.ClickListener(){
+		refresh.addListener(new Button.ClickListener(){		
+			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
 				randomlyCreateValues();												
@@ -87,9 +87,11 @@ public class SimpleGraphDemo extends Window {
 		
 		save = new Button("Save");
 		final Window parent = this;
-		save.addListener(new Button.ClickListener(){
+		save.addListener(new Button.ClickListener(){		
+			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				canvas.addListener(new ValueChangeListener(){
+				canvas.addListener(new ValueChangeListener(){		
+					private static final long serialVersionUID = 1L;
 					public void valueChange(ValueChangeEvent event) {						
 						if(event instanceof ImagePNGRecievedEvent){							
 							canvas.removeListener(this);							
@@ -152,17 +154,10 @@ public class SimpleGraphDemo extends Window {
 						
 		//Get the graphics object
 		PaintCanvas.Graphics gc = canvas.getGraphics();
-				
-		//Clear the earlier drawings and set the canvas in batch mode
-		gc.setBatchMode(true);				
-		
-		
-		//TODO This clears the whole screen and does not work FIX ASAP
-		//gc.clear();	
-						
-		//Draw the background
-		gc.drawSquare(0, 0, 300, 300, "515151", "515151");
-				
+					
+		// This clears the whole screen
+		gc.clear();	
+											
 		//Draw the bars to the component in one batch
 		int counter = 0;
 		for(Object id : table.getItemIds()){			

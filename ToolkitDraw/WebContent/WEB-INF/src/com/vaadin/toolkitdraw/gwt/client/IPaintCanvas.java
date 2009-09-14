@@ -1,5 +1,8 @@
 package com.vaadin.toolkitdraw.gwt.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -37,7 +40,9 @@ public class IPaintCanvas extends HTML implements Paintable {
     /** Indicates if the initial UIDL has been processed **/
     private boolean init = false;
     
+    /** Tracks the transactions **/
     private Long transactionCount = 0L;
+      
     
 	public IPaintCanvas(){		
 		super();				
@@ -59,7 +64,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * 		The parameters for the command
 	 */
 	private void executeCommand(String command, String value){
-		
+				
 		//Execute the operations the server wants to do		
 		if(command.equals("height")){		
 			setHeight(value);
@@ -67,7 +72,8 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("width")){		
 			setWidth(value);
 		}
-		else if(command.equals("undo")) 		PaintCanvasNativeUtil.undo(id);
+				
+		if(command.equals("undo")) 				PaintCanvasNativeUtil.undo(id);
 		else if(command.equals("redo")) 		PaintCanvasNativeUtil.redo(id);
 		else if(command.equals("newlayer")) 	PaintCanvasNativeUtil.addLayer(id, value);
 		else if(command.equals("paperWidth"))	PaintCanvasNativeUtil.setPaperWidth(id, Integer.parseInt(value));
@@ -139,7 +145,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 			}   			
 		}
 		else if(command.equals("componentColor")){
-			this.getElement().setPropertyString("style", "background:"+value);
+			//this.getElement().setPropertyString("style", "background:"+value);
 			//PaintCanvasNativeUtil.setComponentBackground(id, value);
 		}    		
 		else if(command.equals("layercolor")){    		
@@ -325,8 +331,8 @@ public class IPaintCanvas extends HTML implements Paintable {
 			
 		// This call should be made first. Ensure correct implementation,
         // and let the containing layout manage caption, etc.
-        if (client.updateComponent(this, uidl, true)) {                     	        	
-            return;
+        if (client.updateComponent(this, uidl, true)) {                   	
+        	return;
         }
                 
         // Save reference to server connection object to be able to send
@@ -353,7 +359,7 @@ public class IPaintCanvas extends HTML implements Paintable {
         transactionCount++;
                 
         //Parse the commands and their values from the UIDL
-        if(uidl.hasVariable("commands") && uidl.hasVariable("values") && init){
+        if(uidl.hasVariable("commands") && uidl.hasVariable("values")){
         	       	
         	String[] commands = uidl.getStringArrayVariable("commands");
             String[] values = uidl.getStringArrayVariable("values");       
@@ -364,9 +370,13 @@ public class IPaintCanvas extends HTML implements Paintable {
             	return;
             }        
                         
-            //execute commands
-            for(int i=0; i<commands.length; i++)
-       		 executeCommand(commands[i], values[i]);           
+            if(init && ready){                            
+	            // execute commands
+	            for(int i=0; i<commands.length; i++)
+	       		 	executeCommand(commands[i], values[i]);            
+            } else {
+            	PaintCanvasNativeUtil.error("Plugin not ready!");
+            }
         }
         
         // Cache recieived at initialization, pass it on
@@ -408,8 +418,7 @@ public class IPaintCanvas extends HTML implements Paintable {
             	else{
             		PaintCanvasNativeUtil.error("No suitable plugin \""+plugin+"\" found!");
             		init = false;
-            	}
-            	
+            	}            	
         }	         	
 	}
 	
@@ -428,7 +437,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * @param ready
 	 */
 	public void setReady(boolean ready){
-		this.ready = ready;		
+		this.ready = ready;									
 		client.updateVariable(this.uidlId, "readyStatus", ready, true);
 	}
 	

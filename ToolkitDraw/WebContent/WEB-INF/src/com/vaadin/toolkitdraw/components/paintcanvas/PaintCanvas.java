@@ -33,6 +33,8 @@ import com.vaadin.toolkitdraw.util.XMLUtil;
 public class PaintCanvas extends AbstractField implements Component, Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	
+	private Layer currentLayer;
 
 	/**
 	 * The graphics class is used to draw on the canvas from the server side
@@ -497,7 +499,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public class Layers implements Serializable{
 
 		private static final long serialVersionUID = 1L;
-		
+						
 		public void addLayer(Layer layer){
 	    	addToQueue("newlayer", layer.getName());
 	    	layers.add(layer);
@@ -539,8 +541,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    }
 	    
 	    public void setActiveLayer(Layer layer){
+	    	currentLayer = layer;
 	    	addToQueue("activeLayer", layer.getName());
 	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public Layer getActiveLayer(){
+	    	return currentLayer;
 	    }
 	    
 	    public List<Layer> getLayers(){
@@ -554,11 +561,9 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(color.contains("#")) color = color.replaceAll("#", "0x");	    	
 	    	if(!color.contains("x")) color = "0x"+color;
 	    	
-	    	//Select the layer
-	    	Ilayers.setActiveLayer(layer);
-	    	
 	    	//Set the color
 	    	addToQueue("layercolor", color);
+	    	addToQueue("layeralpha", String.valueOf(alpha));
 	    	
 	    	if(isImmediate()) requestRepaint();
 		}
@@ -593,16 +598,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		//Create a random component identifier
 		Random r = new Random();
 		configuration.setComponentIdentifer(Long.toString(Math.abs(r.nextLong()), 36));
-		
-		//Set Full size paper width
-		configuration.setPaperWidth(-1);
-		configuration.setPaperHeight(-1);
-				
+						
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
+		currentLayer = background;
 			
 		setImmediate(true);		
 		requestRepaint();				
@@ -621,11 +623,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
-		
-		//Set the paper height and width of the component to full
-		configuration.setPaperWidth(-1);
-		configuration.setPaperHeight(-1);
-		
+		currentLayer = background;
+					
 		setImmediate(true);
 		requestRepaint();
 		
@@ -644,11 +643,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
-		
-		//Set the paper height and width of the component to full
-		configuration.setPaperWidth(-1);
-		configuration.setPaperHeight(-1);
-		
+		currentLayer = background;
+				
 		//Set the background color
 		setComponentBackgroundColor(color);		
 		
@@ -670,6 +666,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
+		currentLayer = background;
 		
 		//Set the paper height and width
 		configuration.setPaperWidth(paperWidth);
@@ -693,6 +690,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
+		currentLayer = background;
 				
 		//Set the paper height and width(layer size)
 		configuration.setPaperWidth(paperWidth);
@@ -719,6 +717,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
+		currentLayer = background;
 						
 		//Set the paper height and width(layer size)
 		this.interactive.setPaperHeight(paperHeight);

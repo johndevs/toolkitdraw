@@ -19,16 +19,19 @@ public class PaintCanvasNativeUtil {
 	 * 
 	 * @param id The id of the paintcanvas
 	 */
-	public static native void undo(String id) /*-{
+	public static native boolean undo(String id) /*-{
 		var canvas = $wnd.document.getElementById(id);		
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.undo == 'function' && canvas.isReady() ){
-			canvas.undo();	
+			canvas.undo();
+			return true;	
 		}else{
+			alert("delaying undo");
 			var func = function() { canvas.undo(); };		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;
 
@@ -37,16 +40,19 @@ public class PaintCanvasNativeUtil {
 	 * 
 	 * @param id The id of the paintcanvas
 	 */
-	public static native void redo(String id) /*-{
+	public static native boolean redo(String id) /*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.redo == 'function' && canvas.isReady() ){
 			canvas.redo();	
+			return true;
 		}else{
+			alert("delaying redo");
 			var func = function() { canvas.redo(); };		
 			setTimeout(func,1000);
+			return false;
 		}							
 	}-*/;
 
@@ -56,16 +62,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param height The height in pixels
 	 */
-	public static native void setPaperHeight(String id, int height)/*-{
+	public static native boolean setPaperHeight(String id, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 					
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setPaperHeight == 'function' && canvas.isReady() ){
 			canvas.setPaperHeight(height);	
+			return true;
 		}else{
+			alert("delaying setPaperHeight");
 			var func = function() { canvas.setPaperHeight(height); };		
 			setTimeout(func,1000);
+			return false;
 		}							
 	}-*/;
 
@@ -75,16 +84,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param width The width in pixels
 	 */
-	public static native void setPaperWidth(String id, int width)/*-{
+	public static native boolean setPaperWidth(String id, int width)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setPaperWidth == 'function' && canvas.isReady() ){
 			canvas.setPaperWidth(width);
+			return true;
 		}else{
+			alert("delaying setPaperWidth");
 			var func = function() { canvas.setPaperWidth(width); };		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;	
 
@@ -103,16 +115,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param s The size in pixels of the brush
 	 */
-	public static native void setPenSize(String id, double s)/*-{
+	public static native boolean setPenSize(String id, double s)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setBrushWidth == 'function' && canvas.isReady() ){
 			canvas.setBrushWidth(s);
+			return true;
 		}else{
+			alert("delaying setPenSize");
 			var func = function() { canvas.setBrushWidth(s); };		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;	
 
@@ -122,16 +137,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param color The color in hexadecimal format. For instance FFFFFF(white).
 	 */
-	public static native void setPenColor(String id, String color)/*-{
+	public static native boolean setPenColor(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setBrushColor == 'function' && canvas.isReady() ){
 			canvas.setBrushColor(color);
+			return true;
 		}else{
+			alert("delaying setPenColor");
 			var func = function() { canvas.setBrushColor(color); };		
 			setTimeout(func,1000);
+			return false;
 		}			
 	}-*/;
 
@@ -141,16 +159,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param brush The brush id
 	 */
-	public static native void setBrush(String id, String brush)/*-{
+	public static native boolean setBrush(String id, String brush)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setBrush == 'function' && canvas.isReady() ){
-			canvas.setBrush(brush);				
+			canvas.setBrush(brush);		
+			return true;		
 		}else{
+			alert("delaying setBrush");
 			var func = function() { canvas.setBrush(brush);	 };		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;
 
@@ -162,16 +183,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id the id
 	 * @param color the color
 	 */
-	public static native void setFillColor(String id, String color)/*-{
+	public static native boolean setFillColor(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setFillColor == 'function' && canvas.isReady() ){
 			canvas.setFillColor(color);	
+			return true;
 		}else{
+			alert("delaying setFillColor");
 			var func = function() { canvas.setFillColor(color);	};		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;
 	
@@ -181,16 +205,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id the id
 	 * @param alpha the alpha
 	 */
-	public static native void setPenAlpha(String id, double alpha)/*-{
+	public static native boolean setPenAlpha(String id, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setBrushAlpha == 'function' && canvas.isReady() ){
 			canvas.setBrushAlpha(alpha);	
+			return true;
 		}else{
+			alert("delaying setPenAlpha");
 			var func = function() { canvas.setBrushAlpha(alpha); };		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;
 
@@ -200,16 +227,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id the id
 	 * @param font the font
 	 */
-	public static native void setFont(String id, String font)/*-{
+	public static native boolean setFont(String id, String font)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setFont == 'function' && canvas.isReady() ){
 			canvas.setFont(font);
+			return true;
 		}else{
+			alert("delaying setFont");
 			var func = function() { canvas.setFont(font); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 	
@@ -220,16 +250,19 @@ public class PaintCanvasNativeUtil {
 	 * @param name The name/id of the layer. This is used to identify the layer and must be unique.
 	 * The layer name Background is reserved and should not be used
 	 */
-	public static native void addLayer(String id, String name)/*-{
+	public static native boolean addLayer(String id, String name)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.addNewLayer == 'function' && canvas.isReady() ){
 			canvas.addNewLayer(name);
+			return true;
 		}else{
+			alert("delaying addLayer");
 			var func = function() { canvas.addNewLayer(name); };		
 			setTimeout(func,1000);
+			return false;
 		}			
 	
 	}-*/;
@@ -241,16 +274,19 @@ public class PaintCanvasNativeUtil {
 	 * @param name The name of the layer
 	 * @param visibility The visibility of the layer. true means the layer is visible and false that it is not visble.
 	 */
-	public static native void setLayerVisibility(String id, String name, boolean visibility)/*-{
+	public static native boolean setLayerVisibility(String id, String name, boolean visibility)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setLayerVisibility == 'function' && canvas.isReady() ){
 			canvas.setLayerVisibility(name,visibility);
+			return true;
 		}else{
+			alert("delaying setLayerVisibility");
 			var func = function() { canvas.setLayerVisibility(name,visibility); };		
 			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 
@@ -260,16 +296,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param name The name of the layer
 	 */
-	public static native void selectLayer(String id, String name)/*-{
+	public static native boolean selectLayer(String id, String name)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.selectLayer == 'function' && canvas.isReady() ){
 			canvas.selectLayer(name);
+			return true;
 		}else{
+			alert("delaying selectLayer");
 			var func = function() { canvas.selectLayer(name); };		
 			setTimeout(func,1000);
+			return false;
 		}			
 	}-*/;
 
@@ -279,16 +318,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param color The color in hexadecimal format. For instance FFFFFF (white).
 	 */
-	public static native void setLayerColor(String id, String color)/*-{
+	public static native boolean setLayerColor(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setLayerBackgroundColor == 'function' && canvas.isReady() ){
 			canvas.setLayerBackgroundColor(color);
+			return true;
 		}else{
+			alert("delaying setLayerColor");
 			var func = function() { canvas.setLayerBackgroundColor(color); };		
 			setTimeout(func,1000);
+			return false;
 		}			
 	}-*/;
 
@@ -299,16 +341,19 @@ public class PaintCanvasNativeUtil {
 	 * @param alpha The alpha channel value. Value must be between 0 and 1 where 0 means no
 	 * transparency and 1 means full transparency.
 	 */
-	public static native void setLayerAlpha(String id, double alpha)/*-{
+	public static native boolean setLayerAlpha(String id, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setLayerBackgroundAlpha == 'function' && canvas.isReady() ){
 			canvas.setLayerBackgroundAlpha(alpha);
+			return true;
 		}else{
+			alert("delaying setLayerAlpha");
 			var func = function() { canvas.setLayerBackgroundAlpha(alpha); };		
 			setTimeout(func,1000);
+			return false;
 		}			
 	}-*/;
 
@@ -373,16 +418,19 @@ public class PaintCanvasNativeUtil {
 	 * draw with the mouse on the component. If this is set to false then only
 	 * the server can draw on the component.
 	 */
-	public static native void setInteractive(String id, boolean interactive)/*-{
+	public static native boolean setInteractive(String id, boolean interactive)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setInteractive == 'function' && canvas.isReady() ){
 			canvas.setInteractive(interactive);
+			return true;
 		}else{
+			alert("delaying setInteractive");
 			var func = function() { canvas.setInteractive(interactive); };		
 			setTimeout(func,1000);
+			return false;
 		}				
 	}-*/;
 
@@ -395,16 +443,19 @@ public class PaintCanvasNativeUtil {
 	 * @param x2 The second points x-value in pixels.
 	 * @param y2 The second points y-value in pixels.
 	 */
-	public static native void drawLine(String id, int x1, int y1, int x2, int y2)/*-{
+	public static native boolean drawLine(String id, int x1, int y1, int x2, int y2)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsDrawLine == 'function' && canvas.isReady() ){
 			canvas.graphicsDrawLine(x1,y1,x2,y2);
+			return true;
 		}else{
+			alert("delaying drawLine");
 			var func = function() { canvas.graphicsDrawLine(x1,y1,x2,y2); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 
@@ -417,16 +468,19 @@ public class PaintCanvasNativeUtil {
 	 * @param width The width of the square in pixels
 	 * @param height The height of the square in pixels
 	 */
-	public static native void drawSquare(String id, int x, int y, int width, int height)/*-{
+	public static native boolean drawSquare(String id, int x, int y, int width, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsDrawSquare == 'function' && canvas.isReady() ){
 			canvas.graphicsDrawSquare(x,y,width,height);
+			return true;
 		}else{
+			alert("delaying drawSquare");
 			var func = function() { canvas.graphicsDrawSquare(x,y,width,height); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 
@@ -435,16 +489,19 @@ public class PaintCanvasNativeUtil {
 	 * 
 	 * @param id The id of the paintcanvas
 	 */
-	public static native void clear(String id)/*-{
+	public static native boolean clear(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsClear == 'function' && canvas.isReady() ){
 			canvas.graphicsClear();
+			return true;
 		}else{
+			alert("delaying clear");
 			var func = function() { canvas.graphicsClear(); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 
@@ -457,16 +514,19 @@ public class PaintCanvasNativeUtil {
 	 * @param x An array of x-values for the polygons corners.
 	 * @param y An array of y-values for the polygons corners.
 	 */
-	public static native void drawPolygon(String id, int[]x, int[]y)/*-{
+	public static native boolean drawPolygon(String id, int[]x, int[]y)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsDrawPolygon == 'function' && canvas.isReady() ){
 			canvas.graphicsDrawPolygon(x.slice(), y.slice(), x.length);
+			return true;
 		}else{
+			alert("delaying drawPolygon");
 			var func = function() { canvas.graphicsDrawPolygon(x.slice(), y.slice(), x.length); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 
@@ -480,16 +540,19 @@ public class PaintCanvasNativeUtil {
 	 * @param width the width
 	 * @param height the height
 	 */
-	public static native void drawText(String id, String text, int x, int y, int width, int height)/*-{
+	public static native boolean drawText(String id, String text, int x, int y, int width, int height)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsDrawText == 'function' && canvas.isReady() ){
 			canvas.graphicsDrawText(text, x, y, width, height);
+			return true;
 		}else{
+			alert("delaying drawText");
 			var func = function() { canvas.graphicsDrawText(text, x, y, width, height); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 	
@@ -502,16 +565,19 @@ public class PaintCanvasNativeUtil {
 	 * @param y The y-position of the top left corner of the image
 	 * @param alpha The alpha value of the image
 	 */
-	public static native void drawImage(String id, String image, int x, int y, double alpha)/*-{
+	public static native boolean drawImage(String id, String image, int x, int y, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsDrawImage == 'function' && canvas.isReady() ){
 			canvas.graphicsDrawImage(image, x, y,alpha);
+			return true;
 		}else{
+			alert("delaying drawImage");
 			var func = function() { canvas.graphicsDrawImage(image, x, y,alpha); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 	
@@ -522,16 +588,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id The id of the paintcanvas
 	 * @param color The color in hexadecimal format. For instance FFFFFF (white).
 	 */
-	public static native void setComponentBackground(String id, String color)/*-{
+	public static native boolean setComponentBackground(String id, String color)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setComponentBackgroundColor == 'function' && canvas.isReady() ){
 			canvas.setComponentBackgroundColor(color);
+			return true;
 		}else{
+			alert("delaying setComponentBackground");
 			var func = function() { canvas.setComponentBackgroundColor(color); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;
 
@@ -561,17 +630,21 @@ public class PaintCanvasNativeUtil {
 	 * 
 	 * @param id The id of the canvas
 	 */
-	public static native void removeSelection(String id)/*-{
+	public static native boolean removeSelection(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.removeSelection == 'function' && canvas.isReady() ){
 			canvas.removeSelection();
+			return true;
 		}else{
+			alert("delaying removeSelection");
 			var func = function() { canvas.removeSelection(); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
+		
 	}-*/;
 	
 	
@@ -580,16 +653,19 @@ public class PaintCanvasNativeUtil {
 	 * 
 	 * @param id The id of the canvas
 	 */
-	public static native void selectAll(String id)/*-{
+	public static native boolean selectAll(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.selectAll == 'function' && canvas.isReady() ){
 			canvas.selectAll();
+			return true;
 		}else{
+			alert("delaying selectAll");
 			var func = function() { canvas.selectAll(); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;	
 	
@@ -598,16 +674,19 @@ public class PaintCanvasNativeUtil {
 	 * 
 	 * @param id the canvas id
 	 */
-	public static native void selectCrop(String id)/*-{
+	public static native boolean selectCrop(String id)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.cropSelected == 'function' && canvas.isReady() ){
 			canvas.selectAll();
+			return true;
 		}else{
+			alert("delaying selectCrop");
 			var func = function() { canvas.cropSelected(); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;	
 	
@@ -618,16 +697,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id the id
 	 * @param mode the mode
 	 */
-	public static native void setCacheMode(String id, String mode)/*-{
+	public static native boolean setCacheMode(String id, String mode)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setCacheMode == 'function' && canvas.isReady() ){
 			canvas.setCacheMode(mode);
+			return true;
 		}else{
+			alert("delaying setCacheMode");
 			var func = function() { canvas.setCacheMode(mode); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;	
 	
@@ -637,16 +719,19 @@ public class PaintCanvasNativeUtil {
 	 * @param id the id
 	 * @param cache the cache
 	 */
-	public static native void setImageCache(String id, String cache)/*-{
+	public static native boolean setImageCache(String id, String cache)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setImageCache == 'function' && canvas.isReady() ){
 			canvas.setImageCache(cache);
+			return true;
 		}else{
+			alert("delaying setImageCache");
 			var func = function() { canvas.setImageCache(cache); };		
-		setTimeout(func,1000);
+			setTimeout(func,1000);
+			return false;
 		}		
 	}-*/;	
 	

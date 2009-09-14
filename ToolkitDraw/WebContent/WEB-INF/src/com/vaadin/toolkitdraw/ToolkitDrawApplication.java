@@ -149,7 +149,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			System.err.println("ERROR: Creating canvas failed!");	
 			return null;
 		}
-		
+						
 		//Set the caching mode of the canvas
 		canvas.setCacheMode(preferences.getCacheMode());
 		
@@ -159,6 +159,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		//Set the canvas in intactive mode
 		canvas.setInteractive(true);
 		
+		//Set background layer to white
+		canvas.getLayers().setLayerBackground(canvas.getLayers().getActiveLayer(), "FFFFFF", 1);
+				
 		//Set the canvas as the current canvas
 		leftPanel.setCanvas(canvas);
 		rightPanel.setCanvas(canvas);
