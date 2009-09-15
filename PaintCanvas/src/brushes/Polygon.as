@@ -10,6 +10,7 @@ package brushes
 		protected var color:Number = 0;
 		protected var fillColor:Number = -1;
 		protected var width:Number = 1;
+		protected var alpha:Number = 1;
 	
 		protected var strokes:Array = new Array;
 		protected var currentStroke:BrushStroke;
@@ -55,7 +56,7 @@ package brushes
 			
 		}
 		
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
 			nextPoint = null;			
 		
@@ -70,6 +71,7 @@ package brushes
 				currentStroke.color = color;
 				currentStroke.width = width;
 				currentStroke.fillcolor = fillColor;	
+				currentStroke.alpha = alpha;
 			}				
 		}
 		
@@ -82,12 +84,12 @@ package brushes
 		{
 			for each(var stroke:BrushStroke in strokes)
 			{
-				if(fillColor > -1) canvas.graphics.beginFill(stroke.fillcolor,1);
+				if(fillColor > -1) canvas.graphics.beginFill(stroke.fillcolor, stroke.alpha);
 				
 				var firstPoint:Point = Point(stroke.points[0]);
 				var lastPoint:Point = Point(stroke.points[stroke.points.length-1]);
 				
-				canvas.graphics.lineStyle(stroke.width,stroke.color);
+				canvas.graphics.lineStyle(stroke.width,stroke.color,stroke.alpha);
 				canvas.graphics.moveTo(firstPoint.x, firstPoint.y); 
 				
 				for each(var p:Point in stroke.points)			
@@ -193,13 +195,13 @@ package brushes
 			
 			//Draw the polygon
 			if(fillColor > -1){
-				canvas.graphics.beginFill(fillColor,1);
+				canvas.graphics.beginFill(fillColor,alpha);
 			} 
 			
 			var firstPoint:Point = Point(currentStroke.points[0]);
 			var lastPoint:Point = Point(currentStroke.points[currentStroke.points.length-1]);
 			
-			canvas.graphics.lineStyle(width,color);
+			canvas.graphics.lineStyle(width,color,alpha);
 			canvas.graphics.moveTo(firstPoint.x, firstPoint.y); 
 			
 			for each(var p:Point in currentStroke.points)
@@ -214,15 +216,18 @@ package brushes
 			currentStroke = new BrushStroke();	
 			currentStroke.color = color;
 			currentStroke.width = width;
-			currentStroke.fillcolor = fillColor;			
+			currentStroke.fillcolor = fillColor;		
+			currentStroke.alpha = alpha;	
 		}
 		
-		public function getAlpha():Number{
-			return 0;	
+		public function getAlpha():Number
+		{
+			return alpha;
 		}
 		
 		public function setAlpha(alpha:Number):void
 		{
+			this.alpha = alpha;
 		}
 		
 		public function getXML():XML
@@ -232,6 +237,7 @@ package brushes
 			brushXML.@color = getColor();
 			brushXML.@width = getWidth();	
 			brushXML.@fill = getFillColor();
+			brushXML.@alpha = getAlpha();
 			
 			//generate brush strokes						
 			for each(var stroke:BrushStroke in getStrokes())
@@ -281,7 +287,7 @@ package brushes
 			
 				for each(var point:String in points)
 				{
-					this.startStroke();
+					this.startStroke(null);
 					
 					var coords:Array = point.split(",");
 					if(coords.length != 2) continue;

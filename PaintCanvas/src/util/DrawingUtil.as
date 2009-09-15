@@ -39,7 +39,7 @@ package util
 			
 			for(var i:int=0; i<length; i++)
 			{
-				painter.startStroke();							
+				painter.startStroke(new Point(xa[i],ya[i]));							
 				painter.processPoint(new Point(xa[i],ya[i]));				
 				painter.endStroke();
 			}
@@ -59,7 +59,7 @@ package util
 				painter.setWidth(w);				
 			}				
 						
-			painter.startStroke();
+			painter.startStroke(new Point(x,y));
 			painter.processPoint(new Point(x,y));
 			painter.processPoint(new Point(x+width,y+height));
 			painter.endStroke();
@@ -80,7 +80,7 @@ package util
 				
 			Text(painter).setEditable(false);
 				
-			painter.startStroke();
+			painter.startStroke(new Point(x,y));
 			painter.processPoint(new Point(x,y));
 			painter.processPoint(new Point(x+width, y+height));
 			painter.endStroke();			
@@ -95,7 +95,7 @@ package util
 		{
 			GraphicsUtil.setBrush(Controller.LINE);
 					
-			painter.startStroke();
+			painter.startStroke(new Point(x1,y1));
 			painter.processPoint(new Point(x1,y1));
 			painter.processPoint(new Point(x2,y2));
 			painter.endStroke();

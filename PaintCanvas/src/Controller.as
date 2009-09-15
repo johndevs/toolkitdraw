@@ -347,7 +347,9 @@ package
 			
 			if(e.ctrlKey){
 				painter.endTool();	
-				changeEvent();									
+				painter.getCanvas().validateNow();	
+				changeEvent();						
+				return;			
 			}
 												
 			//Is the cursor inside paper bounds									
@@ -361,11 +363,12 @@ package
 					
 					if(SelectionUtil.inSelection(x, y)){						
 						mouse_is_down = true;
-						painter.startStroke();
+						painter.startStroke(new Point(e.localX, e.localY));
 					} 
 				} else {
 					mouse_is_down = true;
-					painter.startStroke();
+					painter.startStroke(new Point(e.localX, e.localY));
+					painter.processPoint(new Point(e.localX, e.localY));
 				}				
 			}
 		}
@@ -407,7 +410,8 @@ package
 		{
 			if(mouse_is_down) painter.endStroke();				
 			mouse_is_down = false;		
-			changeEvent();	
+			changeEvent();
+			painter.getCanvas().validateNow();	
 		}
 			
 		

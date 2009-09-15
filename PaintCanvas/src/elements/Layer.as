@@ -1,7 +1,8 @@
 package elements
 {
+	import flash.display.Bitmap;
+	
 	import mx.containers.Canvas;
-	import mx.core.Application;
 	
 	/**
 	 * This class represents an Image layer
@@ -16,9 +17,8 @@ package elements
 		protected var height:int;
 		protected var name:String;
 		protected var visible:Boolean;
-		protected var backgroundColor:Number = -1;
+		protected var backgroundColor:Number;
 		protected var alpha:Number;
-		
 				
 		/**
 		 * The Constructor 
@@ -34,7 +34,6 @@ package elements
 			this.canvas = new Canvas();
 			this.canvas.cacheAsBitmap = true;
 			this.canvas.id = this.name;
-			this.canvas.alpha = 1;
 						
 			if(width > 0) this.canvas.width = width;
 			else this.canvas.percentWidth = 100;
@@ -44,12 +43,22 @@ package elements
 						
 			this.width = width;
 			this.height = height;
-			this.visible = true; 		
-			this.alpha = 1;			
-			
-			//Add the background sprite				
+			this.visible = true; 
+			this.backgroundColor = 0xFFFFFF;
+			this.alpha = 1;
 		}
-						
+		
+		/**
+		 * Set the canvas the layer represents
+		 * Please use with caution!
+		 */ 
+		public function setCanvas(canvas:Canvas):void{		
+			this.canvas = canvas;
+			this.canvas.id = this.name;
+			this.canvas.width = this.width;
+			this.canvas.height = this.height;		
+		}
+		
 		/**
 		 * Get the canvas component the layer represents
 		 */ 
@@ -121,15 +130,15 @@ package elements
 		 * An empty string represents no background color
 		 */ 
 		public function setBackgroundColor(color:String):void
-		{ 		
-			//Todo: Make background color layer specific
-			Application.application.frame.setStyle("backgroundColor",color);			
+		{ 
+			this.backgroundColor = new Number(color);
+			this.canvas.setStyle("backgroundColor",color);
 		}
 		
 		/**
 		 * Get the background color
 		 */ 
-		public function getBackgroundColor():Number{ 			
+		public function getBackgroundColor():Number{ 
 			return backgroundColor; 
 		}
 		

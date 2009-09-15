@@ -31,12 +31,12 @@ package brushes
 			
 			selection.graphics.clear();
 			
-			selection.graphics.lineStyle(pen.getWidth(),pen.getColor());
+			selection.graphics.lineStyle(pen.getWidth(),pen.getColor(),pen.getAlpha());
 			selection.graphics.moveTo(startPoint.x, startPoint.y);
 			selection.graphics.lineTo(endPoint.x, endPoint.y);			
 		}
 		
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
 			selection = new Canvas();
 			selection.width = canvas.width;
@@ -48,7 +48,7 @@ package brushes
 		{
 			canvas.removeChild(selection);
 			
-			pen.startStroke();
+			pen.startStroke(startPoint);
 			pen.processPoint(startPoint);
 			pen.processPoint(endPoint);
 			pen.endStroke();			
@@ -119,15 +119,17 @@ package brushes
 		
 		public function endTool():void
 		{
-			
+			//Nop
 		}
 		
-		public function getAlpha():Number{
-			return 0;	
+		public function getAlpha():Number
+		{
+			return pen.getAlpha();
 		}
 		
 		public function setAlpha(alpha:Number):void
 		{
+			pen.setAlpha(alpha);
 		}
 		
 		public function getXML():XML
@@ -176,7 +178,7 @@ package brushes
 				if(strokeXML.hasOwnProperty("@alpha"))
 					this.setAlpha(strokeXML.@alpha);
 										
-				this.startStroke();
+				this.startStroke(null);
 				if(!strokeXML.hasOwnProperty("points")) continue;
 				var pointsStr:String = strokeXML.points;
 				var points:Array = pointsStr.split(";");

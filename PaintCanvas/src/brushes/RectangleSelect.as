@@ -47,7 +47,7 @@ package brushes
 			}		
 		}
 		
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
 			selection = new Canvas();
 			selection.width = 1;

@@ -4,9 +4,6 @@ package brushes
 	
 	import mx.containers.Canvas;
 
-	/**
-	 * This is the Ellipse tool
-	 */ 
 	public class Ellipse implements IFillableBrush
 	{
 		protected var canvas:Canvas;	
@@ -22,21 +19,15 @@ package brushes
 		protected var current_color:Number = 0x0;
 		protected var current_width:Number = 1;
 		protected var current_filled_color:Number = -1;
+		protected var current_alpha:Number = 1;
 				
 		protected var redo_history:Array = new Array;
 		
-		/**
-		 * Constructor
-		 */ 
 		public function Ellipse(canvas:Canvas)
 		{
 			this.canvas = canvas;	
 		}
 
-		/**
-		 * Process a point.
-		 * This is called the the mouse moves 
-		 */ 
 		public function processPoint(p:Point):void
 		{
 			if(topLeft == null) topLeft = p;
@@ -68,13 +59,8 @@ package brushes
 			selection.graphics.endFill();				
 		}
 		
-		/**
-		 * Start a new stroke.
-		 * This is called when the mouse button is pressed down inside the image frame
-		 */ 
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
-			//Create a selection on the image
 			selection = new Canvas();
 			selection.width = 1;
 			selection.height = 1;			
@@ -82,20 +68,15 @@ package brushes
 			
 			canvas.addChildAt(selection,0);						
 			
-			//Create a new stroke
 			current_stroke = new BrushStroke();	
 			current_stroke.color = current_color;
 			current_stroke.width = current_width;
 			current_stroke.fillcolor = current_filled_color;
+			current_stroke.alpha = current_alpha;
 			
-			//Reset redo history
 			redo_history = new Array;
 		}
 		
-		/**
-		 * This ends the currently drawn stroke.
-		 * This is called when the mouse button is de-pressed.
-		 */ 
 		public function endStroke():void
 		{
 			if(current_stroke != null)
@@ -103,15 +84,14 @@ package brushes
 				current_stroke.points.push(topLeft);
 				current_stroke.points.push(bottomRight);
 				strokes.push(current_stroke);
-				
-				//Get the width and height of the ellipse				
+								
 				var width:int = topLeft.x-bottomRight.x;
 				var height:int = topLeft.y-bottomRight.y;
 				
 				canvas.graphics.lineStyle(current_stroke.width,current_stroke.color,current_stroke.alpha);
 				
 				if(current_stroke.fillcolor != -1)
-					canvas.graphics.beginFill(current_stroke.fillcolor);
+					canvas.graphics.beginFill(current_stroke.fillcolor,current_stroke.alpha);
 				
 				//Sector 4
 				if(width <= 0 && height <= 0)					
@@ -133,7 +113,8 @@ package brushes
 				if(current_stroke.fillcolor != -1)
 					canvas.graphics.endFill();	
 					
-			}		
+			}
+		
 															
 			canvas.removeChild(selection);			
 			current_stroke = null;
@@ -142,9 +123,6 @@ package brushes
 			bottomRight = null;
 		}
 		
-		/**
-		 * Redraw the strokes.
-		 */ 
 		public function redraw():void
 		{			
 			for each(var stroke:BrushStroke in strokes)
@@ -185,10 +163,6 @@ package brushes
 			current_stroke = null;
 		}
 		
-		/**
-		 * Undo last stroke. 
-		 * Returns true if successful.
-		 */ 
 		public function undo():Boolean
 		{		
 			if(strokes.length > 0)
@@ -202,10 +176,6 @@ package brushes
 			}			
 		}
 		
-		/**
-		 * Redo last undone stroke.
-		 * Returns true if successful
-		 */ 
 		public function redo():Boolean
 		{			
 			if(redo_history.length > 0)
@@ -219,66 +189,41 @@ package brushes
 			}
 		}
 		
-		/**
-		 * Get current color
-		 */ 
 		public function getColor():Number
 		{
 			return current_color;
 		}
 		
-		/**
-		 * Set current color
-		 */ 
 		public function setColor(color:Number):void
 		{
 			current_color = color;
 		}
 		
-		/**
-		 * Get current width
-		 */ 
 		public function getWidth():Number
 		{			
 			return current_width;
 		}
 		
-		/**
-		 * Set current width of the pencil
-		 */ 
 		public function setWidth(width:Number):void
 		{
 			current_width = width;
 		}
 		
-		/**
-		 * Get the type of this tool. This is an ellipse.
-		 */ 
 		public function getType():String
 		{
 			return Controller.ELLIPSE;
 		}
 		
-		/**
-		 * Set the color which the ellipse should be filled with.
-		 * If color is null then the ellipse will be transparent.
-		 */ 
 		public function setFillColor(color:Number):void
 		{					
 			this.current_filled_color = color;
 		}
 		
-		/**
-		 * Get the fill color. A null value represents transparency.
-		 */ 
 		public function getFillColor():Number
 		{
 			return this.current_filled_color;	
 		}
 		
-		/**
-		 * Scale ALL brushes. This is unreversable.
-		 */ 
 		public function scale(x_ratio:Number, y_ratio:Number):void
 		{
 			for each(var stroke:BrushStroke in strokes)
@@ -291,56 +236,36 @@ package brushes
 			}
 		}
 		
-		/**
-		 * Return the canvas used by the tool.
-		 */ 
 		public function getCanvas():Canvas
 		{
 			return this.canvas;
 		}
 		
-		/**
-		 * Returns an array of the strokes done
-		 */ 
 		public function getStrokes():Array
 		{
 			return this.strokes;
 		}
 		
-		/**
-		 * Get the cursor. NOT USED.
-		 */ 
 		public function getCursor():Class
 		{
 			return null;
 		}
 		
-		/**
-		 * End the tool. NOT USED.
-		 */ 
 		public function endTool():void
 		{
 			
 		}
 		
-		/**
-		 * Get the alpha channel value of the tool
-		 */ 
-		public function getAlpha():Number{
-			return 0;	
+		public function getAlpha():Number
+		{
+			return current_alpha;
 		}
 		
-		/**
-		 * Set the alpha channel value.
-		 * Values between 0-1 are used.
-		 */ 
 		public function setAlpha(alpha:Number):void
 		{
+			this.current_alpha = alpha;
 		}
 		
-		/**
-		 * Returns an XML representation of the tools strokes.
-		 */ 
 		public function getXML():XML
 		{
 			var brushXML:XML = new XML("<brush></brush>");	
@@ -348,6 +273,7 @@ package brushes
 			brushXML.@color = getColor();
 			brushXML.@width = getWidth();	
 			brushXML.@fill = getFillColor();
+			brushXML.@alpha = getAlpha();
 			
 			//generate brush strokes						
 			for each(var stroke:BrushStroke in getStrokes())
@@ -371,10 +297,6 @@ package brushes
 			return brushXML;
 		}
 	
-		/**
-		 * Creates strokes out of an XML representation.
-		 * Note: This removes all previous strokes.
-		 */ 
 		public function setXML(brushXML:XML):void
 		{
 			if(!brushXML.hasOwnProperty("@type")) return;
@@ -394,7 +316,7 @@ package brushes
 				if(strokeXML.hasOwnProperty("@fill"))
 					this.setFillColor(strokeXML.@fill);
 										
-				this.startStroke();
+				this.startStroke(null);
 				if(!strokeXML.hasOwnProperty("points")) continue;
 				var pointsStr:String = strokeXML.points;
 				var points:Array = pointsStr.split(";");

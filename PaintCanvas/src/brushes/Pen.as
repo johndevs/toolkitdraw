@@ -13,6 +13,7 @@ package brushes
 		protected var current_stroke:BrushStroke;
 		protected var current_color:Number = 0x0;
 		protected var current_width:Number = 1;
+		protected var current_alpha:Number = 1;
 		
 		protected var redo_history:Array = new Array;
 		
@@ -49,11 +50,12 @@ package brushes
 				Alert.show("Pen: No current stroke!");
 		}
 		
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
 			current_stroke = new BrushStroke();
 			current_stroke.color = current_color;
 			current_stroke.width = current_width;
+			current_stroke.alpha = current_alpha;
 			
 			redo_history = new Array;
 		}
@@ -157,13 +159,17 @@ package brushes
 			return null;
 		}
 		
-		public function endTool():void{ }
-		
-		public function getAlpha():Number{
-			return 0;	
+		public function endTool():void{ 
+			
 		}
 		
-		public function setAlpha(alpha:Number):void{ }
+		public function getAlpha():Number{
+			return current_alpha;
+		}
+		
+		public function setAlpha(alpha:Number):void{ 
+			this.current_alpha = alpha;
+		}
 		
 		public function getXML():XML
 		{
@@ -171,6 +177,7 @@ package brushes
 			brushXML.@type = getType();
 			brushXML.@color = getColor();
 			brushXML.@width = getWidth();	
+			brushXML.@alpha = getAlpha();
 			
 			//generate brush strokes						
 			for each(var stroke:BrushStroke in getStrokes())
@@ -211,7 +218,7 @@ package brushes
 				if(strokeXML.hasOwnProperty("@alpha"))
 					this.setAlpha(strokeXML.@alpha);
 										
-				this.startStroke();
+				this.startStroke(null);
 				if(!strokeXML.hasOwnProperty("points")) continue;
 				var pointsStr:String = strokeXML.points;
 				var points:Array = pointsStr.split(";");

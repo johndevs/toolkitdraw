@@ -4,7 +4,6 @@ package brushes
 	import flash.display.BlendMode;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.sampler.NewObjectSample;
 	
 	import mx.containers.Canvas;
 	import mx.graphics.ImageSnapshot;
@@ -171,7 +170,7 @@ package brushes
 
 		//Functions not used
 		public function processPoint(p:Point):void{}		
-		public function startStroke():void{}	
+		public function startStroke(p:Point):void{}	
 		public function endStroke():void{}		
 		public function endTool():void{}		
 		public function getColor():Number{ return 0;}		

@@ -2,8 +2,7 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	applicationComplete="init()" 	
 	width="100%" height="100%" 		
-	paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"
-	preloader="Preloader">
+	paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" preloader="Preloader">
 					
 	<mx:VBox id="frameContainer"
 		width="100%" height="100%" 

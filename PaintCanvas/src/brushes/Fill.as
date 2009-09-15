@@ -2,8 +2,11 @@ package brushes
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
 	
 	import mx.containers.Canvas;
+	import mx.controls.Alert;
+	import mx.core.Application;
 	import mx.graphics.ImageSnapshot;
 
 	public class Fill implements IFillableBrush
@@ -18,112 +21,155 @@ package brushes
 		protected var strokes:Array = new Array();
 		protected var currentStroke:BrushStroke;
 				
-		/**
-		 * Constructor
-		 */ 		
 		public function Fill(canvas:Canvas)
 		{
 			this.canvas = canvas;			
 		}
 
-		/**
-		 * Sets the fill color
-		 */ 
 		public function setFillColor(color:Number):void
 		{
 			this.fillcolor = color;
 		}
 		
-		/**
-		 * Process a point.
-		 */ 
 		public function processPoint(p:Point):void
 		{
 			selectedPoint = p;
 		}
 		
-		/**
-		 * Returns the fill color.
-		 */ 
 		public function getFillColor():Number
 		{
 			return fillcolor;
 		}
 		
-		/**
-		 * Start a new fill
-		 */ 
-		public function startStroke():void
+		private function pointHasBeenDrawn(x:int, y:int):Boolean
 		{
-			currentStroke = new BrushStroke();
+			for each(var p2:Point in currentStroke.points)
+				if(p2.x == x && p2.y == y) return true;
+			
+			return false;
 		}
 		
-		/**
-		 * This method set the color of a pixel and neigbouring pixels
-		 */ 
-		private function processPixels(	point:Point, 
-										data:BitmapData,										
-										matchColor:uint, 							
-										targetColor:uint,
-										processedPixels:Array):void{
-						
-			if(point.x < 0 || point.x >= data.width)
-				return;
+		private function queueBasedFloodFill(point:Point):void
+		{
+			//Create a snapshot of the application
+		
+			var data:BitmapData = ImageSnapshot.captureBitmapData(this.canvas);			
+			var width:Number = new Number(data.width);
+			var height:Number = new Number(data.height);
+				
+			//Get pixels
+			var pixels:ByteArray = data.getPixels(new flash.geom.Rectangle(0,0,width,height));
+			pixels.position = point.y*width + point.x;
 			
-			//Do not process already processed pixels
-			for each(var p:Point in processedPixels){
-				if(point.x == p.x && point.y == p.y)
-					return;				
+			//Free memory of the screenshot
+			data.dispose();
+			
+			// 1. Set Q to the empty queue.
+			var queue:Array = new Array();	
+						
+			// 2. If the color of node is not equal to target-color, return.
+			Alert.show(pixels.readUnsignedInt()+" == " + currentStroke.color);
+			if(pixels.readUnsignedInt() == currentStroke.color) return;
+						
+			// 3. Add node to the end of Q.
+			queue.push(point);			
+			
+			// 4. While Q is not empty: 
+			this.canvas.graphics.lineStyle(1,currentStroke.color, currentStroke.alpha);
+			var maxloop:Number = 100;
+			while(queue.length > 0)
+			{
+				var n:Point = queue.shift() as Point;
+								
+				// 6. If the color of n is equal to target-color, set the color of n to replacement-color.				
+				this.canvas.graphics.drawCircle(n.x, n.y, 1);
+				
+				// 8. If the color of the node to the west of n is target-color, 
+				// set the color of that node to replacement-color, 
+				// add that node to the end of Q.
+				pixels.position = n.y*width + point.x-1;
+				Alert.show(pixels.readUnsignedInt()+" == " + currentStroke.color);
+				if(n.x-1 >= 0 && !pointHasBeenDrawn(n.x-1, n.y) && pixels.readUnsignedInt() != currentStroke.color)
+				{
+					this.canvas.graphics.drawCircle(n.x-1, n.y, 1);
+					
+					var p1:Point = new Point(n.x-1, n.y);
+					queue.push(p1);		
+					currentStroke.points.push(p1);				
+				}
+				
+				// 9. If the color of the node to the east of n is target-color, 
+				// set the color of that node to replacement-color, 
+				// add that node to the end of Q.
+				pixels.position = n.y*width + point.x+1;
+				Alert.show(pixels.readUnsignedInt()+" == " + currentStroke.color);
+				if(n.x+1 <= width && !pointHasBeenDrawn(n.x+1, n.y) && pixels.readUnsignedInt() != currentStroke.color)
+				{
+					this.canvas.graphics.drawCircle(n.x+1, n.y, 1);
+					
+					var p2:Point = new Point(n.x+1, n.y);
+					queue.push(p2);		
+					currentStroke.points.push(p2);				
+				}
+				
+				// 10. If the color of the node to the north of n is target-color, 
+				// set the color of that node to replacement-color, 
+				// add that node to the end of Q.
+				pixels.position = (n.y-1)*width + point.x;
+				Alert.show(pixels.readUnsignedInt()+" == " + currentStroke.color);
+				if(	n.y-1 >= 0 && !pointHasBeenDrawn(n.x, n.y-1) && pixels.readUnsignedInt() != currentStroke.color)
+				{
+					this.canvas.graphics.drawCircle(n.x, n.y-1, 1);
+					
+					var p3:Point = new Point(n.x, n.y-1);
+					queue.push(p3);		
+					currentStroke.points.push(p3);			
+				}
+				
+				// 11. If the color of the node to the south of n is target-color, 
+				// set the color of that node to replacement-color, 
+				// add that node to the end of Q.
+				pixels.position = (n.y+1)*width + point.x+1;
+				Alert.show(pixels.readUnsignedInt()+" == " + currentStroke.color);
+				if(	n.y+1 <= height && !pointHasBeenDrawn(n.x, n.y+1) && pixels.readUnsignedInt() != currentStroke.color)
+				{
+					this.canvas.graphics.drawCircle(n.x, n.y+1, 1);
+					
+					var p4:Point = new Point(n.x, n.y+1);
+					queue.push(p4);		
+					currentStroke.points.push(p4);					
+				}				
+				
+				maxloop--;
+				if(maxloop == 0) break;				
 			}
 			
-			//Set the current pixel
-			processedPixels.push(point);
-			
-			//Get the color from the image
-			var pixelColor:uint = data.getPixel(point.x, point.y);			
-													
-			//If it is a match then draw on the mask
-			if(pixelColor == matchColor){
-				canvas.graphics.moveTo(point.x, point.y);
-				canvas.graphics.lineTo(point.x+1, point.y);	
-				currentStroke.points.push(point);
-			} 
-			
-			//If another pixel is found then stop
-			else {
-				return;
-			}
-						
-			//Process the 4 neighbouring pixels			
-			processPixels(new Point(point.x-1, point.y), data, matchColor, targetColor, processedPixels);
-			//processPixels(new Point(point.x+1, point.y), data, matchColor, targetColor, processedPixels);
-			//processPixels(new Point(point.x, point.y-1), data, matchColor, targetColor, processedPixels);
-			//processPixels(new Point(point.x, point.y+1), data, matchColor, targetColor, processedPixels);			
 		}
+		
+		public function startStroke(p:Point):void
+		{
+			//Don't do anything when we push the
+			//mouse button down
+			
+			currentStroke = new BrushStroke();
+			currentStroke.color = fillcolor;
+			currentStroke.alpha = alpha;
+			
+			// Flood fill - Change this to another method if not efficient enough.
+			// Check wikipedia for more floodfills
+			//queueBasedFloodFill(p);			
+			
+			var data:BitmapData = ImageSnapshot.captureBitmapData(Application.application.frame);		
+			data.floodFill(p.x, p.y, fillcolor);
+			
+			canvas.graphics.beginBitmapFill(data);
+			canvas.graphics.drawRect(10,10,data.width,data.height);
+			canvas.graphics.endFill();	
+		}		
 		
 		public function endStroke():void
 		{
-			//When the mouse button is released the get the pixel at that position
-			if(selectedPoint != null){
-				
-				//Create a snapshot of the application
-				var data:BitmapData = ImageSnapshot.captureBitmapData(this.canvas);
-								
-				//Get the color from the image
-				var matchColor:uint = data.getPixel(selectedPoint.x, selectedPoint.y);							
-								
-				//Process the pixels
-				processPixels(selectedPoint, data, matchColor, fillcolor, new Array());
-								
-				//Save the points in a brush				
-				currentStroke.color = matchColor;
-				currentStroke.fillcolor = fillcolor;
-				currentStroke.alpha = alpha;
-				
-				//Add the brush to the strokes
-				strokes.push(currentStroke);			
-				currentStroke = null;	
-			}
+			strokes.push(currentStroke);
 		}
 		
 				
@@ -205,7 +251,8 @@ package brushes
 			var brushXML:XML = new XML("<brush></brush>");	
 			brushXML.@type = getType();
 			brushXML.@color = getColor();
-			brushXML.@width = getWidth();	
+			brushXML.@width = getWidth();
+			brushXML.@alpha = getAlpha();	
 			
 			return brushXML;
 		}

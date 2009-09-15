@@ -3,15 +3,11 @@ package brushes
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.utils.ByteArray;
 	
 	import mx.containers.Canvas;
 	import mx.controls.TextArea;
 	import mx.core.ScrollPolicy;
 	import mx.graphics.ImageSnapshot;
-	import mx.utils.Base64Decoder;
-	import mx.utils.Base64Encoder;
 
 	public class Text implements IFillableBrush
 	{
@@ -75,7 +71,7 @@ package brushes
 			}		
 		}
 		
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
 			if(editing) return;
 			
@@ -371,7 +367,7 @@ package brushes
 				var point2:Array = (points[1] as String).split(",");
 				if(point2.length != 2) continue;													
 													
-				this.startStroke();		
+				this.startStroke(null);		
 				this.processPoint(new Point(new Number(point1[0]), new Number(point1[1]) ));
 				this.processPoint(new Point(new Number(point2[0]), new Number(point2[1]) ));
 				this.endStroke();

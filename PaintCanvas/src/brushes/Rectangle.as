@@ -17,6 +17,7 @@ package brushes
 		protected var fillColor:Number = -1;
 		protected var color:Number = 0;
 		protected var width:int = 1;
+		protected var alpha:Number = 1;
 		
 		protected var strokes:Array = new Array;
 		protected var redo_history:Array = new Array;
@@ -55,7 +56,7 @@ package brushes
 		
 		}
 		
-		public function startStroke():void
+		public function startStroke(p:Point):void
 		{
 			selection = new Canvas();
 			selection.width = 1;
@@ -69,6 +70,7 @@ package brushes
 			current_stroke.color = color;
 			current_stroke.width = width;
 			current_stroke.fillcolor = fillColor;
+			current_stroke.alpha = alpha;
 			
 			redo_history = new Array;						
 		}
@@ -87,7 +89,7 @@ package brushes
 				canvas.graphics.lineStyle(current_stroke.width, current_stroke.color, current_stroke.alpha);
 				
 				if(current_stroke.fillcolor != -1)
-					canvas.graphics.beginFill(current_stroke.fillcolor);
+					canvas.graphics.beginFill(current_stroke.fillcolor, current_stroke.alpha);
 				
 				//Sector 4
 				if(width <= 0 && height <= 0)					
@@ -250,11 +252,11 @@ package brushes
 		}
 		
 		public function getAlpha():Number{
-			return 0;	
+			return alpha;
 		}
 		
-		public function setAlpha(alpha:Number):void
-		{
+		public function setAlpha(alpha:Number):void{
+			this.alpha = alpha;
 		}
 		
 		public function getXML():XML
@@ -264,6 +266,7 @@ package brushes
 			brushXML.@color = getColor();
 			brushXML.@width = getWidth();	
 			brushXML.@fill = getFillColor();
+			brushXML.@alpha = getAlpha();
 			
 			//generate brush strokes						
 			for each(var stroke:BrushStroke in getStrokes())
@@ -307,7 +310,7 @@ package brushes
 				if(strokeXML.hasOwnProperty("@fill"))
 					this.setFillColor(strokeXML.@fill);
 										
-				this.startStroke();
+				this.startStroke(null);
 				if(!strokeXML.hasOwnProperty("points")) continue;
 				var pointsStr:String = strokeXML.points;
 				var points:Array = pointsStr.split(";");
