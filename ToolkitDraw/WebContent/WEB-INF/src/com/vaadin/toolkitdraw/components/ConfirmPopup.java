@@ -1,5 +1,6 @@
 package com.vaadin.toolkitdraw.components;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -26,14 +27,16 @@ public class ConfirmPopup extends Window implements ClickListener{
 		setCaption(caption);
 		setWidth("300px");
 		setHeight("100px");
+		setResizable(false);
 		
 		layout.setSizeFull();
+		layout.setMargin(true);
 		
 		this.description = new Label(description);
 		layout.addComponent(this.description);
 		
 		HorizontalLayout buttons = new HorizontalLayout();		
-		
+			
 		ok = new Button("Ok");
 		ok.addListener(this);
 		ok.setData(true);
@@ -45,7 +48,8 @@ public class ConfirmPopup extends Window implements ClickListener{
 		buttons.addComponent(cancel);
 		
 		layout.addComponent(buttons);
-		setLayout(layout);
+		layout.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
+		setContent(layout);
 	}
 	
 	public void show(){

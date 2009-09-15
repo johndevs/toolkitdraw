@@ -44,6 +44,8 @@ public abstract class Tool implements com.vaadin.data.Property.ValueChangeListen
 	
 	public abstract String getName();
 	
+	public abstract void sendCurrentSettings();
+	
 	public PaintCanvas getCanvas() {
 		return canvas;
 	}

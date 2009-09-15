@@ -332,7 +332,7 @@ public class PaintCanvasNativeUtil {
 			setTimeout(func,1000);
 			return false;
 		}			
-	}-*/;
+	}-*/;	
 
 	/**
 	 * Set the transparency of the layer.
@@ -357,6 +357,79 @@ public class PaintCanvasNativeUtil {
 		}			
 	}-*/;
 
+	/**
+	 * Moves the selected layer one position upwards
+	 * @param id
+	 * 		The canvas id
+	 * @param name
+	 * 		The name of the layer
+	 * @return
+	 */
+	public static native boolean moveLayerUp(String id, String name)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.moveLayerUp == 'function' && canvas.isReady() ){
+			canvas.moveLayerUp(name);
+			return true;
+		}else{
+			alert("delaying moveLayerUp");
+			var func = function() { canvas.moveLayerUp(name); };		
+			setTimeout(func,1000);
+			return false;
+		}			
+	}-*/;
+	
+	/**
+	 * Moves the selected layer one position downwards
+	 * @param id
+	 * 		The canvas id
+	 * @param name
+	 * 		The name of the layer
+	 * @return
+	 */
+	public static native boolean moveLayerDown(String id, String name)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.moveLayerDown == 'function' && canvas.isReady() ){
+			canvas.moveLayerDown(name);
+			return true;
+		}else{
+			alert("delaying moveLayerDown");
+			var func = function() { canvas.moveLayerDown(name); };		
+			setTimeout(func,1000);
+			return false;
+		}			
+	}-*/;
+	
+	/**
+	 * Removes selected layer
+	 * @param id
+	 * 		The canvas id
+	 * @param name
+	 * 		The name of the layer
+	 * @return
+	 */
+	public static native boolean removeLayer(String id, String name)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.removeLayer == 'function' && canvas.isReady() ){
+			canvas.moveLayerDown(name);
+			return true;
+		}else{
+			alert("delaying removeLayer");
+			var func = function() { canvas.removeLayer(name); };		
+			setTimeout(func,1000);
+			return false;
+		}			
+	}-*/;	
+	
+	
 	/**
 	 * Requests an XML representation of the image.
 	 * 
@@ -727,8 +800,7 @@ public class PaintCanvasNativeUtil {
 		if(typeof canvas.setImageCache == 'function' && canvas.isReady() ){
 			canvas.setImageCache(cache);
 			return true;
-		}else{
-			alert("delaying setImageCache");
+		}else{		
 			var func = function() { canvas.setImageCache(cache); };		
 			setTimeout(func,1000);
 			return false;
@@ -740,6 +812,46 @@ public class PaintCanvasNativeUtil {
 		if (_app == 'Microsoft Internet Explorer') return true;
 		else return false;		
 	}-*/;
+	
+	/**
+	 * Sets the autosave time
+	 * @param id
+	 * 		The id of the canvas
+	 * @param seconds
+	 * 		The amount of seconds to save
+	 * @return
+	 */
+	public static native boolean setAutosaveTime(String id, int seconds)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setAutosaveTime == 'function' && canvas.isReady() ){
+			canvas.setAutosaveTime(seconds);
+			return true;
+		}else{		
+			var func = function() { canvas.setAutosaveTime(seconds); };		
+			setTimeout(func,1000);
+			return false;
+		}		
+	}-*/;	
+	
+	public static native boolean setClickListening(String id, boolean on)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setClickListening == 'function' && canvas.isReady() ){
+			canvas.setClickListening(on);
+			return true;
+		}else{		
+			var func = function() { canvas.setClickListening(on); };		
+			setTimeout(func,1000);
+			return false;
+		}		
+	}-*/;	
+	
+	
 	/**
 	 * Set the available fonts. This is done by the Flash component and should
 	 * not be done manually
@@ -807,6 +919,10 @@ public class PaintCanvasNativeUtil {
 		getCanvas(id).setServerCache(xml);
 	}
 	
+	public static void clickEvent(String id, int x, int y){
+		getCanvas(id).clickEvent(x, y);
+	}
+	
 	/**
 	 * Define the native util methods so the flash can find them.
 	 * If the package changes then these need to be changed also!!!
@@ -846,6 +962,8 @@ public class PaintCanvasNativeUtil {
 			this.setFont = function(id, font){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFont(Ljava/lang/String;Ljava/lang/String;)(id, font); };
 			this.getServerCache = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getServerCache(Ljava/lang/String;)(id); };
 			this.setServerCache = function(id, xml){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setServerCache(Ljava/lang/String;Ljava/lang/String;)(id, xml); };
+			this.setAutosaveTime = function(id, seconds){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setAutosaveTime(Ljava/lang/String;I)(id, seconds); };
+			this.clickEvent = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::clickEvent(Ljava/lang/String;II)(id, x, y); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		

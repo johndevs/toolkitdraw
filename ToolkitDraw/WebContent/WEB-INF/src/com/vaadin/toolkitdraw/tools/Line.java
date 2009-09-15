@@ -9,6 +9,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.toolkitdraw.components.TwinColorPicker;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
@@ -111,6 +112,22 @@ public class Line extends Tool implements ValueChangeListener, ColorChangeListen
 	public void changed(ColorSelector selector, Color color) {
 		colorpicker.selectForegroundColorPicker();	
 		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));		
+	}
+
+
+	@Override
+	public void sendCurrentSettings() {
+		if(this.canvas == null) return;
+		
+		Interactive i = this.canvas.getInteractive();
+		
+		colorpicker.selectForegroundColorPicker();			
+		i.setColor(colorToHex(colorpicker.getColor()));
+		
+		i.setToolSize(Double.parseDouble(size.getValue().toString()));
+		
+		i.setAlpha(1.0-Double.parseDouble(opacity.getValue().toString())/100.0);		
+	
 	}
 
 }

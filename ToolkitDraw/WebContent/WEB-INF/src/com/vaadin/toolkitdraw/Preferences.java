@@ -8,7 +8,9 @@ public class Preferences {
 	private Plugin plugin = Plugin.FLASH;
 	
 	private CacheMode cacheMode = CacheMode.SERVER;
-
+	
+	private int autosaveTime = 60;
+	
 	public Preferences(){
 		
 	}
@@ -16,6 +18,7 @@ public class Preferences {
 	public void copy(Preferences pref){
 		this.plugin = pref.getPlugin();
 		this.cacheMode = pref.getCacheMode();
+		this.autosaveTime = pref.getAutosaveTime();
 	}
 	
 	public Plugin getPlugin() {
@@ -33,5 +36,14 @@ public class Preferences {
 	public void setCacheMode(CacheMode cacheMode) {
 		this.cacheMode = cacheMode;
 	}
+	
+	public int getAutosaveTime() {
+		return autosaveTime;
+	}
+
+	public void setAutosaveTime(int autosaveTime) {
+		this.autosaveTime = autosaveTime;
+	}
+
 	
 }

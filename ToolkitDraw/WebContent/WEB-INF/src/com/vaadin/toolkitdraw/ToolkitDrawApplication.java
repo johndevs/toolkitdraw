@@ -345,11 +345,14 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				
 		if(value instanceof MainPanel.Type){			
 			switch((MainPanel.Type)value){
-				case UNDO: 	currentCanvas.getInteractive().undo(); 
+				case UNDO: 	
+							if(currentCanvas == null) break;
+							currentCanvas.getInteractive().undo(); 
 							setStatusbarText("Undo operation done");
 				break;
 				
-				case REDO: 	currentCanvas.getInteractive().redo(); 
+				case REDO: 	if(currentCanvas == null) break;
+							currentCanvas.getInteractive().redo(); 
 							setStatusbarText("Redo operation done");
 				break;
 				
@@ -366,6 +369,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				break;
 							
 				case CLOSE:{
+					if(currentCanvas == null) break;
 					boolean unsaved = closeCurrentFile();
 					if(unsaved) setStatusbarText("Closing unsaved image?");
 					else setStatusbarText("Image closed");					
@@ -373,6 +377,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				}
 				
 				case SAVE:{
+					if(currentCanvas == null) break;
 					final SavePopup pop = new SavePopup("Select filetype","", mainWindow);
 					pop.addListener(new Button.ClickListener(){
 						public void buttonClick(ClickEvent event) {													
@@ -392,9 +397,18 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				}
 				
 				//Selection releted actions
-				case SELECTION_REMOVE: currentCanvas.getInteractive().removeSelection(); break;
-				case SELECTION_ALL: currentCanvas.getInteractive().selectAll(); break;
-				case CROP: currentCanvas.getInteractive().crop(); setStatusbarText("Cropping done."); break;				
+				case SELECTION_REMOVE: 	if(currentCanvas == null) break;
+										currentCanvas.getInteractive().removeSelection(); 
+				break;
+				
+				case SELECTION_ALL: 	if(currentCanvas == null) break;
+										currentCanvas.getInteractive().selectAll(); 
+				break;
+				
+				case CROP: 				if(currentCanvas == null) break;
+										currentCanvas.getInteractive().crop(); 
+										setStatusbarText("Cropping done."); 
+				break;				
 					
 				//Demos
 				case DEMO1:{

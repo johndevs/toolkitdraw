@@ -29,6 +29,8 @@ public class Config implements Serializable{
 	private Color componentColor = Color.WHITE;
 	
 	private Set<String> availableFonts = new HashSet<String>();
+	
+	private int autosave = 60;
 
 	public CacheMode getCacheMode() {
 		return cacheMode;
@@ -101,5 +103,12 @@ public class Config implements Serializable{
 	public void setPlugin(Plugin plugin) {
 		this.plugin = plugin;
 	}
-	
+
+	public int getAutosave() {
+		return autosave;
+	}
+
+	public void setAutosave(int autosave) {
+		this.autosave = autosave;
+	}	
 }

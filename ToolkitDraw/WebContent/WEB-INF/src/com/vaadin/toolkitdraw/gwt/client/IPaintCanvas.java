@@ -78,9 +78,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("newlayer")) 	PaintCanvasNativeUtil.addLayer(id, value);
 		else if(command.equals("paperWidth"))	PaintCanvasNativeUtil.setPaperWidth(id, Integer.parseInt(value));
 		else if(command.equals("paperHeight"))	PaintCanvasNativeUtil.setPaperHeight(id, Integer.parseInt(value));
-		else if(command.equals("penSize")){
-			PaintCanvasNativeUtil.setPenSize(id, Double.parseDouble(value));
-		}
+		else if(command.equals("penSize"))		PaintCanvasNativeUtil.setPenSize(id, Double.parseDouble(value));		
 		else if(command.equals("penColor"))		PaintCanvasNativeUtil.setPenColor(id, value);
 		else if(command.equals("penAlpha"))		PaintCanvasNativeUtil.setPenAlpha(id, Double.parseDouble(value));
 		else if(command.equals("brush"))		PaintCanvasNativeUtil.setBrush(id, value);
@@ -88,6 +86,9 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("showLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, true);
 		else if(command.equals("hideLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, false);
 		else if(command.equals("activeLayer"))	PaintCanvasNativeUtil.selectLayer(id, value);
+		else if(command.equals("layerup"))		PaintCanvasNativeUtil.moveLayerUp(id, value);
+		else if(command.equals("layerdown"))	PaintCanvasNativeUtil.moveLayerDown(id, value);
+		else if(command.equals("removelayer"))	PaintCanvasNativeUtil.removeLayer(id, value);
 		else if(command.equals("getImageXML")){
 			//Feth the xml from the flash compoent
 			String xml = PaintCanvasNativeUtil.getImageXML(id);
@@ -194,17 +195,23 @@ public class IPaintCanvas extends HTML implements Paintable {
 		}
 		else if(command.equals("cache-mode")){
 			PaintCanvasNativeUtil.setCacheMode(id, value);
-		}		
-		
+		}				
 		else if(command.equals("cache")){		
 			
 			String val = value.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");			
 			PaintCanvasNativeUtil.setImageCache(id, val);
-		}
-		
+		}		
 		else if(command.equals("plugin")){
 			//Plugin change while editing not supported at this time. 
 		}
+		else if(command.equals("autosave")){
+			int seconds = Integer.parseInt(value);
+			PaintCanvasNativeUtil.setAutosaveTime(id, seconds);
+		}		
+		else if(command.equals("clicklisten")){
+			boolean on = Boolean.parseBoolean(value);
+			PaintCanvasNativeUtil.setClickListening(id, on);
+		}		
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
@@ -471,6 +478,10 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 */
 	public void setServerCache(String xml){				
 		client.updateVariable(this.uidlId, "set-cache", new Object[]{xml}, true);
+	}
+	
+	public void clickEvent(int x, int y){
+		client.updateVariable(this.uidlId, "click-event",new Object[]{x,y} , true);
 	}
 	
 

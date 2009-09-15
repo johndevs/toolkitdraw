@@ -33,9 +33,7 @@ import com.vaadin.toolkitdraw.util.XMLUtil;
 public class PaintCanvas extends AbstractField implements Component, Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
-	private Layer currentLayer;
-
+		
 	/**
 	 * The graphics class is used to draw on the canvas from the server side
 	 * This is mostly used when we want to present some information on the drawing
@@ -522,21 +520,21 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
-	    public void moveLayerUp(String name){
+	    public void moveLayerUp(Layer layer){
 	    	
 	    	//Cannot move background layer
-	    	if(name.equals("Background")) return;
+	    	if(layer.getName().equals("Background")) return;
 	    	
-	    	addToQueue("layerdown", name);
+	    	addToQueue("layerup", layer.getName());
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
-	    public void moveLayerDown(String name){
+	    public void moveLayerDown(Layer layer){
 	    	
 	    	//Cannot move background layer
-	    	if(name.equals("Background")) return;
+	    	if(layer.getName().equals("Background")) return;
 	    	
-	    	addToQueue("layerup", name);
+	    	addToQueue("layerdown", layer.getName());
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
@@ -576,6 +574,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 	
+	public interface ClickListener{
+		public void onClick(Component component, int x, int y);
+	}
+	
 	/** The command history is needed when the the session is reloaded(F5) **/
 	private Queue<Map<String, String>> commandHistory = new ArrayBlockingQueue<Map<String,String>>(10000);
 	
@@ -598,6 +600,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private boolean cacheContentNeeded = false;
 	
 	private Long transactionCount = 0L;
+	
+	private Layer currentLayer;
+	
+	private Set<ClickListener> clickListeners = new HashSet<ClickListener>();
 				
 	public PaintCanvas(){	
 		
@@ -951,6 +957,18 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         		imageCache = new StringBuilder(objects[0].toString());
     		}  		    	
     	}
+    	
+    	//Click event recieved
+    	if(variables.containsKey("click-event")){
+    		Object[] coordinates = (Object[])variables.get("click-event");    
+    		if(coordinates.length == 2){
+    			System.out.println("Click event!");
+    			for(ClickListener listener : clickListeners){
+    				listener.onClick(this, Integer.parseInt(coordinates[0].toString()), 
+    									   Integer.parseInt(coordinates[1].toString()));
+    			}
+    		}
+    	}
     }    
      
     public void getImageXML(){
@@ -1004,9 +1022,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	addToQueue("componentColor", "0x"+red+green+blue);
     	if(isImmediate()) requestRepaint();
     }        
-    
-    
-    
+        
     public Layers getLayers(){
     	return Ilayers;
     }  
@@ -1027,4 +1043,31 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	if(isImmediate()) requestRepaint();
     }
     
+    public void setAutosaveTime(int seconds){
+    	if(seconds < 0) return;
+    	configuration.setAutosave(seconds);
+    	addToQueue("autosave", String.valueOf(seconds));
+    	if(isImmediate()) requestRepaint();
+    }
+    
+    public void addListener(ClickListener listener){   	
+    	
+    	//Turn on click listening
+    	if(clickListeners.size() == 0){
+    		addToQueue("clicklisten", "true");
+    		requestRepaint();
+    	}    		
+    	
+    	clickListeners.add(listener);
+    }
+    
+    public void removeListener(ClickListener listener){
+    	clickListeners.remove(listener);
+    	
+    	//Turn click listening off
+    	if(clickListeners.size() == 0){
+    		addToQueue("clicklisten", "false");
+    		requestRepaint();
+    	}
+    }    
 }

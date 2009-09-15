@@ -150,7 +150,9 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		
 		if(i != null){
 			i.setBrush(tool);
+			selected.sendCurrentSettings();
 		}
+		
 		else System.out.println("ERROR: Canvas is not interactive");
 		
 	}

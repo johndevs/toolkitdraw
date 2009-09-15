@@ -93,4 +93,10 @@ public class Select extends Tool {
 		return "Select";
 	}
 
+	@Override
+	public void sendCurrentSettings() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

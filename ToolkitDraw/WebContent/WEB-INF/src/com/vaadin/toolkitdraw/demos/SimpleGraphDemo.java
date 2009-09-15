@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import sun.awt.HorizBagLayout;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -18,7 +20,9 @@ import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
@@ -37,6 +41,8 @@ public class SimpleGraphDemo extends Window {
 
 	private Button save;
 	
+	private Button close;
+	
 	public SimpleGraphDemo() {
 		
 		super("Simple Graph Demo");		
@@ -44,6 +50,7 @@ public class SimpleGraphDemo extends Window {
 		setWidth("600px");
 		setHeight("400px");		
 		setModal(true);			
+		setResizable(false);
 						
 		GridLayout layout = new GridLayout(2,2);	
 		setLayout(layout);	
@@ -59,7 +66,7 @@ public class SimpleGraphDemo extends Window {
 		
 		//Enable batch mode
 		canvas.getGraphics().setBatchMode(true);
-				
+								
 		layout.addComponent(canvas,0,0);
 		
 		//Create a value table
@@ -73,19 +80,11 @@ public class SimpleGraphDemo extends Window {
 		table.setWidth("290px");
 		layout.addComponent(table,1,0);
 		
-		//Create the refresh button
-		refresh = new Button("Refresh");
-		refresh.addListener(new Button.ClickListener(){		
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void buttonClick(ClickEvent event) {
-				randomlyCreateValues();												
-				renderBarGraph();							
-			}			
-		});
+		HorizontalLayout buttons = new HorizontalLayout();
+		layout.addComponent(buttons, 1,1);
+		layout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT);
+		buttons.setMargin(true);		
 		
-		layout.addComponent(refresh,1,1);
-		layout.setComponentAlignment(refresh, Alignment.MIDDLE_RIGHT);
 		
 		save = new Button("Save");
 		final Window parent = this;
@@ -99,7 +98,7 @@ public class SimpleGraphDemo extends Window {
 							canvas.removeListener(this);							
 							ImagePNGRecievedEvent evnt = (ImagePNGRecievedEvent)event;						
 							ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());							
-							final DownloadStream stream = new DownloadStream(iStream,"Image/JPG","image"+(new Date()).getTime()+".jpg");
+							final DownloadStream stream = new DownloadStream(iStream,"Image/PNG","image"+(new Date()).getTime()+".png");
 							
 							Resource res = new StreamResource(new StreamResource.StreamSource(){			
 								public InputStream getStream() {
@@ -116,9 +115,36 @@ public class SimpleGraphDemo extends Window {
 				canvas.getImagePNG(0); 				
 			}			
 		});
+				
+		buttons.addComponent(save);
+		buttons.setComponentAlignment(save, Alignment.MIDDLE_RIGHT);
 		
-		layout.addComponent(save,0,1);
-		layout.setComponentAlignment(save, Alignment.MIDDLE_LEFT);
+		//Create the refresh button
+		refresh = new Button("Refresh");
+		refresh.addListener(new Button.ClickListener(){		
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				randomlyCreateValues();												
+				renderBarGraph();							
+			}			
+		});
+		
+		buttons.addComponent(refresh);
+		buttons.setComponentAlignment(refresh, Alignment.MIDDLE_RIGHT);
+		
+		//Create the close button
+		close = new Button("Close");
+		close.addListener(new Button.ClickListener() {		
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				setVisible(false);				
+			}
+		});
+		
+		buttons.addComponent(close);
+		buttons.setComponentAlignment(close, Alignment.MIDDLE_RIGHT);
 				
 		randomlyCreateValues();
 		
@@ -202,14 +228,8 @@ public class SimpleGraphDemo extends Window {
 			
 			counter++;
 		}		
-							
-				
-		
+													
 		//Send the draw intstructions to the client
-		gc.sendBatch();	
-	
-		
+		gc.sendBatch();			
 	}
-	
-
 }

@@ -276,9 +276,23 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			layerTable.select(newLayer);
 			
 		}else if(event.getButton() == removeLayer && layerTable.getValue() != null){
+			Layer selected = (Layer)layerTable.getValue();
+			List<Layer> layers = this.canvas.getLayers().getLayers();
 			
+			//Background layer cannot be removed
+			int idx = layers.indexOf(selected);
+			if(idx == 0) return;
 			
+			//Remove layer
+			this.canvas.getLayers().removeLayer(selected);
+			layers.remove(selected);
 			
+			refreshLayers();
+			
+			if(layers.size() > idx)
+				layerTable.select(layers.get(idx));
+			else
+				layerTable.select(layers.get(idx-1));
 			
 		}else if(event.getButton() == upLayer && layerTable.getValue() != null ){
 			Layer selected = (Layer)layerTable.getValue();
@@ -289,7 +303,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			if(idx <= 1) return;
 			
 			//Swap the layers in both the table and the image component
-			this.canvas.getLayers().moveLayerUp(selected.getName());
+			this.canvas.getLayers().moveLayerUp(selected);
 			Collections.swap(layers, idx, idx-1);
 			
 			refreshLayers();			
@@ -304,7 +318,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			if(idx == layers.size()-1 || idx == 0) return;
 			
 			//Swap the layers in both the table and the image component
-			this.canvas.getLayers().moveLayerDown(selected.getName());
+			this.canvas.getLayers().moveLayerDown(selected);
 			Collections.swap(layers, idx, idx+1);
 			
 			refreshLayers();

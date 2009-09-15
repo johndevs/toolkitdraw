@@ -2,6 +2,7 @@
 
 .v-window-contents{
 	background:#222222;	
+	color:#FFFFFF;
 }
 
 .v-panel-caption, .v-accordion-item-caption{
@@ -21,7 +22,6 @@
 .v-panel-content .v-verticallayout, 
 .v-panel-content .v-gridlayout, 
 .v-accordion-item,
-.v-table-body,
 .v-tabsheet-tabsheetpanel {
 	background: #444444;
 	border:0;
@@ -84,11 +84,11 @@
 }
 
 .mainwindow{
-	background-color:#555555;
+	background-color:#222222;;
 }
 
-.openfiletabsheet {
-	background-color: #222222;
+.openfiletabsheet, .statusbar {
+	background-color: #444444;;
 }
 
 .twin-colorpicker .v-button[style*="width"] .v-icon, .v-ie7 .v-button .v-icon{
@@ -115,4 +115,32 @@
 
 .preferences-popup-layout .v-gridlayout-margin{
 	padding:2px;
+}
+
+.v-table-header-wrap{
+	background: #333333;
+	color:white;
+	text-shadow:none;
+	font-weight: normal;
+	text-transform:none;
+	border-color: #222222;
+}
+
+.v-table-row{
+	background: #555555;
+	color: #ffffff;
+}
+
+.v-table-row-odd{
+	background: #777777;
+	color:#ffffff;
+}
+
+.v-table-body{
+	background: #444444;
+	border-color: #222222;
+}
+
+.v-table-resizer,.v-table-cell-content {
+	border-right: 1px solid #222222;
 }

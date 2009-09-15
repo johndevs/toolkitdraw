@@ -6,6 +6,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.toolkitdraw.ToolkitDrawApplication.FileType;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -34,11 +35,12 @@ public class SavePopup extends Window implements ClickListener{
 		this.parent = parent;
 		setModal(true);
 		setWidth("350px");
-		setHeight("150px");
-		
+		setHeight("150px");				
 		setCaption(caption);
+		setResizable(false);
 		
 		layout.setSizeFull();
+		layout.setMargin(true);
 		
 		GridLayout grid = new GridLayout(2,2);
 				
@@ -66,36 +68,26 @@ public class SavePopup extends Window implements ClickListener{
 				}				
 			}			
 		});
-		
-		//fileLayout.addComponent(filetype);
-		
-		//layout.addComponent(fileLayout);
+	
 		grid.addComponent(filetype,1,0);
 		
-		
-		//HorizontalLayout dpiLayout = new HorizontalLayout();
-		//dpiLayout.setStyleName("file-select-layout");
 		Label lbl2 = new Label();
 		lbl2.setCaption("Dpi:");
 		lbl2.setWidth("100px");
-		//dpiLayout.addComponent(lbl2);
+	
 		grid.addComponent(lbl2,0,1);
 		
 		dpi = new TextField();
 		dpi.setWidth("100%");
 		dpi.setValue("72");
-		//dpiLayout.addComponent(dpi);
-		
-		//layout.addComponent(dpiLayout);
-		
+			
 		grid.addComponent(dpi,1,1);
 		layout.addComponent(grid);
 	
 		//Select the defualt image format
 		filetype.select(FileType.PNG);
 		dpi.setEnabled(true);
-		
-		
+				
 		HorizontalLayout buttons = new HorizontalLayout();		
 		
 		ok = new Button("Ok");
@@ -109,11 +101,10 @@ public class SavePopup extends Window implements ClickListener{
 		buttons.addComponent(cancel);		
 		
 		layout.addComponent(buttons);
+		layout.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
 		
-		setLayout(layout);
-	}
-	
-	
+		setContent(layout);		
+	}	
 	
 	@Override
 	public void buttonClick(ClickEvent event) {
