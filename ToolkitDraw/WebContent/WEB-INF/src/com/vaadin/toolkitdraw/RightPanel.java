@@ -192,6 +192,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layerTable.setColumnWidth("Visible", 30);
 		layerTable.setColumnHeader("Visible", "");
 		layerTable.addContainerProperty("Name",String.class, "");
+		layerTable.setNullSelectionAllowed(false);
 						
 		tab2.addComponent(layerTable);	
 		tab2.setExpandRatio(layerTable, 20);
@@ -241,6 +242,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			item.getItemProperty("Visible").setValue(visible);			
 		}
 				
+		layerTable.select(canvas.getLayers().getActiveLayer());
 		layerTable.requestRepaint();
 	}
 
@@ -330,6 +332,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		this.canvas = canvas;
 		refreshLayers();
+		
 	}
 	
 	public void updateHistogram(){

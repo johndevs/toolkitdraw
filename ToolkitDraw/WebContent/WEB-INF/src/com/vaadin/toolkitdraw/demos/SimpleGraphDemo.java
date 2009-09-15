@@ -16,6 +16,7 @@ import com.vaadin.terminal.StreamResource;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Table;
@@ -68,8 +69,8 @@ public class SimpleGraphDemo extends Window {
 		table.setColumnWidth("Title", 190);
 		table.setColumnWidth("Value", 70);
 		table.setColumnAlignment("Value", Table.ALIGN_CENTER);
-		table.setHeight("280px");
-		table.setWidth("280px");
+		table.setHeight("300px");
+		table.setWidth("290px");
 		layout.addComponent(table,1,0);
 		
 		//Create the refresh button
@@ -84,6 +85,7 @@ public class SimpleGraphDemo extends Window {
 		});
 		
 		layout.addComponent(refresh,1,1);
+		layout.setComponentAlignment(refresh, Alignment.MIDDLE_RIGHT);
 		
 		save = new Button("Save");
 		final Window parent = this;
@@ -116,6 +118,7 @@ public class SimpleGraphDemo extends Window {
 		});
 		
 		layout.addComponent(save,0,1);
+		layout.setComponentAlignment(save, Alignment.MIDDLE_LEFT);
 				
 		randomlyCreateValues();
 		

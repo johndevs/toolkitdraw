@@ -43,8 +43,7 @@ public class Layer implements Serializable {
 	public Layer(String name, PaintCanvas canvas) {			
 		this.name = name;
 		visible = true;
-		this.canvas = canvas;
-		
+		this.canvas = canvas;		
 		this.visible = true;
 		this.color = "0xFFFFFF";
 		this.alpha = 0;
