@@ -1,53 +1,93 @@
 package com.vaadin.toolkitdraw.tools;
 
+import java.awt.Color;
+
+import com.vaadin.colorpicker.ColorSelector;
+import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.toolkitdraw.components.TwinColorPicker;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Slider;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Slider.ValueOutOfBoundsException;
 
-public class Polygon extends Tool implements ValueChangeListener {
+public class Polygon extends Tool implements ValueChangeListener, ColorChangeListener, ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private TextField size;
+	private Slider size;
 	
-	private TextField color;
+	private Slider opacity;
+
+	private TwinColorPicker colorpicker;
 	
-	private TextField fillColor;
+	private CheckBox disableFillcolor;
 	
 	private Layout layout = new VerticalLayout();
 	
 	public Polygon(PaintCanvas canvas){
 		this.canvas = canvas;
+		this.layout.setMargin(true);
 		
 		button = new Button();
 		button.setStyleName(Button.STYLE_LINK);
 		button.setData(BrushType.POLYGON);
 		button.setIcon(IconFactory.getIcon(Icons.ICON_POLY));
 			
-		size = new TextField("Size");
+		//Create the basic tools
+		GridLayout basic = new GridLayout(2,2);
+		basic.setColumnExpandRatio(0, 1);
+		basic.setColumnExpandRatio(1, 5);
+		basic.setWidth("100%");
+		basic.setHeight("70px");
+				
+		colorpicker = new TwinColorPicker();
+		colorpicker.addListener(this);
+		basic.addComponent(colorpicker,0,0,0,1);
+		basic.setComponentAlignment(colorpicker, Alignment.MIDDLE_LEFT);
+		
+		size = new Slider("Size",1,10);
 		size.addListener(this);
-		size.setImmediate(true);
-		size.setValue(1);
-		layout.addComponent(size);		
+		size.setSizeFull();
+		size.setImmediate(true);		
+		try{
+			size.setValue(1);
+		}catch(ValueOutOfBoundsException voobe){
+			//NOP
+		}		
+		basic.addComponent(size, 1,0);
 		
-		color = new TextField("Color");
-		color.addListener(this);
-		color.setImmediate(true);
-		color.setValue("000000");
-		layout.addComponent(color);
+		opacity = new Slider("Opacity",0,100);
+		opacity.addListener(this);
+		opacity.setSizeFull();
+		opacity.setImmediate(true);
+		try {
+			opacity.setValue(0);
+		} catch (ValueOutOfBoundsException voobe) {
+			//NOP
+		}
+		basic.addComponent(opacity,1,1);
+				
+		layout.addComponent(basic);			
 		
-		fillColor = new TextField("Fill Color");
-		fillColor.addListener(this);
-		fillColor.setImmediate(true);
-		fillColor.setValue("");
-		layout.addComponent(fillColor);
+		//More options
+		disableFillcolor = new CheckBox("Filled rectangle",this);
+		disableFillcolor.setImmediate(true);
+		disableFillcolor.setValue(false);
+		
+		layout.addComponent(disableFillcolor);
 	}
 	
 	@Override
@@ -66,17 +106,38 @@ public class Polygon extends Tool implements ValueChangeListener {
 		if(event.getProperty() == size){							
 			canvas.getInteractive().setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
 		}
-		else if(event.getProperty() == color){
-			canvas.getInteractive().setColor(String.valueOf(event.getProperty().getValue()));
-		}		
-		else if(event.getProperty() == fillColor){
-			canvas.getInteractive().setFillColor(String.valueOf(event.getProperty().getValue()));
+		else if(event.getProperty() == opacity){
+			canvas.getInteractive().setAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
 		}
 	}
 
 	@Override
 	public String getName() {
 		return "Polygon";
+	}
+
+	@Override
+	public void changed(ColorSelector selector, Color color) {
+		colorpicker.selectForegroundColorPicker();	
+		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));	
+		
+		if(disableFillcolor.booleanValue()){
+			colorpicker.selectBackgroundColorPicker();
+			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+		}		
+	}
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		if(event.getButton() == disableFillcolor){
+			boolean state = event.getButton().booleanValue();
+			if(state){
+				colorpicker.selectBackgroundColorPicker();
+				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+			} else {
+				canvas.getInteractive().setFillColor(null);
+			}
+		}					
 	}
 
 }

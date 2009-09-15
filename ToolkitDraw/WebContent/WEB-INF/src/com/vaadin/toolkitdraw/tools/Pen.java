@@ -89,13 +89,15 @@ public class Pen extends Tool implements ValueChangeListener, ColorChangeListene
 		return BrushType.PEN;
 	}
 
-	public void valueChange(ValueChangeEvent event) {		
-		
+	public void valueChange(ValueChangeEvent event) {			
 		if(canvas == null) return;
 		
 		if(event.getProperty() == size){							
 			canvas.getInteractive().setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
-		}			
+		} 
+		else if(event.getProperty() == opacity){
+			canvas.getInteractive().setAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
+		}
 	}
 
 	@Override

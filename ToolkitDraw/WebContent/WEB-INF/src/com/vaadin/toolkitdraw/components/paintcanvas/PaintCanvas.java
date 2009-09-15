@@ -415,16 +415,22 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	     * 		The color used to fill the brush in hexadecimal representation
 	     */
 	    public void setFillColor(String color){
-	    	if(color.contains("#")){
-	    		color.replaceAll("#", "0x");
-	    	}
-	    	
-	    	if(!color.contains("x")){
-	    		color = "0x"+color;
-	    	}
-	    	
-	    	addToQueue("fillColor", color);
-	    	if(isImmediate()) requestRepaint();    	
+	    	if(color == null || color == ""){
+	    		addToQueue("fillColor", "-1");
+		    	if(isImmediate()) requestRepaint();    	
+		    	
+	    	} else {
+	    		if(color.contains("#")){
+		    		color.replaceAll("#", "0x");
+		    	}
+		    	
+		    	if(!color.contains("x")){
+		    		color = "0x"+color;
+		    	}
+		    	
+		    	addToQueue("fillColor", color);
+		    	if(isImmediate()) requestRepaint();    	
+	    	}	    	
 	    }
 	    
 	    /**

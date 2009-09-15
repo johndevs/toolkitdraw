@@ -38,6 +38,7 @@ public class Select extends Tool {
 	@SuppressWarnings("serial")
 	public Select(PaintCanvas canvas){
 		this.canvas = canvas;
+		this.layout.setMargin(true);
 		
 		//Create the modes
 		mode = new com.vaadin.ui.Select("Mode");
