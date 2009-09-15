@@ -83,10 +83,32 @@ package util
 				Alert.show("Cannot remove background layer");
 				return;
 			}
-						
-			layers = layers.filter(ArrayUtil.isNotLayerFilter(name));
-			LayerUtil.selectLayer(layers[layers.length-1].getName());	
-			controller.changeEvent();		
+			
+			//Get the layer
+			var selected:Layer = null;
+			for each(var layer:Layer in layers){
+				if(layer.getName() == name){
+					selected = layer;
+					break;
+				}
+			}
+			
+			if(selected != null){
+				Application.application.frame.removeChild(selected.getCanvas());
+				
+				var idx:int = layers.indexOf(selected);				
+				var layersLeft:Array = layers.filter(ArrayUtil.isNotLayerFilter(name));
+				ArrayUtil.assignArray(layers, layersLeft);
+				
+				if(layers.length > idx)				
+					LayerUtil.selectLayer(layers[idx].getName());	
+				else
+					LayerUtil.selectLayer(layers[idx-1].getName());	
+				
+				controller.changeEvent();		
+			} else {
+				Alert.show("Could not remove layer '"+name+"'");
+			}		
 		}
 		
 		public static function setLayerVisibility(name:String, visible:Boolean):void
@@ -106,7 +128,7 @@ package util
 				if(layer.getName() == name){
 					
 					//Get the current index of the canvas					
-					var idx:int = Application.application.getChildIndex(layer.getCanvas());
+					var idx:int = Application.application.frame.getChildIndex(layer.getCanvas());
 					
 					//Is the child last->then we cant move it anymore
 					if(idx == Application.application.frame.numChildren-1)
@@ -127,7 +149,7 @@ package util
 				if(layer.getName() == name){
 					
 					//Get the current index of the canvas					
-					var idx:int = Application.application.getChildIndex(layer.getCanvas());
+					var idx:int = Application.application.frame.getChildIndex(layer.getCanvas());
 					
 					//Is the child first->then we cant move it anymore
 					if(idx == 0)
@@ -236,7 +258,7 @@ package util
 		}	
 		
 		public static function removeAllLayers():void{
-			while(layers.length > 0) layers.pop();
+			while(layers.length > 1) layers.pop();
 		}
 	}
 }

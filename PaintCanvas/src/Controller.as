@@ -39,11 +39,11 @@ package
 		private var isFlashReady:Boolean = false;
 		private var hasChanged:Boolean = false;
 		private var cacheMode:String = "cache-auto";
-		private var autosaveTimer:Timer = new Timer(1000);
+		private var autosaveTimer:Timer = new Timer(60000);
 			
 		private var backgroundLayer:Layer;	
-		
-			
+		private var externalClickListening:Boolean = false;
+									
 		//Tool constants	
 		public static const PEN:String = "Pen"; 
 		public static const RECTANGLE:String = "Rectangle";
@@ -128,6 +128,8 @@ package
 				ExternalInterface.addCallback("isReady",						isReady);
 				ExternalInterface.addCallback("setCacheMode",					setCacheMode);
 				ExternalInterface.addCallback("setImageCache",					CacheUtil.cacheFromServerRecieved);
+				ExternalInterface.addCallback("setAutosaveTime",				setAutosaveTimerDelay);
+				ExternalInterface.addCallback("setClickListening",				setExternalClickListening);
 				
 				//Filetypes
 				ExternalInterface.addCallback("getImageXML",					getImageXML);
@@ -367,8 +369,7 @@ package
 					} 
 				} else {
 					mouse_is_down = true;
-					painter.startStroke(new Point(e.localX, e.localY));
-					painter.processPoint(new Point(e.localX, e.localY));
+					painter.startStroke(new Point(e.localX, e.localY));					
 				}				
 			}
 		}
@@ -408,10 +409,16 @@ package
 		 */ 
 		private function mouseUp(e:MouseEvent):void
 		{
-			if(mouse_is_down) painter.endStroke();				
-			mouse_is_down = false;		
-			changeEvent();
-			painter.getCanvas().validateNow();	
+			if(isInteractive){
+				if(mouse_is_down) painter.endStroke();				
+				mouse_is_down = false;		
+				changeEvent();
+				painter.getCanvas().validateNow();	
+			}				
+			
+			if(externalClickListening){			
+				ExternalInterface.call("PaintCanvasNativeUtil.clickEvent",clientID,e.localX,e.localY);
+			}				
 		}
 			
 		
@@ -472,13 +479,18 @@ package
 			{
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
-				Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);						
+			
+				if(!externalClickListening)
+					Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);						
+								
 				isInteractive = true;
 				
 			} else if(!interactive && isInteractive){
 				Application.application.frame.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 				Application.application.frame.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
-				Application.application.frame.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);			
+				
+				if(!externalClickListening)
+					Application.application.frame.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);			
 				
 				isInteractive = false;				
 			}
@@ -555,6 +567,32 @@ package
 		public function setCacheMode(mode:String):void
 		{
 			this.cacheMode = mode;
+		}
+		
+		/**
+		 * This controls the delay between autosaves. 0 turns autosave off
+		 */ 
+		public function setAutosaveTimerDelay(seconds:int):void
+		{
+			if(seconds < 0){
+				autosaveTimer.stop();
+				autosaveTimer.reset();
+			} else {
+				autosaveTimer.stop();
+				autosaveTimer.delay = seconds*1000;
+				autosaveTimer.reset();
+				autosaveTimer.start();
+			}
+		}
+		
+		public function setExternalClickListening(on:Boolean):void{
+			externalClickListening = on;
+			
+			if(externalClickListening && !Application.application.frame.hasEventListener(MouseEvent.MOUSE_UP)){				
+				Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);	
+			} else if(!externalClickListening && !isInteractive && Application.application.frame.hasEventListener(MouseEvent.MOUSE_UP)){
+				Application.application.frame.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);	
+			}
 		}
 		
 	}

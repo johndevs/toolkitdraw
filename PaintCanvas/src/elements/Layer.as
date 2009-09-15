@@ -1,8 +1,7 @@
 package elements
 {
-	import flash.display.Bitmap;
-	
 	import mx.containers.Canvas;
+	import mx.core.Application;
 	
 	/**
 	 * This class represents an Image layer
@@ -132,7 +131,7 @@ package elements
 		public function setBackgroundColor(color:String):void
 		{ 
 			this.backgroundColor = new Number(color);
-			this.canvas.setStyle("backgroundColor",color);
+			Application.application.frame.setStyle("backgroundColor",color);
 		}
 		
 		/**

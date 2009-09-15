@@ -36,17 +36,26 @@ package brushes
 		private var h:Number;
 		private var editable:Boolean = true;
 		
+		/**
+		 * Constructor
+		 */ 
 		public function Text(canvas:Canvas)
 		{
 			this.canvas = canvas;
 		}
 	
+		/**
+		 * Process point when creating the text box.
+		 */ 
 		public function processPoint(p:Point):void
 		{
-			if(!this.editing || selection.numChildren > 0) return; 
+			if(!this.editing || selection == null || selection.numChildren > 0) return; 
 			
 			if(startPoint == null) startPoint = p;
 			endPoint = p;					
+			
+			if(startPoint == null || endPoint == null)
+				return;
 			
 			if(startPoint.x > endPoint.x)
 			{
@@ -71,6 +80,9 @@ package brushes
 			}		
 		}
 		
+		/**
+		 * Mouse is pressed on the canvas
+		 */ 
 		public function startStroke(p:Point):void
 		{
 			if(editing) return;
@@ -87,6 +99,9 @@ package brushes
 			canvas.addChildAt(selection, 0);	
 		}
 		
+		/**
+		 * Mouse is depressed. Create the textbox
+		 */ 
 		public function endStroke():void
 		{				
 			if(!editing || text != null) return;
@@ -122,6 +137,9 @@ package brushes
 			selection = null;							
 		}
 		
+		/**
+		 * End editing the text box
+		 */ 
 		public function endTool():void
 		{
 			this.editing = false;						
@@ -162,6 +180,9 @@ package brushes
 			strokes.push(stroke);			
 		}
 		
+		/**
+		 * Redraw the text onto the canvas
+		 */ 
 		public function redraw():void
 		{
 			for each(var stroke:BrushStroke in strokes)
@@ -179,11 +200,17 @@ package brushes
 			}			
 		}
 		
+		/**
+		 * Scaling text is not supported at this time.
+		 */ 
 		public function scale(x_ratio:Number, y_ratio:Number):void
 		{
 			//TODO
 		}
 		
+		/**
+		 * Undo text add
+		 */ 
 		public function undo():Boolean
 		{
 			if(strokes.length > 0)
@@ -197,6 +224,9 @@ package brushes
 			}			
 		}
 		
+		/**
+		 * Redo undid text add
+		 */ 
 		public function redo():Boolean
 		{
 			if(redo_history.length > 0)
@@ -210,11 +240,17 @@ package brushes
 			}
 		}
 		
+		/**
+		 * Get the color of the text
+		 */ 
 		public function getColor():Number
 		{
 			return current_color;
 		}
 		
+		/**
+		 * Set the color of the text
+		 */ 
 		public function setColor(color:Number):void
 		{
 			this.current_color = color;
@@ -223,11 +259,17 @@ package brushes
 				this.text.setStyle("color",this.current_color);
 		}
 		
+		/**
+		 * Gets the current font size
+		 */ 
 		public function getWidth():Number
 		{
 			return current_width;
 		}
 		
+		/**
+		 * Sets the current font size
+		 */ 
 		public function setWidth(width:Number):void
 		{
 			this.current_width = width;
@@ -235,27 +277,42 @@ package brushes
 			if(this.text != null) 
 				this.text.setStyle("fontSize",this.current_width);
 		}		
-				
+		
+		/**
+		 * Return the type of brush this is.
+		 */ 		
 		public function getType():String
 		{
 			return Controller.TEXT;
 		}
 		
+		/**
+		 * Get the canvas the text is added to.
+		 */ 
 		public function getCanvas():Canvas
 		{
 			return this.canvas;
 		}
 		
+		/**
+		 * Get the strokes
+		 */ 
 		public function getStrokes():Array
 		{
 			return this.strokes;
 		}
 		
+		/**
+		 * Get the cursor. DEPRECATED!
+		 */ 
 		public function getCursor():Class
 		{
 			return null;
 		}
 		
+		/**
+		 * Set the background color of the text
+		 */ 
 		public function setFillColor(color:Number):void
 		{			
 			this.current_fillColor = color;
@@ -264,15 +321,24 @@ package brushes
 				this.text.setStyle("backgroundColor",this.current_fillColor);
 		}
 		
+		/**
+		 * Get the background color
+		 */ 
 		public function getFillColor():Number
 		{
 			return this.current_fillColor;	
 		}
 		
+		/**
+		 * Get the alpha value pf the background
+		 */ 
 		public function getAlpha():Number{
 			return this.current_fillAlpha;	
 		}
 		
+		/**
+		 * Set the alpha value of the background
+		 */ 
 		public function setAlpha(alpha:Number):void
 		{
 			this.current_fillAlpha = alpha;
@@ -281,6 +347,9 @@ package brushes
 				this.text.setStyle("backgroundAlpha", this.current_fillAlpha);	
 		}
 		
+		/**
+		 * Set the text
+		 */ 
 		public function setText(text:String):void
 		{
 			this.current_text = text;
@@ -291,10 +360,16 @@ package brushes
 			}
 		}
 		
+		/**
+		 * Is this brush editable?
+		 */ 
 		public function setEditable(editable:Boolean):void{
 			this.editable = editable;
 		}
 		
+		/**
+		 * Set the font of the text
+		 */ 
 		public function setFont(font:String):void{
 			this.current_fontName = font;
 			
@@ -302,6 +377,9 @@ package brushes
 				this.text.setStyle("fontFamily",this.current_fontName);
 		}
 		
+		/**
+		 * Returns a XML representation of this brush
+		 */ 
 		public function getXML():XML
 		{			
 			var brushXML:XML = new XML("<brush></brush>");	
@@ -334,6 +412,11 @@ package brushes
 			
 			return brushXML;
 		}
+		
+		/**
+		 * Create brush strokes out of XML.
+		 * This will remove all previous strokes!
+		 */ 
 		public function setXML(brushXML:XML):void
 		{ 
 			if(!brushXML.hasOwnProperty("@type")) return;
@@ -375,9 +458,7 @@ package brushes
 				if(strokeXML.hasOwnProperty("txt"))
 					this.setText(strokeXML.txt);	
 								
-				this.endTool();
-				
-											
+				this.endTool();											
 			}		
 		}
 	}
