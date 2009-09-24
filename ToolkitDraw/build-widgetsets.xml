@@ -63,22 +63,6 @@
 		</java>
 	</target>	
 	
-	<!-- Compiles the ColorPicker widgetset -->
-	<target name="compile-colorpicker" depends="init">			
-			<java classname="com.google.gwt.dev.Compiler" failonerror="yes" fork="yes" maxmemory="512m">
-				<arg value="-war" />
-				<arg value="${client-side-destination}" />			
-				<arg value="com.vaadin.colorpicker.gwt.ColorPickerWidgetSet" />
-				<jvmarg value="-Djava.awt.headless=true"/>			
-				<jvmarg value="-Xmx1G" />
-				<jvmarg value="-Xss1024k"/>
-				<jvmarg value="-Xms64M"/> 
-				<classpath>
-					<path refid="compile.classpath"/>
-				</classpath>
-			</java>
-	</target>
-	
-	<target name="compile-all-widgetsets" depends="compile-paintcanvas,compile-colorpicker" />
+	<target name="compile-all-widgetsets" depends="compile-paintcanvas" />
 	
 </project>

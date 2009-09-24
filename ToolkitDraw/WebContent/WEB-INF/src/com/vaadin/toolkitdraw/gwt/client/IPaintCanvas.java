@@ -145,6 +145,14 @@ public class IPaintCanvas extends HTML implements Paintable {
     			PaintCanvasNativeUtil.drawPolygon(id, xi, yi);
 			}   			
 		}
+		else if(command.equals("graphics-ellipse")){
+			String[] coords = value.split(",");		
+			PaintCanvasNativeUtil.drawEllipse(id, Integer.valueOf(coords[0]), 
+												Integer.valueOf(coords[1]), 
+												Integer.valueOf(coords[2]), 
+												Integer.valueOf(coords[3]));	
+		
+		}
 		else if(command.equals("componentColor")){
 			//this.getElement().setPropertyString("style", "background:"+value);
 			//PaintCanvasNativeUtil.setComponentBackground(id, value);

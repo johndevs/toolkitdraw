@@ -21,7 +21,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 	
 	public static enum Type { 
 		NEW, SAVE, UNDO, REDO, CLOSE,OPEN,PREFERENCES,
-		DEMO1, 
+		DEMO1, DEMO2,
 		SELECTION_ALL, SELECTION_REMOVE, CROP
 	};
 	
@@ -37,6 +37,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		typeMap.put("Redo", Type.REDO);
 		typeMap.put("Close", Type.CLOSE);
 		typeMap.put("Simple graph", Type.DEMO1);
+		typeMap.put("Tic-Tac-Toe", Type.DEMO2);
 		typeMap.put("Select all", Type.SELECTION_ALL);
 		typeMap.put("Remove selection", Type.SELECTION_REMOVE);
 		typeMap.put("Crop to selection", Type.CROP);
@@ -64,6 +65,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		//Create the demo menu
 		MenuBar.MenuItem demos = addItem("Demos", null,null);
 		MenuBar.MenuItem simpleGraphDemo = demos.addItem("Simple graph", null, this);
+		MenuBar.MenuItem ticTacToeDemo = demos.addItem("Tic-Tac-Toe",null,this);
 	}
 	
 	public void setImageToolsEnabled(boolean enabled){

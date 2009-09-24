@@ -53,7 +53,7 @@ public class SimpleGraphDemo extends Window {
 		setResizable(false);
 						
 		GridLayout layout = new GridLayout(2,2);	
-		setLayout(layout);	
+		setContent(layout);
 		
 		//Create a paintcanvas 
 		canvas = new PaintCanvas("300px","300px",  new Color(51,51,51));	

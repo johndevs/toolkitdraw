@@ -35,6 +35,7 @@ import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEven
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.toolkitdraw.demos.SimpleGraphDemo;
+import com.vaadin.toolkitdraw.demos.TicTacToe;
 import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -415,6 +416,14 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 						SimpleGraphDemo demo = new SimpleGraphDemo();
 						mainWindow.addWindow(demo);
 						setStatusbarText("Opening bar graph demo");
+						break;
+				}
+				
+				case DEMO2:{
+						TicTacToe demo = new TicTacToe();
+						mainWindow.addWindow(demo);
+						setStatusbarText("Opening tic-tac-toe");
+						break;
 				}
 			}
 		}		

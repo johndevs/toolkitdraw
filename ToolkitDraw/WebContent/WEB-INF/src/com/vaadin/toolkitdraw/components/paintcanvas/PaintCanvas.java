@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +53,18 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			Map<String, String> entry = new HashMap<String, String>();
 			entry.put(command, value);	
 			batch.add(entry);
+		}
+		
+		private String color2String(Color c){
+			String red = Integer.toHexString(c.getRed());
+			String green = Integer.toHexString(c.getGreen());
+			String blue = Integer.toHexString(c.getBlue());
+			
+			red = red.length() < 2 ? "0"+red : red;
+			green = green.length() < 2 ? "0"+green : green;
+			blue = blue.length() < 2 ? "0"+blue : blue;
+			
+			return "0x"+red+green+blue;
 		}
 		
 		/**
@@ -164,6 +177,29 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 				addToQueue("fillColor", fillColor);
 				addToQueue("graphics-square", x+","+y+","+width+","+height);
 			}			
+			
+			if(isImmediate() && !batchMode) requestRepaint();	
+		}
+		
+		public void drawEllipse(int x, int y, int width, int height){
+			if(batchMode) addToBatch("graphics-ellipse",  x+","+y+","+width+","+height);	
+			else addToQueue("graphics-ellipse",  x+","+y+","+width+","+height);	
+		}
+		
+		public void drawEllipse(int x, int y, int width, int height, Color frameColor, Color fillColor){
+			if(batchMode){
+				addToBatch("brush", BrushType.ELLIPSE.toString());
+				addToBatch("penSize", "1");
+				addToBatch("penColor", color2String(frameColor));
+				addToBatch("fillColor", color2String(fillColor));
+				addToBatch("graphics-ellipse", x+","+y+","+width+","+height);
+			} else {
+				addToQueue("brush", BrushType.ELLIPSE.toString());
+				addToQueue("penSize", "1");
+				addToQueue("penColor", color2String(frameColor));
+				addToQueue("fillColor", color2String(fillColor));
+				addToQueue("graphics-ellipse", x+","+y+","+width+","+height);
+			}
 			
 			if(isImmediate() && !batchMode) requestRepaint();	
 		}
@@ -294,6 +330,17 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(isImmediate() && !batchMode) requestRepaint();				
 		}
 		
+		/**
+		 * Draw an image onto the canvas
+		 * @param base64EncodedImage
+		 * 		The image encoded in base64
+		 * @param x
+		 * 		The upper left corner x-coordinate
+		 * @param y
+		 * 		The upper left corner y-coordinate
+		 * @param alpha
+		 * 		The alpha value of the image
+		 */
 		public void drawImage(String base64EncodedImage, int x, int y, double alpha){
 			
 			StringBuilder value = new StringBuilder();
@@ -503,13 +550,23 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	public class Layers implements Serializable{
 
 		private static final long serialVersionUID = 1L;
-						
+		
+		/**
+		 * Add a layer
+		 * @param layer
+		 * 		The added layer
+		 */
 		public void addLayer(Layer layer){
 	    	addToQueue("newlayer", layer.getName());
 	    	layers.add(layer);
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
+		/**
+		 * Remove a layer
+		 * @param layer
+		 * 		The layer to be removed
+		 */
 	    public void removeLayer(Layer layer){
 	    	
 	    	//Cannot remove background layer
@@ -520,6 +577,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
+	    /**
+	     * Move a layer up
+	     * @param layer
+	     * 		The layer to be moved
+	     */
 	    public void moveLayerUp(Layer layer){
 	    	
 	    	//Cannot move background layer
@@ -529,6 +591,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
+	    /**
+	     * Move a layer down
+	     * @param layer
+	     * 		The layer to move down
+	     */
 	    public void moveLayerDown(Layer layer){
 	    	
 	    	//Cannot move background layer
@@ -538,26 +605,56 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
+	    /**
+	     * Set visibility of a layer
+	     * @param name
+	     * 		The unique name of the layer
+	     * @param visible
+	     * 		The visibility of the layer
+	     */
 	    public void setLayerVisibility(String name, boolean visible){
 	    	if(visible) addToQueue("showLayer", name);
 	    	else addToQueue("hideLayer", name);    
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
+	    /**
+	     * Set the active layer. Every draw function is performed on this layer
+	     * @param layer
+	     * 		The layer to be active
+	     */
 	    public void setActiveLayer(Layer layer){
 	    	currentLayer = layer;
 	    	addToQueue("activeLayer", layer.getName());
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
+	    /**
+	     * Get the active layer
+	     * @return
+	     * 		Returns the active layer
+	     */
 	    public Layer getActiveLayer(){
 	    	return currentLayer;
 	    }
 	    
+	    /**
+	     * Get a list of the layers
+	     * @return
+	     */
 	    public List<Layer> getLayers(){
-	    	return layers;
+	    	return Collections.unmodifiableList(layers);
 	    }    
 	    
+	    /**
+	     * Set the background of a layer
+	     * @param layer
+	     * 		The layer
+	     * @param color
+	     * 		The background color of the layer
+	     * @param alpha
+	     * 		The alpha value of the layer
+	     */
 	    public void setLayerBackground(Layer layer, String color, double alpha){
 			if(layer == null || color == null || alpha < 0 || alpha > 1.0) return;
 			

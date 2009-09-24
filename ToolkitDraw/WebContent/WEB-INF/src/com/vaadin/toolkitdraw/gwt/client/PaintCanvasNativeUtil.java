@@ -556,6 +556,38 @@ public class PaintCanvasNativeUtil {
 			return false;
 		}		
 	}-*/;
+	
+	/**
+	 * Draws an ellipse on the current layer using the current color
+	 * 
+	 * @param id
+	 * 		The id of the canvas
+	 * @param x
+	 * 		The x-coordinate of the center of the ellipse
+	 * @param y
+	 * 		The y-coordinate of the center of the ellipse
+	 * @param width
+	 * 		The width of the ellipse
+	 * @param height
+	 * 		The height of the ellipse
+	 * @return
+	 * 		Returns true if the method succeeds
+	 */
+	public static native boolean drawEllipse(String id, int x, int y, int width, int height)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.graphicsDrawEllipse == 'function' && canvas.isReady() ){
+			canvas.graphicsDrawEllipse(x,y,width,height);
+			return true;
+		}else{
+			alert("delaying drawEllipse");
+			var func = function() { canvas.graphicsDrawEllipse(x,y,width,height); };		
+			setTimeout(func,1000);
+			return false;
+		}		
+	}-*/;
 
 	/**
 	 * Clears the current layer of any previous drawings.
