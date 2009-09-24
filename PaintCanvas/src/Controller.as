@@ -163,7 +163,8 @@ package
 				ExternalInterface.addCallback("graphicsClear",					LayerUtil.clearCurrentLayer);
 				ExternalInterface.addCallback("graphicsDrawPolygon",			DrawingUtil.drawPolygon);
 				ExternalInterface.addCallback("graphicsDrawText",				DrawingUtil.drawText);
-				ExternalInterface.addCallback("graphicsDrawImage",				DrawingUtil.drawImage);		
+				ExternalInterface.addCallback("graphicsDrawImage",				DrawingUtil.drawImage);	
+				ExternalInterface.addCallback("graphicsDrawEllipse",			DrawingUtil.drawEllipse);	
 				
 				//Selection functions
 				ExternalInterface.addCallback("removeSelection",				SelectionUtil.hideSelection);

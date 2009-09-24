@@ -1,16 +1,9 @@
 package util
 {
 	import brushes.IBrush;
-	import brushes.Image;
 	import brushes.Text;
 	
-	import flash.display.Bitmap;
-	import flash.display.Loader;
-	import flash.events.Event;
 	import flash.geom.Point;
-	import flash.utils.ByteArray;
-	
-	import mx.utils.Base64Decoder;
 	
 	public class DrawingUtil
 	{
@@ -87,7 +80,9 @@ package util
 						
 			Text(painter).setText(text);			
 			painter.endTool();		
-			Text(painter).setEditable(true);								
+			Text(painter).setEditable(true);	
+			
+			controller.changeEvent();							
 		}
 		
 	
@@ -108,6 +103,27 @@ package util
 		{
 			//Image adding not supported yet!
 		}	
+		
+		public static function drawEllipse(x1:int, y1:int, width:int, height:int):void
+		{
+			if(painter.getType() != Controller.ELLIPSE){
+				var color:Number = new Number(painter.getColor());
+				var w:Number = new Number(painter.getWidth());
+				
+				GraphicsUtil.setBrush(Controller.ELLIPSE);
+				painter.setColor(color);
+				painter.setWidth(w);				
+			}				
+			
+			GraphicsUtil.setBrush(Controller.ELLIPSE);
+			
+			painter.startStroke(new Point(x1-width/2, y1-height/2));
+			painter.processPoint(new Point(x1-width/2, y1-height/2));
+			painter.processPoint(new Point(x1,y1));
+			painter.endStroke();
+			
+			controller.changeEvent();
+		}
 		
 	}
 }
