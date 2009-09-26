@@ -1,11 +1,2 @@
-.paintcanvas
-{
-	
-}
-
-.paintcanvas OBJECT EMBED
-{
-		
-	
-}
-
+/* Prevent borders from appearing in firefox when clicking */
+object { outline:none; }

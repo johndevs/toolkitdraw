@@ -34,6 +34,8 @@ import com.vaadin.toolkitdraw.util.XMLUtil;
 public class PaintCanvas extends AbstractField implements Component, Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	
+	public static final String CLASSNAME = ".v-paintcanvas";
 		
 	/**
 	 * The graphics class is used to draw on the canvas from the server side
@@ -238,17 +240,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(isImmediate() && !batchMode) requestRepaint();				
 		}
 		
-		public void drawPolygon(int[]x, int[]y, String color, String fillColor){
+		public void drawPolygon(int[]x, int[]y, Color color, Color fillColor){
 			if(x.length == 0 || x.length != y.length)
 				return;
-			
-			//Do some color string checks
-	    	if(color.contains("#")) color = color.replaceAll("#", "0x");
-	    	if(fillColor.contains("#")) fillColor = fillColor.replaceAll("#", "0x");
-	    	
-	    	if(!color.contains("x")) color = "0x"+color;
-	    	if(!fillColor.contains("x")) fillColor = "0x"+fillColor;
-			
+						
 			StringBuilder xStr = new StringBuilder(String.valueOf(x[0]));
 			StringBuilder yStr = new StringBuilder(String.valueOf(y[0]));
 			for(int i=1; i<x.length; i++){
@@ -261,15 +256,15 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(batchMode){
 				addToBatch("brush", BrushType.POLYGON.toString());
 				addToBatch("penSize","1");				
-				addToBatch("penColor", color);
-				addToBatch("fillColor", fillColor);				
+				addToBatch("penColor", color2String(color));
+				addToBatch("fillColor", color2String(fillColor));				
 				addToBatch("graphics-polygon", xStr.toString()+";"+yStr.toString());
 			}
 			else{
 				addToQueue("brush", BrushType.POLYGON.toString());
 				addToQueue("penSize","1");				
-				addToQueue("penColor", color);
-				addToQueue("fillColor", fillColor);					
+				addToQueue("penColor", color2String(color));
+				addToQueue("fillColor", color2String(fillColor));					
 				addToQueue("graphics-polygon", xStr.toString()+";"+yStr.toString());
 			}
 			
@@ -703,6 +698,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private Set<ClickListener> clickListeners = new HashSet<ClickListener>();
 				
 	public PaintCanvas(){	
+		this.addStyleName(CLASSNAME);
 		
 		//Create a random component identifier
 		Random r = new Random();
@@ -719,7 +715,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		requestRepaint();				
 	}
 	
-	public PaintCanvas(String width, String height){				
+	public PaintCanvas(String width, String height){		
+		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);	
 		
@@ -739,7 +736,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 	
-	public PaintCanvas(String width, String height, Color color){				
+	public PaintCanvas(String width, String height, Color color){
+		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);
 		
@@ -763,6 +761,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight){
+		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);
 		
@@ -787,6 +786,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, Color color){
+		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);	
 		
@@ -809,11 +809,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		configuration.setComponentColor(color);	
 		
 		setImmediate(true);
-		requestRepaint();
-		
+		requestRepaint();		
 	}
 	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
+		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);
 		

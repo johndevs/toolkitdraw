@@ -209,7 +209,7 @@ public class SimpleGraphDemo extends Window {
 			topX[3] = topX[0]+50;
 			topY[3] = topY[0];
 			
-			gc.drawPolygon(topX, topY, "CC0000", "FF0000");
+			gc.drawPolygon(topX, topY, new Color(0xCC,0x0,0x0), new Color(0xFF,0x0,0x0));
 			
 			//Draw the sides of the bars
 			topX[0] = counter*70+70;
@@ -221,7 +221,7 @@ public class SimpleGraphDemo extends Window {
 			topX[3] = topX[0];
 			topY[3] = topY[2]+10;
 			
-			gc.drawPolygon(topX, topY, "CC0000", "CC0000");			
+			gc.drawPolygon(topX, topY, new Color(0xCC,0x00,0x00), new Color(0xCC,0x0,0x0));			
 		
 			//Add the values to the top of the bars
 			gc.drawText(id.toString(), counter*70+20, 280-value*2, 100, 100, "FFFFFF", 12, "000000", 0.0);

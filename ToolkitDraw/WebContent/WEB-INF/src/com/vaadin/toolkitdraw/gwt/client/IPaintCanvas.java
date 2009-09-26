@@ -324,6 +324,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		params.movie = swfUrl;
 		params.allowScriptAccess = "always";
 		params.bgcolor = "#"+bgColor.substr(2,6);
+		params.scale = "noborder";
 		
 		var attributes = {};
 		attributes.id = id;

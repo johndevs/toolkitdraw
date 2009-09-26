@@ -29,7 +29,7 @@ public class TicTacToe extends Window implements ClickListener {
 		layout.setMargin(true);
 		
 		//Create a paintcanvas 
-		canvas = new PaintCanvas("300px","300px",  new Color(51,51,51));	
+		canvas = new PaintCanvas("300px","300px",  new Color(34,34,34));	
 		
 		//Disable drawing on the canvas
 		canvas.setInteractive(false);
@@ -70,10 +70,12 @@ public class TicTacToe extends Window implements ClickListener {
 				int x = 50+i*100;
 				int y = 50+j*100;
 				if(board[i][j] == 1){
-					gc.drawLine(x-20, y-20, x+20, y+20);
-					gc.drawLine(x-20, y+20, x+20, y-20);
+					int[] xarr = new int[]{ x-25, x-20, x ,  x+20, x+25, x+5, x+25,    };
+					int[] yarr = new int[]{ y-30, y-20, y-5, y-20, y-30, y,   y+30,  };
+					
+					gc.drawPolygon(xarr, yarr, Color.BLACK, Color.GREEN);
 				} else if(board[i][j] == 2){
-					gc.drawEllipse(x, y, 40, 40);
+					gc.drawEllipse(x, y, 50, 50, Color.BLACK, Color.RED);
 				}
 			}
 		}	
@@ -124,10 +126,13 @@ public class TicTacToe extends Window implements ClickListener {
 				
 		//Computer players
 		boolean done = false;
+		int counter = 0;
 		while(!done){
+			counter = 0;
 			for(i=0; i<3; i++){
 				for(j=0; j<3; j++){
 					if(board[i][j] != 0) continue;
+					counter++;
 					if(Math.random() < 0.5){
 						done = true;
 						board[i][j] = 2;
@@ -136,6 +141,7 @@ public class TicTacToe extends Window implements ClickListener {
 				}
 				if(done) break;
 			}
+			if(counter == 0) break;
 		}
 		
 		//Analyze the board for a win situation
