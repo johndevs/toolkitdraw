@@ -119,9 +119,14 @@ public class TicTacToe extends Window implements ClickListener {
 
 	@Override
 	public void onClick(Component component, int x, int y) {
-		//Mark the users choice
+		
 		int i = (int)Math.floor((float)x/100f);
 		int j = (int)Math.floor((float)y/100f);
+		
+		//Check that the choice is not taken
+		if(board[i][j] != 0) return;
+		
+		//Mark the users choice		
 		board[i][j] = 1;
 				
 		//Computer players
