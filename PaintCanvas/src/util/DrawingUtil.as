@@ -1,0 +1,154 @@
+package util
+{
+	import brushes.FilledBrush;
+	import brushes.Text;
+	
+	import flash.geom.Point;
+	
+	import mx.controls.Alert;
+	
+	public class DrawingUtil
+	{
+		public static function drawPolygon(xa:Object, ya:Object, length:int):void
+		{
+			var color:Number = GraphicsUtil.getBrush().getColor();
+			var alpha:Number = GraphicsUtil.getBrush().getAlpha();
+			var size:Number = GraphicsUtil.getBrush().getSize();
+			var fillcolor:Number = -1;
+			var fillalpha:Number = -1;
+			
+			if(GraphicsUtil.getBrush() is FilledBrush)
+			{
+				fillcolor = (GraphicsUtil.getBrush() as FilledBrush).getFillColor();
+				fillalpha = (GraphicsUtil.getBrush() as FilledBrush).getFillAlpha();
+			}
+			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_POLYGON);
+			GraphicsUtil.setBrushColor(color);
+			GraphicsUtil.setBrushSize(size);
+			GraphicsUtil.setBrushAlpha(alpha);
+			
+			if(fillcolor >= 0) GraphicsUtil.setBrushFillColor(fillcolor);
+			if(fillalpha >= 0) GraphicsUtil.setBrushFillAlpha(fillalpha);
+			
+			GraphicsUtil.getBrush().mouseDown(new Point(xa[0], ya[0]));
+			for(var i:int=1; i<length; i++)
+			{				
+				GraphicsUtil.getBrush().mouseMove(new Point(xa[i], ya[i]));
+				GraphicsUtil.getBrush().mouseUp(new Point(xa[i], ya[i]));
+			}
+			GraphicsUtil.getBrush().finalize();			
+		}
+		
+		public static function drawSquare(x:int, y:int, width:int, height:int):void
+		{	
+			var color:Number = GraphicsUtil.getBrush().getColor();
+			var alpha:Number = GraphicsUtil.getBrush().getAlpha();
+			var size:Number = GraphicsUtil.getBrush().getSize();
+			var fillcolor:Number = -1;
+			var fillalpha:Number = -1;
+			
+			if(GraphicsUtil.getBrush() is FilledBrush)
+			{
+				fillcolor = (GraphicsUtil.getBrush() as FilledBrush).getFillColor();
+				fillalpha = (GraphicsUtil.getBrush() as FilledBrush).getFillAlpha();
+			}
+			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_RECTANGLE);
+			GraphicsUtil.setBrushColor(color);
+			GraphicsUtil.setBrushSize(size);
+			GraphicsUtil.setBrushAlpha(alpha);
+			
+			if(fillcolor >= 0) GraphicsUtil.setBrushFillColor(fillcolor);
+			if(fillalpha >= 0) GraphicsUtil.setBrushFillAlpha(fillalpha);
+			
+			GraphicsUtil.getBrush().mouseDown(new Point(x, y));
+			GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().finalize();
+		}
+		
+		public static function drawText(text:String, x:int, y:int, width:int, height:int):void
+		{
+			var color:Number = GraphicsUtil.getBrush().getColor();
+			var alpha:Number = GraphicsUtil.getBrush().getAlpha();
+			var size:Number = GraphicsUtil.getBrush().getSize();
+			var fillcolor:Number = -1;
+			var fillalpha:Number = -1;
+			
+			if(GraphicsUtil.getBrush() is FilledBrush)
+			{
+				fillcolor = (GraphicsUtil.getBrush() as FilledBrush).getFillColor();
+				fillalpha = (GraphicsUtil.getBrush() as FilledBrush).getFillAlpha();
+			}
+			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_TEXT);
+			GraphicsUtil.setBrushColor(color);
+			GraphicsUtil.setBrushSize(size);
+			GraphicsUtil.setBrushAlpha(alpha);
+						
+			if(fillcolor >= 0) GraphicsUtil.setBrushFillColor(fillcolor);
+			if(fillalpha >= 0) GraphicsUtil.setBrushFillAlpha(fillalpha);
+					
+			GraphicsUtil.getBrush().mouseDown(new Point(x, y));
+			GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
+			
+			(GraphicsUtil.getBrush() as Text).setText(text);
+			
+			GraphicsUtil.getBrush().finalize();			
+		}
+		
+		public static function drawLine(x1:int, y1:int, x2:int, y2:int):void
+		{
+			var color:Number = GraphicsUtil.getBrush().getColor();
+			var alpha:Number = GraphicsUtil.getBrush().getAlpha();
+			var size:Number = GraphicsUtil.getBrush().getSize();
+			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_LINE);
+			GraphicsUtil.setBrushColor(color);
+			GraphicsUtil.setBrushSize(size);
+			GraphicsUtil.setBrushAlpha(alpha);
+			
+			GraphicsUtil.getBrush().mouseDown(new Point(x1, y1));
+			GraphicsUtil.getBrush().mouseMove(new Point(x2, y2));
+			GraphicsUtil.getBrush().mouseUp(new Point(x2, y2));
+			GraphicsUtil.getBrush().finalize();			
+		}
+		
+		public static function drawEllipse(x:int, y:int, width:int, height:int):void
+		{
+			var color:Number = GraphicsUtil.getBrush().getColor();
+			var alpha:Number = GraphicsUtil.getBrush().getAlpha();
+			var size:Number = GraphicsUtil.getBrush().getSize();
+			var fillcolor:Number = -1;
+			var fillalpha:Number = -1;
+			
+			if(GraphicsUtil.getBrush() is FilledBrush)
+			{
+				fillcolor = (GraphicsUtil.getBrush() as FilledBrush).getFillColor();
+				fillalpha = (GraphicsUtil.getBrush() as FilledBrush).getFillAlpha();
+			}
+			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_ELLIPSE);
+			GraphicsUtil.setBrushColor(color);
+			GraphicsUtil.setBrushSize(size);
+			GraphicsUtil.setBrushAlpha(alpha);
+			
+			if(fillcolor >= 0) GraphicsUtil.setBrushFillColor(fillcolor);
+			if(fillalpha >= 0) GraphicsUtil.setBrushFillAlpha(fillalpha);
+						
+			GraphicsUtil.getBrush().mouseDown(new Point(x, y));
+			GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().finalize();
+		}
+		
+		public static function clear():void
+		{
+			LayerUtil.getCurrentLayer().clear();
+		}
+		
+		
+	}
+}
