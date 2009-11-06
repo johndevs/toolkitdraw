@@ -21,5 +21,10 @@
 			<type>2</type>
 			<location>/home/john/ITMill/ToolkitDraw/WebContent/WEB-INF/src/com/vaadin/toolkitdraw/gwt/public/paintcanvas</location>
 		</link>
+		<link>
+			<name>bin-release1</name>
+			<type>2</type>
+			<location>/home/john/workspace/ToolkitDraw/WebContent/WEB-INF/src/com/vaadin/toolkitdraw/gwt/public/paintcanvas</location>
+		</link>
 	</linkedResources>
 </projectDescription>

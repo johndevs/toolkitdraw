@@ -14,6 +14,7 @@ package brushes
 		function getType():String;
 		
 		function setLayer(layer:Layer):void;
+		function getLayer():Layer;
 		
 		function setColor(color:uint):void;
 		function getColor():uint;

@@ -9,13 +9,30 @@ package util
 	{
 		private static const layers:Array = new Array();
 		
-		private static var current:Layer;
+		private static var current:Layer = null;
 		
-		public static function addNewLayer(identifier:String):Layer{
-			return addLayer(identifier, current.width, current.height);			
+		//Note: Do not return anything here, the External interface will get confused!
+		public static function addNewLayer(identifier:String):void{			
+										
+			var width:int = Application.application.frame.width;
+			var height:int = Application.application.frame.height;
+			
+			if(current != null){
+				width = current.width;
+				height = current.height;
+			}
+			
+			if(width <= 0) width = Application.application.width;
+			if(height <= 0) height = Application.application.height;
+						
+			addLayer(identifier, width, height);					
 		}
 		
-		public static function addLayer(identifier:String, width:int, height:int, alpha:Number=1, backgroundColor:uint=0, backgroundAlpha:Number=0):Layer
+		/**
+		 * Adds a layer to the image.
+		 * Note: The layer background is by default transparent(=0)
+		 */
+		public static function addLayer(identifier:String, width:int, height:int, alpha:Number=1, backgroundColor:uint=0xFFFFFF, backgroundAlpha:Number=1):Layer
 		{			
 			for each(var l:Layer in layers){
 				if(l.getIdentifier() == identifier){
@@ -32,11 +49,11 @@ package util
 			layer.alpha = alpha;
 			
 			layers.push(layer);
-			Application.application.frame.addChild(layer);
-			
-			if(current == null)
-				current = layer;
+			Application.application.frame.addChild(layer);			
 				
+			// Set the layer as the current layer				
+			current = layer;
+								
 			return layer;
 		}
 		
@@ -52,7 +69,7 @@ package util
 		
 		public static function setCurrentLayer(layer:Layer):void
 		{
-			if(current != layer){
+			if(current != layer && layer != null){
 				current = layer;
 			
 				//We need to create a new brush for the new layer
@@ -145,8 +162,11 @@ package util
 		
 		public static function addLayerFromXML(xml:XML):void
 		{
+			// Remove layer if it exists
+			LayerUtil.removeLayer(xml.@id);
+			
 			// Create the layer and set it as current
-			var layer:Layer = addLayer(xml.@id, xml.@width, xml.@height,  0, 0xFFFFFF, 0);
+			var layer:Layer = LayerUtil.addLayer(xml.@id, xml.@width, xml.@height,  xml.@alpha, xml.@bgColor, xml.@bgAlpha);
 			
 			// Sort brushes by order number
 			var brushes:Array = new Array();
@@ -155,10 +175,10 @@ package util
 				
 			// Add the brushes to the layer	
 			for(var i:int=0; i<brushes.length; i++)	
-				GraphicsUtil.createBrushFromXML(brushes[i], layer);			
+				GraphicsUtil.createBrushFromXML(brushes[i], layer);		
 				
-			// Redraw layer	
-			layer.invalidateDisplayList();	
+			// Set the layer as the current layer
+			LayerUtil.setCurrentLayer(layer);					
 		}
 		
 		public static function setLayerBackgroundColor(color:uint):void
@@ -192,12 +212,12 @@ package util
 			var layers:Array = new Array();	
 			for each (var layerXML:XML in xml.layer)
 				layers[layerXML.@orderNumber] = layerXML;
-			
+						
 			// Remove all layers and generate the new ones
 			LayerUtil.removeAllLayers();
 			for(var i:int=0; i<layers.length; i++)
 				LayerUtil.addLayerFromXML(layers[i]);			
-			
+						
 			return layers.length > 0;
 		}
 		

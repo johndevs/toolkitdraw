@@ -8,9 +8,9 @@ package brushes
 		protected var fillColor:uint = 0;		
 		protected var fillAlpha:Number = 0;
 		
-		public function FilledBrush(layer:Layer)
+		public function FilledBrush()
 		{
-			super(layer);
+			super();
 		}
 		
 		public function setFillColor(color:uint):void

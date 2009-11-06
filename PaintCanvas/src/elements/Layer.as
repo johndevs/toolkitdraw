@@ -66,6 +66,15 @@ package elements
 			invalidateDisplayList();
 		}
 		
+		public function getBackgroundAlpha():Number
+		{
+			return this.backgroundAlpha;
+		}
+		
+		/**
+		 * This adds a brush to a layer.
+		 * Note: This will also set the brushes layer property to this layer!
+		 */ 
 		public function addBrush(brush:IBrush):void
 		{			
 			brush.setLayer(this);

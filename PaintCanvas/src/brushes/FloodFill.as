@@ -1,7 +1,5 @@
 package brushes
 {
-	import elements.Layer;
-	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	
@@ -9,13 +7,36 @@ package brushes
 
 	public class FloodFill extends Brush implements IBrush
 	{
-		public function FloodFill(layer:Layer)
+		public function FloodFill()
 		{
-			super(layer);
+			super();
 		}
 		
-		public function redraw():void
+		override public function redraw():void
 		{
+			if(strokes == null || strokes.length == 0) return;			
+			
+			for each(var stroke:BrushStroke in strokes)
+			{				
+				currentStroke = stroke;
+								
+				// Add the sprite to the layer
+				if(layer == null) continue;				
+								
+				layer.addChild(currentStroke.sprite);
+				
+				if(stroke.points == null || stroke.points.length == 0)	continue;	
+				
+				var bd:BitmapData = new BitmapData(layer.width, layer.height, false);
+		 		bd.draw(layer);
+		 		
+		 		bd.floodFill((stroke.points[0] as Point).x, (stroke.points[0] as Point).y, stroke.color);
+		 		
+		 		currentStroke.sprite.graphics.beginBitmapFill(bd);
+		 		currentStroke.sprite.graphics.drawRect(0, 0, layer.width, layer.height);
+		 		currentStroke.sprite.graphics.endFill();
+				currentStroke.sprite.alpha = stroke.alpha;
+			}			
 		}
 		
 		public function mouseDown(p:Point):void

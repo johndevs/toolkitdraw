@@ -4,18 +4,39 @@ package brushes
 	
 	import flash.geom.Point;
 	
+	import mx.controls.Alert;
+	
 	import util.GraphicsUtil;
 
 	public class Pen extends Brush implements IBrush, IUndoableBrush
 	{			
-		public function Pen(layer:Layer)
+		public function Pen()
 		{
-			super(this.layer);
+			super();
 		}
 		
-		public function redraw():void
-		{
-			
+		override public function redraw():void
+		{				
+			if(strokes == null || strokes.length == 0) return;			
+							
+			for each(var stroke:BrushStroke in strokes)
+			{				
+				currentStroke = stroke;
+				
+				// Add the sprite to the layer
+				if(layer == null) continue;				
+								
+				layer.addChild(currentStroke.sprite);
+				
+				if(stroke.points == null || stroke.points.length == 0)	continue;					
+				currentStroke.sprite.graphics.lineStyle(stroke.size, stroke.color, stroke.alpha);
+				currentStroke.sprite.graphics.moveTo((stroke.points[0] as Point).x, (stroke.points[1] as Point).y);			
+				
+				// Draw the points
+				for each(var point:Point in stroke.points){
+					currentStroke.sprite.graphics.lineTo(point.x, point.y);
+				}				
+			}
 		}
 		
 		public function mouseDown(p:Point):void

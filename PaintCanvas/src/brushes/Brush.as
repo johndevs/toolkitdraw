@@ -3,6 +3,8 @@ package brushes
 	import elements.Layer;
 	
 	import flash.geom.Point;
+	
+	import mx.controls.Alert;
 
 	public class Brush
 	{
@@ -15,14 +17,21 @@ package brushes
 		protected var size:uint = 1;
 		protected var alpha:Number = 1;
 				
-		public function Brush(layer:Layer)
+		public function Brush()
 		{
-			this.layer = layer;
 		}
 		
 		public function setLayer(layer:Layer):void
 		{
+			if(layer == null) 
+				Alert.show("Warning: Setting brush layer to null!");
+				
 			this.layer = layer;
+		}
+		
+		public function getLayer():Layer
+		{
+			return this.layer;
 		}
 		
 		public function setColor(color:uint):void
@@ -53,6 +62,10 @@ package brushes
 		public function getAlpha():Number
 		{
 			return this.alpha;
+		}
+		
+		public function redraw():void{
+			// Override this in the actual brush
 		}
 		
 		public function toXML():XML
@@ -89,20 +102,25 @@ package brushes
 			
 			if(brushXML.hasOwnProperty("@color"))
 				this.setColor(brushXML.@color);
+			
 			if(brushXML.hasOwnProperty("@size"))
 				this.setSize(brushXML.@size);
+			
 			if(brushXML.hasOwnProperty("@alpha"))
 				this.setAlpha(brushXML.@alpha);	
 						
 			if(!brushXML.hasOwnProperty("stroke")) return;
+			
 			for each(var strokeXML:XML in brushXML.stroke)
 			{
 				currentStroke = new BrushStroke();
 				
 				if(strokeXML.hasOwnProperty("@color"))
 					currentStroke.color = strokeXML.@color;
+				
 				if(strokeXML.hasOwnProperty("@size"))
 					currentStroke.size = strokeXML.@size;
+				
 				if(strokeXML.hasOwnProperty("@alpha"))
 					currentStroke.alpha = strokeXML.@alpha;
 										
@@ -118,7 +136,9 @@ package brushes
 				}
 				
 				strokes.push(currentStroke);
-			}			
+			}		
+			
+			redraw();	
 		}
 		
 		public function undo():Boolean

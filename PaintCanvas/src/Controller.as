@@ -28,7 +28,7 @@ package
 		private var isInteractive:Boolean = false;
 		private var externalClickListening:Boolean = false;
 		private var waitingForImageCache:Boolean = false;
-		private var autosaveTimer:Timer = new Timer(60000);
+		private var autosaveTimer:Timer = new Timer(10000);
 		
 		public static const CACHE_AUTO:String = "cache-auto";
 		public static const CACHE_CLIENT:String  = "cache-client";
@@ -36,12 +36,15 @@ package
 		public static const CACHE_NONE:String = "cache-none";
 		
 		public function Controller()
-		{
+		{		
 			//Get parameters				
 			clientID = Application.application.parameters.id;
 			
 			//Get cache mode
 			cacheMode = Application.application.parameters.cacheMode;
+			
+			// Get interactive mode
+			isInteractive = Application.application.parameters.interactive;
 																
 			//Bind to javascript
 			if(ExternalInterface != null && ExternalInterface.available)
@@ -54,7 +57,7 @@ package
 				ExternalInterface.addCallback("isReady",						isReady);
 				ExternalInterface.addCallback("setCacheMode",					setCacheMode);
 				ExternalInterface.addCallback("setImageCache",					CacheUtil.imageCacheRecieved);
-		//		ExternalInterface.addCallback("setAutosaveTime",				setAutosaveTimerDelay);
+				ExternalInterface.addCallback("setAutosaveTime",				setAutosaveTimerDelay);
 				ExternalInterface.addCallback("setClickListening",				setExternalClickListening);
 				
 				//Filetypes
@@ -104,7 +107,7 @@ package
 				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);													
 			}										
 		}
-
+	
 		public function init():void{
 			
 			//Set the background color
@@ -131,14 +134,15 @@ package
 				// Initialization is complete
 				initDone();
 			}		
-					
-			//Add mouse listeners if interactive
+								
+			// Add mouse listeners if interactive
+			// This will be false by default	
 			if(isInteractive)
 			{
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
-				Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);		
-			}								
+				Application.application.frame.addEventListener(MouseEvent.MOUSE_UP, mouseUp);	
+			}					
 		}
 		
 		private function cacheReceived(cache:XML):void
@@ -146,11 +150,12 @@ package
 			// Initial load
 			if(!isFlashReady){
 				
-				// Check if cache is valid
+				// Check if cache is valid 
 				if(!LayerUtil.setImageXML(cache))
-				{	
-					Alert.show("Reading cache failded.");
-					
+				{		
+					// The cache could not be read for some reason
+					// (This always happens at first initialisation!)
+													
 					//Get background layer size
 					var width:int = Application.application.parameters.width;
 					var height:int = Application.application.parameters.height;
@@ -159,8 +164,8 @@ package
 					if(height < 0) height = Application.application.height;
 			
 					// Add the background layer
-					LayerUtil.addLayer("Background", width, height, 1, 0xFFFFFF, 0);
-			
+					LayerUtil.addLayer("Background", width, height);
+					
 					// Set the default brush
 					GraphicsUtil.setBrush(GraphicsUtil.BRUSH_PEN);		
 				} 		
@@ -206,7 +211,7 @@ package
 			autosaveTimer.start();	
 		}
 		
-		private function mouseDown(e:MouseEvent):void{			
+		private function mouseDown(e:MouseEvent):void{	
 			if(e.localX <= LayerUtil.getCurrentLayer().width && e.localY <= LayerUtil.getCurrentLayer().height)
 			{
 				if(e.ctrlKey){
@@ -231,7 +236,7 @@ package
 		
 		private function mouseUp(e:MouseEvent):void{
 			mouseIsDown = false;
-			GraphicsUtil.getBrush().mouseUp(new Point(e.localX, e.localY));
+			GraphicsUtil.getBrush().mouseUp(new Point(e.localX, e.localY));		
 		}
 		
 		public function setCacheMode(mode:String):void{
@@ -337,5 +342,12 @@ package
 
 			return b64String;							
 		}		
+		
+		public function setAutosaveTimerDelay(delay:Number):void
+		{
+			autosaveTimer.stop();
+			autosaveTimer.delay = delay;
+			autosaveTimer.start();
+		}
 	}
 }

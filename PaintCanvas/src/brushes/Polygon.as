@@ -1,7 +1,5 @@
 package brushes
 {
-	import elements.Layer;
-	
 	import flash.geom.Point;
 	
 	import util.GraphicsUtil;
@@ -10,13 +8,37 @@ package brushes
 	{
 		private var editing:Boolean = false;
 		
-		public function Polygon(layer:Layer)
+		public function Polygon()
 		{
-			super(layer);
+			super();
 		}
 		
-		public function redraw():void
+		override public function redraw():void
 		{
+			if(strokes == null || strokes.length == 0) return;			
+							
+			for each(var stroke:FilledBrushStroke in strokes)
+			{				
+				currentStroke = stroke;
+				
+				// Add the sprite to the layer
+				if(layer == null) continue;				
+								
+				layer.addChild(currentStroke.sprite);
+				
+				if(stroke.points == null || stroke.points.length == 0)	continue;	
+			
+				currentStroke.sprite.graphics.lineStyle(stroke.size, stroke.color, stroke.alpha);
+				currentStroke.sprite.graphics.beginFill(stroke.fillColor, stroke.fillAlpha);
+				
+				currentStroke.sprite.graphics.moveTo((stroke.points[0] as Point).x, (stroke.points[0]).y);
+				for each(var dp:Point in currentStroke.points)
+				{
+					currentStroke.sprite.graphics.lineTo(dp.x, dp.y);
+				}
+				currentStroke.sprite.graphics.lineTo((stroke.points[0] as Point).x, (stroke.points[0]).y);	
+				currentStroke.sprite.graphics.endFill();		
+			}			
 		}
 		
 		public function mouseDown(p:Point):void

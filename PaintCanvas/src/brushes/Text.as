@@ -17,15 +17,34 @@ package brushes
 		private var text:TextArea;
 		private var fontName:String = "";
 		
-		public function Text(layer:Layer)
+		public function Text()
 		{
-			super(layer);			
+			super();	
+					
 			size = 8;
 		}
 		
-		public function redraw():void
+		override public function redraw():void
 		{
-			//NOP
+			var savedStrokes:Array = strokes;
+			strokes = new Array();
+			
+			for each(var stroke:TextBrushStroke in savedStrokes)
+			{
+				mouseDown(stroke.points[0]);
+				mouseMove(stroke.points[1]);
+				mouseUp(stroke.points[1]);
+				
+				setText(stroke.text);
+				setFontName(stroke.fontName);
+				setSize(stroke.size);
+				setColor(stroke.color);
+				setAlpha(stroke.alpha);				
+				setFillColor(stroke.fillColor);
+				setFillAlpha(stroke.fillAlpha);
+				
+				finalize();
+			}
 		}
 		
 		public function mouseDown(p:Point):void
