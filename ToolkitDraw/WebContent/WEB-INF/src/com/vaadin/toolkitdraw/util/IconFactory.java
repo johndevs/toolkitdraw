@@ -14,7 +14,7 @@ import com.vaadin.terminal.ThemeResource;
 public class IconFactory implements Serializable {
 	
 	public static enum Icons{
-		ICON_PEN, ICON_SQUARE, ICON_ELLIPSE, ICON_LINE, ICON_POLY, ICON_TEXT,
+		ICON_PEN, ICON_SQUARE, ICON_ELLIPSE, ICON_LINE, ICON_POLY, ICON_TEXT, ICON_FILL,
 		DOWN_ARROW, UP_ARROW, PLUS, MINUS, SELECT,
 		SWITCH_COLOR_BUTTON, RESET_COLOR_BUTTON
 	}
@@ -33,6 +33,7 @@ public class IconFactory implements Serializable {
 			case ICON_LINE:		res = new ThemeResource("icons/lineTool.png"); break;
 			case ICON_POLY:		res = new ThemeResource("icons/polygonTool.png"); break;
 			case ICON_TEXT:		res = new ThemeResource("icons/textTool.png"); break;
+			case ICON_FILL:		res = new ThemeResource("icons/fillTool.png"); break;
 			
 			case DOWN_ARROW:	res = new ThemeResource("icons/downArrow.png"); break;
 			case UP_ARROW:		res = new ThemeResource("icons/upArrow.png"); break;

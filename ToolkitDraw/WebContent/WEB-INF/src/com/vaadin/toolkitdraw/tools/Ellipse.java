@@ -125,7 +125,8 @@ public class Ellipse extends Tool implements ValueChangeListener, ColorChangeLis
 		
 		if(disableFillcolor.booleanValue()){
 			colorpicker.selectBackgroundColorPicker();
-			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));	
+			canvas.getInteractive().setFillAlpha(1.0);
 		}		
 	}
 
@@ -135,9 +136,11 @@ public class Ellipse extends Tool implements ValueChangeListener, ColorChangeLis
 			boolean state = event.getButton().booleanValue();
 			if(state){
 				colorpicker.selectBackgroundColorPicker();
-				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));	
+				canvas.getInteractive().setFillAlpha(1.0);
 			} else {
 				canvas.getInteractive().setFillColor(null);
+				canvas.getInteractive().setFillAlpha(0.0);
 			}
 		}					
 	}

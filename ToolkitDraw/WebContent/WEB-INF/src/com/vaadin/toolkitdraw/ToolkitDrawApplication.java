@@ -150,7 +150,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			System.err.println("ERROR: Creating canvas failed!");	
 			return null;
 		}
-						
+				
 		//Set the caching mode of the canvas
 		canvas.setCacheMode(preferences.getCacheMode());
 		
@@ -189,6 +189,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		
 		//Create a new image
 		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400, new Color(51,51,51));			
+		
 		
 		if(canvas == null){
 			System.err.println("ERROR: Creating canvas failed!");	
@@ -552,14 +553,10 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				}				
 			}, str.getFileName(), this);
 			
-			mainWindow.open(res, "img");		
-		
+			mainWindow.open(res, "img");			
 		}
-		else	
+		else{	
 			mainWindow.showNotification("Saving image failed");
-		
-		
-		
-	}
-	
+		}	
+	}	
 }

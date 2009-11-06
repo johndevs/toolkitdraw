@@ -224,7 +224,11 @@ public class SimpleGraphDemo extends Window {
 			gc.drawPolygon(topX, topY, new Color(0xCC,0x00,0x00), new Color(0xCC,0x0,0x0));			
 		
 			//Add the values to the top of the bars
-			gc.drawText(id.toString(), counter*70+20, 280-value*2, 100, 100, "FFFFFF", 12, "000000", 0.0);
+			gc.drawText(id.toString(), 
+						counter*70+20, 280-value*2, // Coordinates
+						100, 100, 					// Text area size
+						12, "000000", 0.0,			// Font properties
+						"000000", 0.0);				// Background properties
 			
 			counter++;
 		}		

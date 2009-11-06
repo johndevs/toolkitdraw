@@ -123,7 +123,8 @@ public class Square extends Tool implements ValueChangeListener, ColorChangeList
 			
 			if(disableFillcolor.booleanValue()){
 				colorpicker.selectBackgroundColorPicker();
-				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));	
+				canvas.getInteractive().setFillAlpha(1.0);
 			}
 		}
 
@@ -133,9 +134,11 @@ public class Square extends Tool implements ValueChangeListener, ColorChangeList
 				boolean state = event.getButton().booleanValue();
 				if(state){
 					colorpicker.selectBackgroundColorPicker();
-					canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+					canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));	
+					canvas.getInteractive().setFillAlpha(1.0);
 				} else {
 					canvas.getInteractive().setFillColor(null);
+					canvas.getInteractive().setFillAlpha(0.0);
 				}
 			}			
 		}

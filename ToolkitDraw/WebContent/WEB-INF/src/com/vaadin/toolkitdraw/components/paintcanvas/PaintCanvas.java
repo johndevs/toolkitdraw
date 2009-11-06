@@ -168,15 +168,16 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 				addToBatch("penSize","1");				
 				addToBatch("penColor", frameColor);
 				addToBatch("fillColor", fillColor);
+				addToBatch("fillAlpha", "1");
 				addToBatch("graphics-square", x+","+y+","+width+","+height);	
 			} else {
 				//We need to change the brush to a squeare before the operation so 
 				//we can set the fillcolor
-				addToQueue("brush", BrushType.SQUARE.toString());
-				
+				addToQueue("brush", BrushType.SQUARE.toString());				
 				addToQueue("penSize","1");
 				addToQueue("penColor", frameColor);
 				addToQueue("fillColor", fillColor);
+				addToQueue("fillAlpha", "1");
 				addToQueue("graphics-square", x+","+y+","+width+","+height);
 			}			
 			
@@ -194,12 +195,14 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 				addToBatch("penSize", "1");
 				addToBatch("penColor", color2String(frameColor));
 				addToBatch("fillColor", color2String(fillColor));
+				addToBatch("fillAlpha", "1");
 				addToBatch("graphics-ellipse", x+","+y+","+width+","+height);
 			} else {
 				addToQueue("brush", BrushType.ELLIPSE.toString());
 				addToQueue("penSize", "1");
 				addToQueue("penColor", color2String(frameColor));
 				addToQueue("fillColor", color2String(fillColor));
+				addToQueue("fillAlpha", "1");
 				addToQueue("graphics-ellipse", x+","+y+","+width+","+height);
 			}
 			
@@ -257,14 +260,16 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 				addToBatch("brush", BrushType.POLYGON.toString());
 				addToBatch("penSize","1");				
 				addToBatch("penColor", color2String(color));
-				addToBatch("fillColor", color2String(fillColor));				
+				addToBatch("fillColor", color2String(fillColor));	
+				addToBatch("fillAlpha", "1");
 				addToBatch("graphics-polygon", xStr.toString()+";"+yStr.toString());
 			}
 			else{
 				addToQueue("brush", BrushType.POLYGON.toString());
 				addToQueue("penSize","1");				
 				addToQueue("penColor", color2String(color));
-				addToQueue("fillColor", color2String(fillColor));					
+				addToQueue("fillColor", color2String(fillColor));	
+				addToQueue("fillAlpha", "1");
 				addToQueue("graphics-polygon", xStr.toString()+";"+yStr.toString());
 			}
 			
@@ -288,13 +293,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 * @param alpha
 		 * 		The transparency of the background
 		 */
-		public void drawText(String text, int x, int y, int width, int height, String color, int fontSize, String fillColor, double alpha){
+		public void drawText(String text, int x, int y, int width, int height, int fontSize, String fontColor, double fontAlpha,  String fillColor, double fillAlpha){
 			
 			//Do some color string checks
-	    	if(color.contains("#")) color = color.replaceAll("#", "0x");
+	    	if(fontColor.contains("#")) fontColor = fontColor.replaceAll("#", "0x");
 	    	if(fillColor.contains("#")) fillColor = fillColor.replaceAll("#", "0x");
 	    	
-	    	if(!color.contains("x")) color = "0x"+color;
+	    	if(!fontColor.contains("x")) fontColor = "0x"+fontColor;
 	    	if(!fillColor.contains("x")) fillColor = "0x"+fillColor;
 	    		    	
 	    	StringBuilder value = new StringBuilder(text);
@@ -310,16 +315,18 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(batchMode){
 	    		addToBatch("brush", BrushType.TEXT.toString());
 	    		addToBatch("penSize",String.valueOf(fontSize));				
-				addToBatch("penColor", color);
+				addToBatch("penColor", fontColor);
 				addToBatch("fillColor", fillColor);	
-				addToBatch("penAlpha", String.valueOf(alpha));
+				addToBatch("fillAlpha", String.valueOf(fillAlpha));
+				addToBatch("penAlpha", String.valueOf(fontAlpha));
 				addToBatch("graphics-text", value.toString());	    		
 	    	} else {
 	    		addToQueue("brush", BrushType.TEXT.toString());
 	    		addToQueue("penSize",String.valueOf(fontSize));				
-	    		addToQueue("penColor", color);
+	    		addToQueue("penColor", fontColor);
 	    		addToQueue("fillColor", fillColor);	
-	    		addToQueue("penAlpha", String.valueOf(alpha));
+	    		addToQueue("fillAlpha", String.valueOf(fillAlpha));
+	    		addToQueue("penAlpha", String.valueOf(fontAlpha));
 	    		addToQueue("graphics-text", value.toString());	    		    		
 	    	}
 	    	if(isImmediate() && !batchMode) requestRepaint();				
@@ -471,6 +478,17 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		    	addToQueue("fillColor", color);
 		    	if(isImmediate()) requestRepaint();    	
 	    	}	    	
+	    }
+	    
+	    /**
+	     * Sets the background alpha
+	     * 
+	     * @param alpha
+	     * 		Value between 0 and 1
+	     */
+	    public void setFillAlpha(double alpha){
+	    	addToQueue("fillAlpha", String.valueOf(alpha));
+	    	if(isImmediate()) requestRepaint();
 	    }
 	    
 	    /**
@@ -911,7 +929,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         //This might be needed in the initialization process
         else if(cacheContentNeeded && !configuration.isInitializationComplete()){
         	System.out.println("Sending initialization cache");
-        	String cacheContent = XMLUtil.escapeXML(imageCache.toString());    		
+        	String cacheContent = XMLUtil.escapeXML(imageCache.toString());    		       	
         	target.addAttribute("cache", cacheContent);
         }
         
@@ -1052,6 +1070,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		if(objects.length > 0){
     			System.out.println("Cache updated");
         		imageCache = new StringBuilder(objects[0].toString());
+        		System.out.println(imageCache);
     		}  		    	
     	}
     	

@@ -29,7 +29,7 @@ public class IPaintCanvas extends HTML implements Paintable {
     private ApplicationConnection client;	
     
     /** Relative path to the executable Flash **/ 
-    public static String SWFPATH = "paintcanvas/PaintCanvas.swf";
+    public static String SWFPATH = "paintcanvas/Draw.swf";
     
     /** Relative path to the executable Java Applet **/
     public static String JAVAPATH = "paintcanvas/PaintCanvas.jar";
@@ -83,6 +83,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		else if(command.equals("penAlpha"))		PaintCanvasNativeUtil.setPenAlpha(id, Double.parseDouble(value));
 		else if(command.equals("brush"))		PaintCanvasNativeUtil.setBrush(id, value);
 		else if(command.equals("fillColor"))	PaintCanvasNativeUtil.setFillColor(id, value);
+		else if(command.equals("fillAlpha"))	PaintCanvasNativeUtil.setFillAlpha(id, Double.parseDouble(value));
 		else if(command.equals("showLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, true);
 		else if(command.equals("hideLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, false);
 		else if(command.equals("activeLayer"))	PaintCanvasNativeUtil.selectLayer(id, value);

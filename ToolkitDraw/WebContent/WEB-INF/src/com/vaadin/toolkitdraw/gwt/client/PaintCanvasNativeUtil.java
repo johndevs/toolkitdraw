@@ -200,6 +200,30 @@ public class PaintCanvasNativeUtil {
 	}-*/;
 	
 	/**
+	 * Sets the fillalpha of the active brush.
+	 * Not all brushes support this feature and if it is not supported then this will not
+	 * do anything.
+	 * 
+	 * @param id the id
+	 * @param color the color
+	 */
+	public static native boolean setFillAlpha(String id, double alpha)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+	
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.setFillAlpha == 'function' && canvas.isReady() ){
+			canvas.setFillAlpha(alpha);	
+			return true;
+		}else{
+			alert("delaying setFillAlpha");
+			var func = function() { canvas.setFillAlpha(alpha);	};		
+			setTimeout(func,1000);
+			return false;
+		}				
+	}-*/;
+	
+	/**
 	 * Sets the brush alpha. This has different effects on different brushes
 	 * 
 	 * @param id the id
@@ -970,6 +994,7 @@ public class PaintCanvasNativeUtil {
 			this.setPenColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenColor(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.setBrush = function(id, brush){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setBrush(Ljava/lang/String;Ljava/lang/String;)(id,brush); };
 			this.setFillColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFillColor(Ljava/lang/String;Ljava/lang/String;)(id,color); };
+			this.setFillAlpha = function(id, alpha){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFillAlpha(Ljava/lang/String;D)(id,alpha); };
 			this.setPenAlpha = function(id, alpha){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenAlpha(Ljava/lang/String;D)(id,alpha); };
 			this.addLayer = function(id, name){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::addLayer(Ljava/lang/String;Ljava/lang/String;)(id,name); };
 			this.setLayerVisibility = function(id, visibility){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setLayerVisibility(Ljava/lang/String;Ljava/lang/String;Z)(id,visibility); };

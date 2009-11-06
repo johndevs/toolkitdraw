@@ -21,6 +21,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Slider;
@@ -40,8 +41,8 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 	
 	private TwinColorPicker colorpicker;
 	
-	private Slider opacity;
-	
+	private Slider backgroundOpacity;
+		
 	private ComboBox font;
 	
 	private CheckBox disableFillcolor;
@@ -79,25 +80,29 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		}		
 		basic.addComponent(size, 1,0);
 		
-		opacity = new Slider("Background Opacity",0,100);
-		opacity.addListener(this);
-		opacity.setSizeFull();
-		opacity.setImmediate(true);
+		backgroundOpacity = new Slider("Background Opacity",0,100);
+		backgroundOpacity.addListener(this);
+		backgroundOpacity.setSizeFull();
+		backgroundOpacity.setImmediate(true);
 		try {
-			opacity.setValue(0);
+			backgroundOpacity.setValue(0);
 		} catch (ValueOutOfBoundsException voobe) {
 			//NOP
 		}
-		basic.addComponent(opacity,1,1);
+		basic.addComponent(backgroundOpacity,1,1);
 				
 		layout.addComponent(basic);	
 		
 		//More options
+		HorizontalLayout hlayout = new HorizontalLayout();
+		hlayout.setWidth("100%");
+				
 		disableFillcolor = new CheckBox("Filled Background",this);
 		disableFillcolor.setImmediate(true);
 		disableFillcolor.setValue(false);
-		
-		layout.addComponent(disableFillcolor);
+		hlayout.addComponent(disableFillcolor);
+				
+		layout.addComponent(hlayout);		
 		
 		font = new ComboBox("Font type");
 		font.addListener(this);
@@ -115,8 +120,8 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		else if(event.getProperty() == font){
 			canvas.getInteractive().setFont(event.getProperty().getValue().toString());
 		}		
-		else if(event.getProperty() == opacity){
-			canvas.getInteractive().setAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
+		else if(event.getProperty() == backgroundOpacity){
+			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
 		}
 	}
 	
@@ -132,6 +137,9 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		//Add the fonts to the select
 		for(String fontName : fontNames)
 			font.addItem(fontName);					
+		
+		//Set the initial font to the first font
+		font.select(fontNames.get(0));
 		
 		return layout;
 	}	
@@ -152,7 +160,8 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		
 		if(disableFillcolor.booleanValue()){
 			colorpicker.selectBackgroundColorPicker();
-			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));
+			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
 		}		
 	}
 
@@ -162,12 +171,13 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 			boolean state = event.getButton().booleanValue();
 			if(state){
 				colorpicker.selectBackgroundColorPicker();
-				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));				
+				canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));	
+				canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
 			} else {
 				canvas.getInteractive().setFillColor(null);
+				canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
 			}
-		}			
-		
+		}					
 	}
 
 	@Override
@@ -179,16 +189,17 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		colorpicker.selectForegroundColorPicker();			
 		i.setColor(colorToHex(colorpicker.getColor()));
 		
-		i.setToolSize(Double.parseDouble(size.getValue().toString()));
-		
-		i.setAlpha(1.0-Double.parseDouble(opacity.getValue().toString())/100.0);		
-	
+		i.setToolSize(Double.parseDouble(size.getValue().toString()));		
+		i.setAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);	
+					
 		boolean state = disableFillcolor.booleanValue();
 		if(state){
 			colorpicker.selectBackgroundColorPicker();
-			i.setFillColor(colorToHex(colorpicker.getColor()));				
+			i.setFillColor(colorToHex(colorpicker.getColor()));	
+			i.setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
 		} else {
 			i.setFillColor(null);
+			i.setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
 		}
 		
 		i.setFont(font.getValue().toString());

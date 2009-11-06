@@ -39,8 +39,8 @@ public class Fill extends Tool implements ValueChangeListener, ColorChangeListen
 		button = new Button();
 		button.setStyleName(Button.STYLE_LINK);
 		button.setData(BrushType.FILL);
-	//	button.setIcon(IconFactory.getIcon(Icons.ICON_PEN));
-		button.setCaption("FILL");
+		button.setIcon(IconFactory.getIcon(Icons.ICON_FILL));
+		button.setCaption("");
 		
 		//Create the basic tools
 		GridLayout basic = new GridLayout(2,1);
