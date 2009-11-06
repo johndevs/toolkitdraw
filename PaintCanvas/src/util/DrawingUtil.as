@@ -138,9 +138,9 @@ package util
 			if(fillcolor >= 0) GraphicsUtil.setBrushFillColor(fillcolor);
 			if(fillalpha >= 0) GraphicsUtil.setBrushFillAlpha(fillalpha);
 						
-			GraphicsUtil.getBrush().mouseDown(new Point(x, y));
-			GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
-			GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().mouseDown(new Point(x-width/2, y-width/2));
+			GraphicsUtil.getBrush().mouseMove(new Point(x+width/2, y+height/2));
+			GraphicsUtil.getBrush().mouseUp(new Point(x+width/2, y+height/2));
 			GraphicsUtil.getBrush().finalize();
 		}
 		

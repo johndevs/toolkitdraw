@@ -93,6 +93,9 @@ package elements
 				brushUndoStack.pop();
 			}
 			
+			// Ensure that the layer is cleaned
+			while(numChildren > 0) removeChildAt(0);
+			
 			validateDisplayList();
 		}
 		

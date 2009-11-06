@@ -212,20 +212,23 @@ package
 		}
 		
 		private function mouseDown(e:MouseEvent):void{	
-			if(e.localX <= LayerUtil.getCurrentLayer().width && e.localY <= LayerUtil.getCurrentLayer().height)
+			if(GraphicsUtil.getBrush() != null && LayerUtil.getCurrentLayer() != null && isInteractive)
 			{
-				if(e.ctrlKey){
-					GraphicsUtil.getBrush().finalize();
-				} else {
-					GraphicsUtil.getBrush().mouseDown(new Point(e.localX, e.localY));
-				}			
-					
-				mouseIsDown = true;
-			}		
+				if(e.localX <= LayerUtil.getCurrentLayer().width && e.localY <= LayerUtil.getCurrentLayer().height)
+				{
+					if(e.ctrlKey){
+						GraphicsUtil.getBrush().finalize();
+					} else {
+						GraphicsUtil.getBrush().mouseDown(new Point(e.localX, e.localY));
+					}	
+				}	
+			}	
+			
+			mouseIsDown = true;
 		}
 		
 		private function mouseMove(e:MouseEvent):void{
-			if(mouseIsDown)
+			if(mouseIsDown && GraphicsUtil.getBrush() != null && LayerUtil.getCurrentLayer() != null && isInteractive)
 			{
 				if(e.localX <= LayerUtil.getCurrentLayer().width && e.localY <= LayerUtil.getCurrentLayer().height)
 				{
@@ -236,7 +239,12 @@ package
 		
 		private function mouseUp(e:MouseEvent):void{
 			mouseIsDown = false;
-			GraphicsUtil.getBrush().mouseUp(new Point(e.localX, e.localY));		
+			
+			if(GraphicsUtil.getBrush() != null && isInteractive)
+				GraphicsUtil.getBrush().mouseUp(new Point(e.localX, e.localY));		
+				
+			if(externalClickListening)		
+				ExternalInterface.call("PaintCanvasNativeUtil.clickEvent", clientID, e.localX, e.localY);				
 		}
 		
 		public function setCacheMode(mode:String):void{
