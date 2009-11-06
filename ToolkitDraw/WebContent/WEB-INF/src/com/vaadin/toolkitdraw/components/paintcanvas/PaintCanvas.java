@@ -765,6 +765,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		/* Create the background layer which cannot be removed
 		 * When creating a new layer it is automatically added the its canvas
+		 * This layer is created automatically in the flash plugin at initialization
 		 */
 		Layer background = new Layer("Background", this);
 		layers.add(background);
@@ -940,6 +941,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
         	target.addAttribute("pageHeight", configuration.getPaperHeight());        	
         	target.addAttribute("cache-mode", configuration.getCacheMode().getId());           	
         	target.addAttribute("plugin", configuration.getPlugin().getId());
+        	target.addAttribute("interactive", configuration.isInteractive());
         	
         	Color bgColor = configuration.getComponentColor();
                 	
@@ -1069,7 +1071,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		Object[] objects = (Object[])variables.get("set-cache");    		
     		if(objects.length > 0){
     			System.out.println("Cache updated");
-        		imageCache = new StringBuilder(objects[0].toString());
+        		imageCache = new StringBuilder(objects[0].toString());        	
         		System.out.println(imageCache);
     		}  		    	
     	}

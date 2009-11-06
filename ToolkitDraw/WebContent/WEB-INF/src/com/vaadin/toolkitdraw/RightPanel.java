@@ -269,6 +269,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 												
 			//The layer is added automatically to the canvas
 			Layer newLayer = new Layer("Layer #"+(layers.size()+1), this.canvas);						
+						
 			this.canvas.getLayers().addLayer(newLayer);						
 			
 			refreshLayers();

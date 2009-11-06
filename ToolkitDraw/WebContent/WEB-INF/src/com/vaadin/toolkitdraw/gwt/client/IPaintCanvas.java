@@ -29,7 +29,7 @@ public class IPaintCanvas extends HTML implements Paintable {
     private ApplicationConnection client;	
     
     /** Relative path to the executable Flash **/ 
-    public static String SWFPATH = "paintcanvas/Draw.swf";
+    public static String SWFPATH = "paintcanvas/PaintCanvas.swf";
     
     /** Relative path to the executable Java Applet **/
     public static String JAVAPATH = "paintcanvas/PaintCanvas.jar";
@@ -229,13 +229,15 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * This method creates the embedded Flash component when loading is complete
 	 * 
 	 */
-	private void createFlashComponent(String url, String pageWidth, String pageHeight, String bgColor, String cacheMode){	
+	private void createFlashComponent(	String url, String pageWidth, 
+										String pageHeight, String bgColor, 
+										String cacheMode, boolean interactive){	
 		
 		this.getElement().setId(id+"-canvas");	
 		setHTML("<DIV id='"+id+"'></DIV>");
 		
 		//Embed the flash with SWFObject
-		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor, cacheMode);		
+		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor, cacheMode, interactive);		
 	}
 	
 	/**
@@ -311,13 +313,17 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 * @param bgColor the bg color
 	 * @param cacheMode the cache mode
 	 */
-	private native void createSWFObject(String swfUrl, String id, String pageWidth, String pageHeight, String bgColor, String cacheMode)/*-{
+	private native void createSWFObject(String swfUrl, String id, 
+										String pageWidth, String pageHeight, 
+										String bgColor, String cacheMode,
+										boolean interactive)/*-{
 		var flashvars = {};
 		flashvars.id = id;
 		flashvars.width = pageWidth;
 		flashvars.height = pageHeight;
 		flashvars.bgColor = bgColor;
 		flashvars.cacheMode = cacheMode;
+		flashvars.interactive = interactive;
 		
 		var params = {};
 		params.menu = "false";
@@ -409,6 +415,7 @@ public class IPaintCanvas extends HTML implements Paintable {
             	String bgColor = uidl.getStringAttribute("componentColor");
             	String cacheMode = uidl.getStringAttribute("cache-mode");
             	String plugin = uidl.getStringAttribute("plugin");
+            	boolean interactive = uidl.getBooleanAttribute("interactive");
             	           	
             	//Use flash plugin
             	if(plugin.equals("plugin-flash")){
@@ -416,7 +423,7 @@ public class IPaintCanvas extends HTML implements Paintable {
             		String url = GWT.getModuleBaseURL() + SWFPATH;	       		 
             		        		        		
             		//Initialize the flash component
-            		createFlashComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode);
+            		createFlashComponent(url, String.valueOf(pageWidth), String.valueOf(pageHeight), bgColor,cacheMode, interactive);
             		init = true;
             	}
             	
