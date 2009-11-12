@@ -58,18 +58,17 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		super();
 		setStyleName("rightpanel");
-		
+		setHeight("100%");
 		this.canvas = canvas;
 		
 		//Add the histograms
 		addComponent(createHistogramsTab());
-		setExpandRatio(histograms, 1);
 		
 		//Add the tabs
 		this.tabs = new Accordion();
 		this.tabs.setSizeFull();
 		addComponent(this.tabs);
-		setExpandRatio(this.tabs, 2);
+		setExpandRatio(this.tabs, 1);
 		
 		//Create the layers tab
 		this.tabs.addComponent(createLayersTab());
@@ -81,7 +80,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	private void createHistograms()
 	{
 		//Create RGB channel histogram
-		PaintCanvas rgb = new PaintCanvas("300px","250px", new Color(Integer.parseInt("44",16),
+		PaintCanvas rgb = new PaintCanvas("300px","200px", new Color(Integer.parseInt("44",16),
 																	 Integer.parseInt("44",16),
 																	 Integer.parseInt("44",16) ));
 		;	
@@ -95,14 +94,13 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		createHistograms();		
 		
 		histograms = new TabSheet();
-		histograms.setSizeFull();		
-		
+		histograms.setHeight("250px");
+	
 		for(String caption : histogramCanvases.keySet()){			
 			PaintCanvas c = histogramCanvases.get(caption);
 			c.setVisible(false);
 						
 			VerticalLayout layout = new VerticalLayout();
-			layout.setSizeFull();
 			layout.addComponent(c);
 			layout.setCaption(caption);
 			

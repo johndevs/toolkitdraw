@@ -1072,7 +1072,6 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		if(objects.length > 0){
     			System.out.println("Cache updated");
         		imageCache = new StringBuilder(objects[0].toString());        	
-        		System.out.println(imageCache);
     		}  		    	
     	}
     	

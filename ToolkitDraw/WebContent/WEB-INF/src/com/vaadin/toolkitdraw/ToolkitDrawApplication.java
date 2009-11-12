@@ -115,8 +115,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				
 		rightPanel = new RightPanel(currentCanvas);
 		rightPanel.setWidth("250px");
-		rightPanel.setHeight("100%");
-				
+						
 		leftPanel = new LeftPanel(currentCanvas, BrushType.PEN);
 		leftPanel.setWidth("250px");
 		leftPanel.setHeight("100%");
@@ -159,6 +158,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		
 		//Set the canvas in intactive mode
 		canvas.setInteractive(true);
+		
+		//Set the autosave time
+		canvas.setAutosaveTime(preferences.getAutosaveTime());
 		
 		//Set background layer to white
 		canvas.getLayers().setLayerBackground(canvas.getLayers().getActiveLayer(), "FFFFFF", 1);
