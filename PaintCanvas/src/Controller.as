@@ -1,5 +1,7 @@
 package
 {
+	import brushes.ISelection;
+	
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
@@ -7,7 +9,6 @@ package
 	import flash.text.Font;
 	import flash.utils.Timer;
 	
-	import mx.controls.Alert;
 	import mx.core.Application;
 	import mx.graphics.ImageSnapshot;
 	import mx.graphics.codec.IImageEncoder;
@@ -24,6 +25,7 @@ package
 		private var mouseIsDown:Boolean = false;
 		private var clientID:String;
 		private var cacheMode:String = "cache-server";
+		private var autoCacheMode:String = "cache-client";
 		private var isFlashReady:Boolean = false;
 		private var isInteractive:Boolean = false;
 		private var externalClickListening:Boolean = false;
@@ -97,7 +99,7 @@ package
 				ExternalInterface.addCallback("graphicsDrawEllipse",			DrawingUtil.drawEllipse);	
 				
 				//Selection functions
-		//		ExternalInterface.addCallback("removeSelection",				SelectionUtil.hideSelection);
+				ExternalInterface.addCallback("removeSelection",				GraphicsUtil.removeSelection);
 		//		ExternalInterface.addCallback("selectAll",						SelectionUtil.selectAll);			
 		//		ExternalInterface.addCallback("cropSelected",					SelectionUtil.cropSelection);	
 				
@@ -122,6 +124,15 @@ package
 				
 			//Check cache mode and load from cache if nessecery
 			if(cacheMode == CACHE_SERVER){
+				CacheUtil.requestCacheFromServer(clientID, cacheReceived);
+			} 
+			else if(cacheMode == CACHE_CLIENT){
+				CacheUtil.requestCacheFromClient(clientID, cacheReceived);
+			}
+			else if(cacheMode == CACHE_AUTO && CacheUtil.clientCacheAvailable(clientID)){
+				CacheUtil.requestCacheFromClient(clientID, cacheReceived);					
+			}
+			else if(cacheMode == CACHE_AUTO){
 				CacheUtil.requestCacheFromServer(clientID, cacheReceived);
 			}
 			else if(cacheMode == CACHE_NONE){
@@ -190,16 +201,26 @@ package
 		{
 			switch(cacheMode)
 			{
-				case CACHE_CLIENT: 
-					// TODO
-				break;
-				
+				case CACHE_CLIENT:{										
+					CacheUtil.sendCacheToClient(clientID, LayerUtil.getImageXML());
+					break;
+				}
 				case CACHE_SERVER:
 					CacheUtil.sendCacheToServer(clientID, LayerUtil.getImageXML());
 				break;
 				
 				case CACHE_AUTO:
-					// TOOD
+					var cache:String = LayerUtil.getImageXML();
+					if(autoCacheMode == CACHE_CLIENT){
+						if(!CacheUtil.sendCacheToClient(clientID, cache))
+						{
+							autoCacheMode = CACHE_SERVER;
+							CacheUtil.sendCacheToServer(clientID, cache);	
+						}	
+					} else {
+						CacheUtil.sendCacheToServer(clientID, cache);	
+					}
+					
 				break;
 				
 				case CACHE_NONE:
@@ -212,15 +233,25 @@ package
 		}
 		
 		private function mouseDown(e:MouseEvent):void{	
+			// Interactive and null checks
 			if(GraphicsUtil.getBrush() != null && LayerUtil.getCurrentLayer() != null && isInteractive)
 			{
-				if(e.localX <= LayerUtil.getCurrentLayer().width && e.localY <= LayerUtil.getCurrentLayer().height)
+				// Bound checks
+				if(	e.localX <= LayerUtil.getCurrentLayer().width && 
+					e.localY <= LayerUtil.getCurrentLayer().height )
 				{
-					if(e.ctrlKey){
-						GraphicsUtil.getBrush().finalize();
-					} else {
-						GraphicsUtil.getBrush().mouseDown(new Point(e.localX, e.localY));
-					}	
+					// Selection check
+					var selection:ISelection = GraphicsUtil.getCurrentSelection();
+					if(selection == null || selection.inSelection(new Point(e.localX, e.localY)))
+					{
+						// CTRL-key check
+						if(e.ctrlKey){
+							GraphicsUtil.getBrush().finalize();
+						} else {
+							GraphicsUtil.getBrush().mouseDown(new Point(e.localX, e.localY));
+						}		
+					}					
+				
 				}	
 			}	
 			
@@ -228,11 +259,20 @@ package
 		}
 		
 		private function mouseMove(e:MouseEvent):void{
-			if(mouseIsDown && GraphicsUtil.getBrush() != null && LayerUtil.getCurrentLayer() != null && isInteractive)
+			// Interactive and null checks
+			if(	mouseIsDown && GraphicsUtil.getBrush() != null && 
+				LayerUtil.getCurrentLayer() != null && isInteractive)
 			{
-				if(e.localX <= LayerUtil.getCurrentLayer().width && e.localY <= LayerUtil.getCurrentLayer().height)
+				// Bounds check
+				if(	e.localX <= LayerUtil.getCurrentLayer().width &&
+					 e.localY <= LayerUtil.getCurrentLayer().height)
 				{
-					GraphicsUtil.getBrush().mouseMove(new Point(e.localX, e.localY));
+					//Selection check
+					var selection:ISelection = GraphicsUtil.getCurrentSelection();
+					if(selection == null || selection.inSelection(new Point(e.localX, e.localY)))
+					{
+						GraphicsUtil.getBrush().mouseMove(new Point(e.localX, e.localY));	
+					}				
 				} 
 			}				
 		}
@@ -351,10 +391,14 @@ package
 			return b64String;							
 		}		
 		
+		/**
+		 * Set the autosave time interval.
+		 * The delay is in seconds.
+		 */ 
 		public function setAutosaveTimerDelay(delay:Number):void
-		{
+		{			
 			autosaveTimer.stop();
-			autosaveTimer.delay = delay;
+			autosaveTimer.delay = delay*10000;
 			autosaveTimer.start();
 		}
 	}

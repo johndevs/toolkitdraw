@@ -3,13 +3,14 @@ package util
 	import brushes.Ellipse;
 	import brushes.FloodFill;
 	import brushes.IBrush;
+	import brushes.ISelection;
 	import brushes.Line;
 	import brushes.Pen;
 	import brushes.Polygon;
 	import brushes.Rectangle;
+	import brushes.RectangleSelect;
 	import brushes.Text;
 	import brushes.FilledBrush;
-	
 	import elements.Layer;
 	
 	import mx.controls.Alert;
@@ -19,6 +20,7 @@ package util
 	public class GraphicsUtil
 	{
 		private static var currentBrush:IBrush;
+		private static var currentSelection:ISelection;
 		
 		public static const BRUSH_PEN:String = "Pen";
 		public static const BRUSH_ELLIPSE:String = "Ellipse";
@@ -27,19 +29,23 @@ package util
 		public static const BRUSH_POLYGON:String = "Polygon";	
 		public static const BRUSH_FLOODFILL:String = "Floodfill";	
 		public static const BRUSH_TEXT:String = "Text";
+		public static const BRUSH_RECTANGLE_SELECT:String = "Rectangle-Select"
+		
+		
 		
 		public static function setBrush(type:String):void
 		{		
 			var brush:IBrush = null;	
 			switch(type)
 			{
-				case BRUSH_PEN:			brush = new Pen(); break;	
-				case BRUSH_ELLIPSE: 	brush = new Ellipse(); break;		
-				case BRUSH_RECTANGLE:	brush = new Rectangle(); break;	
-				case BRUSH_LINE:		brush = new Line(); break;
-				case BRUSH_POLYGON:		brush = new Polygon(); break;
-				case BRUSH_FLOODFILL:	brush = new FloodFill(); break;
-				case BRUSH_TEXT:		brush = new Text(); break;
+				case BRUSH_PEN:					brush = new Pen(); break;	
+				case BRUSH_ELLIPSE: 			brush = new Ellipse(); break;		
+				case BRUSH_RECTANGLE:			brush = new Rectangle(); break;	
+				case BRUSH_LINE:				brush = new Line(); break;
+				case BRUSH_POLYGON:				brush = new Polygon(); break;
+				case BRUSH_FLOODFILL:			brush = new FloodFill(); break;
+				case BRUSH_TEXT:				brush = new Text(); break;
+				case BRUSH_RECTANGLE_SELECT: 	brush = new RectangleSelect(); break;
 				default: return;
 			}	
 			
@@ -48,6 +54,10 @@ package util
 			else {
 				LayerUtil.getCurrentLayer().addBrush(brush);
 				currentBrush = brush;
+				
+				if(brush is RectangleSelect)
+					currentSelection = (brush as RectangleSelect);
+				
 			}
 		}
 		
@@ -129,7 +139,20 @@ package util
 			currentBrush = brush;		
 			
 			return brush;	
-		}		
+		}	
+		
+		public static function getCurrentSelection():ISelection
+		{
+			return currentSelection;
+		}	
+		
+		public static function removeSelection():void
+		{
+			if(currentSelection != null)
+			{
+				currentSelection.removeSelection();
+			}
+		}
 		
 
 	}

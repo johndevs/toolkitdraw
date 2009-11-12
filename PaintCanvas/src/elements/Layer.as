@@ -1,6 +1,7 @@
 package elements
 {
 	import brushes.IBrush;
+	import brushes.ISelection;
 	
 	import flash.display.Sprite;
 	
@@ -151,6 +152,9 @@ package elements
 			var counter:int = 0;
 			for each(var brush:IBrush in brushStack)
 			{	
+				//Skip selection brushes
+				if(brush is ISelection) continue;
+				
 				var brushXML:XML = brush.toXML();
 				brushXML.@orderNumber = counter;
 				xml.appendChild(brushXML);
