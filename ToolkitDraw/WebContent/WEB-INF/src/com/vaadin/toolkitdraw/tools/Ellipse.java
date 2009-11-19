@@ -109,6 +109,7 @@ public class Ellipse extends Tool implements ValueChangeListener, ColorChangeLis
 			canvas.getInteractive().setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
 		}
 		else if(event.getProperty() == opacity){
+			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
 			canvas.getInteractive().setAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
 		}
 	}

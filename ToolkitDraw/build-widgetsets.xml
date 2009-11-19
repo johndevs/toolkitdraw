@@ -10,10 +10,10 @@
 		<property name="gwt-location" value="gwt" />
 		
 		<!-- where Toolkit jar is located -->
-		<property name="toolkit-jar-location" value="WebContent/WEB-INF/lib/vaadin-6.0.1.jar" />
+		<property name="toolkit-jar-location" value="WebContent/WEB-INF/lib/vaadin-6.1.4.jar" />
 		
 		<!-- where ColorPicker jar is located -->
-		<property name="colorpicker-jar-location" value="WebContent/WEB-INF/lib/colorpicker-0.0.2.jar" />
+		<property name="colorpicker-jar-location" value="WebContent/WEB-INF/lib/colorpicker-0.0.3.jar" />
 		
 		<!-- where project client-side widgetset source files are located -->
 		<property name="client-side-src-location" value="WebContent/WEB-INF/src" />

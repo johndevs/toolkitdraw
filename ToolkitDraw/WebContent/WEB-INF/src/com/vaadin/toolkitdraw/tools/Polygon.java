@@ -109,6 +109,7 @@ public class Polygon extends Tool implements ValueChangeListener, ColorChangeLis
 		}
 		else if(event.getProperty() == opacity){
 			canvas.getInteractive().setAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
+			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
 		}
 	}
 

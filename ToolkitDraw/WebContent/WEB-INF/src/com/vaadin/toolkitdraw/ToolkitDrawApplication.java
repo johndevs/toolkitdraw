@@ -86,7 +86,6 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		setTheme("toolkitdraw");
 				
 		mainWindow = new Window("IT Mill Toolkit - ToolkitDraw");
-		mainWindow.setSizeFull();
 		mainWindow.setStyleName("mainwindow");
 		setMainWindow(mainWindow);			
 			

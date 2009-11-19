@@ -145,7 +145,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		tab2.setSizeFull();
 			
 		HorizontalLayout layerTools = new HorizontalLayout();
-		
+				
 		addLayer = new Button();
 		addLayer.setDescription("Add layer");
 		addLayer.setIcon(IconFactory.getIcon(Icons.PLUS));
@@ -168,6 +168,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layerTools.addComponent(upLayer);
 		
 		downLayer = new Button();
+		downLayer.setHeight("20px");
 		downLayer.setDescription("Move layer down");
 		downLayer.setIcon(IconFactory.getIcon(Icons.DOWN_ARROW));
 		downLayer.setStyleName(Button.STYLE_LINK);
@@ -175,7 +176,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layerTools.addComponent(downLayer);	
 		
 		HorizontalLayout layerToolsContainer = new HorizontalLayout();
-		layerToolsContainer.setSizeFull();
+
 		layerToolsContainer.addComponent(layerTools);
 		layerToolsContainer.setComponentAlignment(layerTools, Alignment.MIDDLE_LEFT);
 		tab2.addComponent(layerToolsContainer);

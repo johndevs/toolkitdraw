@@ -5,6 +5,9 @@
 	color:#FFFFFF;
 }
 
+.colorpicker-popup .v-button{
+}
+
 .v-panel-caption, .v-accordion-item-caption{
 	line-height: 29px;
 	height:29px;
