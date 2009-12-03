@@ -2,7 +2,6 @@ package com.vaadin.toolkitdraw.components;
 
 import java.util.Arrays;
 
-import com.google.gwt.dev.js.ast.JsNumberLiteral;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.toolkitdraw.Preferences;
@@ -25,6 +24,8 @@ import com.vaadin.ui.Slider.ValueOutOfBoundsException;
 
 
 public class PreferencesPopup extends Window implements ClickListener{
+
+	private static final long serialVersionUID = 1L;
 
 	private Window parent;
 	
@@ -121,6 +122,7 @@ public class PreferencesPopup extends Window implements ClickListener{
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				int seconds = (int)Double.parseDouble(event.getProperty().getValue().toString());
+				preferenses.setAutosaveTime(seconds);
 				
 				if(seconds == 0){
 					autosaveLbl.setValue("Off");
@@ -148,7 +150,7 @@ public class PreferencesPopup extends Window implements ClickListener{
 		});		
 		
 		try {
-			autosave.setValue(60);
+			autosave.setValue(preferenses.getAutosaveTime());
 		} catch (ValueOutOfBoundsException e) {
 			//No panic
 		}

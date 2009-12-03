@@ -3,6 +3,7 @@ package com.vaadin.toolkitdraw;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,7 @@ import com.vaadin.toolkitdraw.tools.Square;
 import com.vaadin.toolkitdraw.tools.Text;
 import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
@@ -141,7 +143,8 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 			return;		
 		}
 		
-		//Set the tool options
+		//Set the tool options	
+		ToolkitDrawApplication.getTopBar().removeAllComponents();
 		optionPanel.setContent(selected.createToolOptions());
 		optionPanel.setCaption(selected.getName());
 		

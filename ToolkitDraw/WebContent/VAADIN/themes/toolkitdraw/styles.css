@@ -6,6 +6,11 @@
 }
 
 .colorpicker-popup .v-button{
+	height: 26px !important;
+}
+
+.colorpicker-popup .resize-button{
+	height: 10px !important;	
 }
 
 .v-panel-caption, .v-accordion-item-caption{

@@ -10,6 +10,7 @@ import com.vaadin.colorpicker.ColorSelector;
 import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.toolkitdraw.ToolkitDrawApplication;
 import com.vaadin.toolkitdraw.components.TwinColorPicker;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
@@ -47,6 +48,8 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 	
 	private CheckBox disableFillcolor;
 	
+	private Button endTool;
+	
 	public Text(PaintCanvas canvas){
 		this.canvas = canvas;
 		this.layout.setMargin(true);
@@ -55,8 +58,9 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		button.setStyleName(Button.STYLE_LINK);
 		button.setData(BrushType.TEXT);		
 		button.setIcon(IconFactory.getIcon(Icons.ICON_TEXT));
-		
-		
+				
+		endTool = new Button("Finish editing", this);
+				
 		//Create the basic tools
 		GridLayout basic = new GridLayout(2,2);
 		basic.setColumnExpandRatio(0, 1);
@@ -118,7 +122,8 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 			canvas.getInteractive().setToolSize(Double.parseDouble(event.getProperty().getValue().toString()));				
 		}
 		else if(event.getProperty() == font){
-			canvas.getInteractive().setFont(event.getProperty().getValue().toString());
+			if(canvas.getInteractive() != null && event.getProperty().getValue() != null)
+				canvas.getInteractive().setFont(event.getProperty().getValue().toString());
 		}		
 		else if(event.getProperty() == backgroundOpacity){
 			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
@@ -140,6 +145,11 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		
 		//Set the initial font to the first font
 		font.select(fontNames.get(0));
+		
+		HorizontalLayout top = ToolkitDrawApplication.getTopBar();
+		top.setVisible(true);
+		top.addComponent(endTool);
+		top.setComponentAlignment(endTool, Alignment.MIDDLE_RIGHT);
 		
 		return layout;
 	}	
@@ -177,7 +187,10 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 				canvas.getInteractive().setFillColor(null);
 				canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
 			}
-		}					
+		}		
+		else if(event.getButton() == endTool){
+			canvas.getInteractive().finish();
+		}
 	}
 
 	@Override

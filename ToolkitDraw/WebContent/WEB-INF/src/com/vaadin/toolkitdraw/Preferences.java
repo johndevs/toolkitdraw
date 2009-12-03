@@ -10,11 +10,7 @@ public class Preferences {
 	private CacheMode cacheMode = CacheMode.SERVER;
 	
 	private int autosaveTime = 60;
-	
-	public Preferences(){
 		
-	}
-	
 	public void copy(Preferences pref){
 		this.plugin = pref.getPlugin();
 		this.cacheMode = pref.getCacheMode();

@@ -908,6 +908,21 @@ public class PaintCanvasNativeUtil {
 	}-*/;	
 	
 	
+	public static native boolean finish(String id)/*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.finish == 'function' && canvas.isReady() ){
+			canvas.finish();
+			return true;
+		}else{		
+			var func = function() { canvas.finish(); };		
+			setTimeout(func,1000);
+			return false;
+		}		
+	}-*/;
+	
 	/**
 	 * Set the available fonts. This is done by the Flash component and should
 	 * not be done manually

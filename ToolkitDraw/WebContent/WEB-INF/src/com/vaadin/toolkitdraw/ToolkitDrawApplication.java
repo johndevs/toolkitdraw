@@ -4,16 +4,10 @@ import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 
 import sun.misc.BASE64Encoder;
 
@@ -30,18 +24,15 @@ import com.vaadin.toolkitdraw.components.SavePopup;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.Plugin;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.toolkitdraw.demos.SimpleGraphDemo;
 import com.vaadin.toolkitdraw.demos.TicTacToe;
-import com.vaadin.toolkitdraw.tools.Tool;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.SplitPanel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -59,7 +50,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private Window mainWindow;
 	
 	private TabSheet openFilesTabs;
-			
+	
 	private MainPanel mainPanel;
 
 	private LeftPanel leftPanel;
@@ -72,8 +63,10 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	private Map<String, Boolean> savedStatusFiles = new HashMap<String, Boolean>();
 	
 	private PaintCanvas currentCanvas;
-	
+		
 	private Preferences preferences = new Preferences();
+	
+	private static HorizontalLayout topBar = new HorizontalLayout();
 	
 	/** Supported filetypes **/
 	public enum FileType{
@@ -101,6 +94,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		
 		HorizontalLayout center = new HorizontalLayout();
 		center.setSizeFull();
+		
+		VerticalLayout centerMiddle = new VerticalLayout();
+		centerMiddle.setSizeFull();
 				
 		//Create the open file tabsheet	
 		openFilesTabs = new TabSheet();
@@ -120,8 +116,20 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		leftPanel.setHeight("100%");
 			
 		center.addComponent(leftPanel);
-		center.addComponent(openFilesTabs);
-		center.setExpandRatio(openFilesTabs, 1);
+						
+		center.addComponent(centerMiddle);
+		center.setExpandRatio(centerMiddle, 1);
+		
+		
+		centerMiddle.addComponent(openFilesTabs);
+		centerMiddle.setExpandRatio(openFilesTabs, 1);
+		
+		topBar.setVisible(false);
+		centerMiddle.addComponent(topBar);		
+		
+		//center.addComponent(openFilesTabs);
+		//center.setExpandRatio(openFilesTabs, 1);
+		
 		center.addComponent(rightPanel);
 		
 		mainLayout.addComponent(center);		
@@ -174,15 +182,14 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		for(String filename : openFiles.keySet()){
 			if(filename.startsWith("Unsaved")) unsaved_counter++;
 		}
-		
-		//Set the caption for the tab (This is used when saving..
-		canvas.setCaption("Unsaved"+unsaved_counter);
-			
+					
 		//Put the canvas in the map and create a tab for it
 		openFiles.put("Unsaved"+unsaved_counter, canvas);		
 		savedStatusFiles.put("Unsaved"+unsaved_counter, false);		
+	
+		canvas.setCaption("Unsaved"+unsaved_counter);
 		openFilesTabs.addTab(canvas,"Unsaved"+unsaved_counter,null);
-						
+							
 		return canvas;
 	}
 	
@@ -202,6 +209,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		final OpenPopup selectFile = new OpenPopup("Open file", mainWindow);
 		selectFile.setData(canvas);
 		selectFile.addListener(new Window.CloseListener(){
+			private static final long serialVersionUID = 1L;
+
 			public void windowClose(CloseEvent e) {
 																
 				//Get the uploaded image
@@ -224,6 +233,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 				//Put the canvas in the map and create a tab for it
 				openFiles.put(selectFile.getFilename(), canvas);		
 				savedStatusFiles.put(selectFile.getFilename(), true);		
+				
+				canvas.setCaption(selectFile.getFilename());
 				openFilesTabs.addTab(canvas,selectFile.getFilename(),null);			
 				
 				//Set the canvas as the current canvas
@@ -291,6 +302,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 									mainWindow);
 			
 			confirm.addListener(new Button.ClickListener(){
+				private static final long serialVersionUID = 1L;
+
 				public void buttonClick(ClickEvent event) {
 					boolean confirmed = (Boolean)event.getButton().getData();					
 					if(confirmed){
@@ -383,6 +396,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 					if(currentCanvas == null) break;
 					final SavePopup pop = new SavePopup("Select filetype","", mainWindow);
 					pop.addListener(new Button.ClickListener(){
+						private static final long serialVersionUID = 1L;
+
 						public void buttonClick(ClickEvent event) {													
 							if((Boolean)event.getButton().getData()){								
 								saveFile(pop.getValue(), pop.getDpi());
@@ -436,7 +451,10 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		TabSheet tabs = (TabSheet)event.getSource();
 		
 		String filename = tabs.getSelectedTab().getCaption();
-				
+		
+		if(filename == null)
+			return;
+		
 		if(!openFiles.containsKey(filename)){
 			System.err.println("Could not find open file with filename \""+filename+"\"");
 			return;
@@ -470,6 +488,9 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			case XML:{
 				//Listen for the result
 				currentCanvas.addListener(new ValueChangeListener(){
+				
+					private static final long serialVersionUID = 1L;
+
 					public void valueChange(ValueChangeEvent event) {						
 						if(event instanceof ImageXMLRecievedEvent){							
 							currentCanvas.removeListener(this);							
@@ -487,6 +508,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			case PNG:{								
 				//Listen for the result
 				currentCanvas.addListener(new ValueChangeListener(){
+					private static final long serialVersionUID = 1L;
+
 					public void valueChange(ValueChangeEvent event) {						
 						if(event instanceof ImagePNGRecievedEvent){							
 							currentCanvas.removeListener(this);							
@@ -505,6 +528,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 												
 				//Listen for the result
 				currentCanvas.addListener(new ValueChangeListener(){
+					private static final long serialVersionUID = 1L;
+
 					public void valueChange(ValueChangeEvent event) {						
 						if(event instanceof ImageJPGRecievedEvent){							
 							currentCanvas.removeListener(this);							
@@ -560,4 +585,8 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 			mainWindow.showNotification("Saving image failed");
 		}	
 	}	
+	
+	public static HorizontalLayout getTopBar(){
+		return topBar;
+	}
 }

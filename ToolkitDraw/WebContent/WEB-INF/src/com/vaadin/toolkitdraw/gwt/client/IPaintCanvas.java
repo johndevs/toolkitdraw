@@ -221,6 +221,9 @@ public class IPaintCanvas extends HTML implements Paintable {
 			boolean on = Boolean.parseBoolean(value);
 			PaintCanvasNativeUtil.setClickListening(id, on);
 		}		
+		else if(command.equals("finish")){
+			PaintCanvasNativeUtil.finish(id);
+		}
 		
 		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
