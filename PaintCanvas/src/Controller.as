@@ -77,6 +77,7 @@ package
 				ExternalInterface.addCallback("setFillColor", 					GraphicsUtil.setBrushFillColor);
 				ExternalInterface.addCallback("setFillAlpha",					GraphicsUtil.setBrushFillAlpha);
 				ExternalInterface.addCallback("setFont",						GraphicsUtil.setBrushFontName);
+				ExternalInterface.addCallback("finish",							GraphicsUtil.endBrush);
 				
 				//Layer functions
 				ExternalInterface.addCallback("addNewLayer", 					LayerUtil.addNewLayer);
@@ -100,8 +101,8 @@ package
 				
 				//Selection functions
 				ExternalInterface.addCallback("removeSelection",				GraphicsUtil.removeSelection);
-		//		ExternalInterface.addCallback("selectAll",						SelectionUtil.selectAll);			
-		//		ExternalInterface.addCallback("cropSelected",					SelectionUtil.cropSelection);	
+				ExternalInterface.addCallback("selectAll",						selectAll);			
+				ExternalInterface.addCallback("cropSelected",					crop);	
 				
 				//Send available fonts to the server
 				var fonts:Array = new Array();
@@ -194,6 +195,8 @@ package
 			
 			// Start autosave and do a save
 			autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
+			autosaveTimer.start();
+			
 			autosave(null);
 		}
 		
@@ -227,9 +230,8 @@ package
 					//Nop
 				break;
 			}				
-		
-			autosaveTimer.reset();
-			autosaveTimer.start();	
+											
+			autosaveTimer.start();
 		}
 		
 		private function mouseDown(e:MouseEvent):void{	
@@ -242,7 +244,9 @@ package
 				{
 					// Selection check
 					var selection:ISelection = GraphicsUtil.getCurrentSelection();
-					if(selection == null || selection.inSelection(new Point(e.localX, e.localY)))
+					if(	selection == null || 
+						GraphicsUtil.getBrush() is ISelection ||
+						selection.inSelection(new Point(e.localX, e.localY)))
 					{
 						// CTRL-key check
 						if(e.ctrlKey){
@@ -269,7 +273,9 @@ package
 				{
 					//Selection check
 					var selection:ISelection = GraphicsUtil.getCurrentSelection();
-					if(selection == null || selection.inSelection(new Point(e.localX, e.localY)))
+					if(	selection == null || 
+						GraphicsUtil.getBrush() is ISelection ||
+						selection.inSelection(new Point(e.localX, e.localY)))
 					{
 						GraphicsUtil.getBrush().mouseMove(new Point(e.localX, e.localY));	
 					}				
@@ -396,10 +402,22 @@ package
 		 * The delay is in seconds.
 		 */ 
 		public function setAutosaveTimerDelay(delay:Number):void
-		{			
+		{					
 			autosaveTimer.stop();
-			autosaveTimer.delay = delay*10000;
-			autosaveTimer.start();
+			autosaveTimer.delay = delay*1000;
+			autosaveTimer.start();			
+		}
+		
+		public function selectAll():void{
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_RECTANGLE_SELECT);
+			
+			GraphicsUtil.getBrush().mouseDown(new Point(0,0));
+			GraphicsUtil.getBrush().mouseMove(new Point(Application.application.frame.width, Application.application.frame.height));
+			GraphicsUtil.getBrush().mouseUp(new Point(Application.application.frame.width, Application.application.frame.height));
+		}
+		
+		public function crop():void{
+			
 		}
 	}
 }

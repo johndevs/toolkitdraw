@@ -3,6 +3,7 @@ package elements
 	import brushes.IBrush;
 	import brushes.ISelection;
 	
+	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	
 	import mx.core.UIComponent;
@@ -23,6 +24,7 @@ package elements
 		{
 			super();
 			this.identifier = identifier;
+			this.blendMode = BlendMode.LAYER;
 		}
 
 		override protected function createChildren():void

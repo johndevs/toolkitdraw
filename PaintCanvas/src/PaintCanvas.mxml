@@ -5,8 +5,8 @@
 	paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
 	
 	<mx:Canvas id="frame" filters="{[new DropShadowFilter()]}"
-		paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0"/>
-		
+		paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0"/>	
+			
 	<mx:Script>
 		<![CDATA[
 			public function start():void{

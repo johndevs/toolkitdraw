@@ -154,6 +154,10 @@ package util
 			}
 		}
 		
+		public static function endBrush():void{
+			currentBrush.finalize();
+		}
+		
 
 	}
 }
