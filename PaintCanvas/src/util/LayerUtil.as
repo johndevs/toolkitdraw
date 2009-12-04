@@ -59,7 +59,7 @@ package util
 		
 		public static function removeLayer(identifier:String):void{
 			for each(var layer:Layer in layers){
-				if(layer.getIdentifier() == identifier){					
+				if(layer.getIdentifier() == identifier){						
 					layers.splice(layers.indexOf(layer),1);
 					Application.application.frame.removeChild(layer);							
 					break;

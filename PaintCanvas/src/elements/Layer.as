@@ -6,6 +6,7 @@ package elements
 	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	
 	public class Layer extends UIComponent
@@ -47,9 +48,11 @@ package elements
 			this.background.graphics.beginFill(this.backgroundColor, this.backgroundAlpha);
 			this.background.graphics.drawRect(0,0,w,h);
 			this.background.graphics.endFill();
-						
-			for each(var brush:IBrush in brushStack)			
-				brush.redraw();					
+											
+			for each(var brush:IBrush in brushStack){								
+				brush.redraw();				
+			}			
+					
 		}
 		
 		public function setBackgroundColor(color:uint):void

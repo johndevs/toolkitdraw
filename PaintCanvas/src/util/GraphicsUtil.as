@@ -9,11 +9,13 @@ package util
 	import brushes.Polygon;
 	import brushes.Rectangle;
 	import brushes.RectangleSelect;
-	import brushes.Text;
 	import brushes.FilledBrush;
+	import brushes.Text;
+	
 	import elements.Layer;
 	
 	import mx.controls.Alert;
+	import mx.core.Application;
 	
 
 	
@@ -30,8 +32,6 @@ package util
 		public static const BRUSH_FLOODFILL:String = "Floodfill";	
 		public static const BRUSH_TEXT:String = "Text";
 		public static const BRUSH_RECTANGLE_SELECT:String = "Rectangle-Select"
-		
-		
 		
 		public static function setBrush(type:String):void
 		{		
@@ -155,7 +155,8 @@ package util
 		}
 		
 		public static function endBrush():void{
-			currentBrush.finalize();
+			currentBrush.finalize();		
+			EventUtil.fireBrushEnded(Application.application.parameters.id);
 		}
 		
 

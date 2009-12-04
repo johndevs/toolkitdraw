@@ -12,6 +12,7 @@ package brushes
 		function mouseUp(p:Point):void;
 		function finalize():void;
 		function getType():String;
+		function isFinishable():Boolean;
 		
 		function setLayer(layer:Layer):void;
 		function getLayer():Layer;

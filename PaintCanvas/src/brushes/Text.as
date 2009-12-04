@@ -7,6 +7,7 @@ package brushes
 	import mx.controls.TextArea;
 	import mx.core.ScrollPolicy;
 	import mx.graphics.ImageSnapshot;
+	import mx.controls.Alert;
 	
 	import util.GraphicsUtil;
 	import elements.Layer;
@@ -16,6 +17,7 @@ package brushes
 		private var editing:Boolean = false;
 		private var text:TextArea;
 		private var fontName:String = "";
+		private var sizing:Boolean = false;
 		
 		public function Text()
 		{
@@ -26,6 +28,12 @@ package brushes
 		
 		override public function redraw():void
 		{
+			// Prevent redraw when editing text
+			// This will happen when the layers UpdateDisplayList is triggered
+			// after the text box is added to the layer
+			if(editing || sizing)
+				return;
+			
 			var savedStrokes:Array = strokes;
 			strokes = new Array();
 			
@@ -42,7 +50,7 @@ package brushes
 				setAlpha(stroke.alpha);				
 				setFillColor(stroke.fillColor);
 				setFillAlpha(stroke.fillAlpha);
-				
+								
 				finalize();
 			}
 		}
@@ -51,6 +59,7 @@ package brushes
 		{
 			if(editing) return;
 			
+			sizing = true;
 			currentStroke = new TextBrushStroke();
 			currentStroke.points.push(p);
 			layer.addChild(currentStroke.sprite);
@@ -99,9 +108,12 @@ package brushes
 			text.verticalScrollPolicy = ScrollPolicy.OFF;
 			text.editable = true;
 			text.cacheAsBitmap = true;	
+			
+			// This will add the text box to the layer
+			// Note: This will trigger a updateDisplayList event
 			layer.addChild(text);		
 			
-			editing = true;
+			editing = true;			
 		}
 		
 		public function finalize():void
@@ -130,7 +142,8 @@ package brushes
 			
 			strokes.push(currentStroke);
 			currentStroke = null;
-			editing = false;
+			editing = false;	
+			sizing = false;					
 		}
 		
 		override public function getType():String
@@ -273,5 +286,12 @@ package brushes
 				strokes.push(currentStroke);
 			}			
 		}
+		
+		override public function isFinishable():Boolean
+		{
+			return true;
+		}		
 	}
+	
+	
 }

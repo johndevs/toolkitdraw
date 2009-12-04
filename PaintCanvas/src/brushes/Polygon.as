@@ -138,5 +138,10 @@ package brushes
 		{
 			return GraphicsUtil.BRUSH_POLYGON;
 		}		
+		
+		override public function isFinishable():Boolean
+		{
+			return true;
+		}		
 	}
 }

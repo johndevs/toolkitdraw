@@ -17,6 +17,7 @@ package
 	
 	import util.CacheUtil;
 	import util.DrawingUtil;
+	import util.EventUtil;
 	import util.GraphicsUtil;
 	import util.LayerUtil;
 	
@@ -251,8 +252,10 @@ package
 						// CTRL-key check
 						if(e.ctrlKey){
 							GraphicsUtil.getBrush().finalize();
+							EventUtil.fireBrushEnded(clientID);
 						} else {
 							GraphicsUtil.getBrush().mouseDown(new Point(e.localX, e.localY));
+							EventUtil.fireBrushStartedEvent(clientID);
 						}		
 					}					
 				
@@ -290,7 +293,11 @@ package
 				GraphicsUtil.getBrush().mouseUp(new Point(e.localX, e.localY));		
 				
 			if(externalClickListening)		
-				ExternalInterface.call("PaintCanvasNativeUtil.clickEvent", clientID, e.localX, e.localY);				
+				EventUtil.fireClickEvent(clientID, e.localX, e.localY);
+			
+			if(!GraphicsUtil.getBrush().isFinishable())
+				EventUtil.fireBrushEnded(clientID);
+			
 		}
 		
 		public function setCacheMode(mode:String):void{
@@ -418,6 +425,11 @@ package
 		
 		public function crop():void{
 			
+		}		
+		
+		public function getClientId():String
+		{
+			return clientID;
 		}
 	}
 }

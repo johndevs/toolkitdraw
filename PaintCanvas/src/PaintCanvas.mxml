@@ -11,7 +11,7 @@
 		<![CDATA[
 			public function start():void{
 				var c:Controller = new Controller();				
-				callLater(c.init);
+				callLater(c.init);				
 			}
 		]]>
 	</mx:Script>

@@ -172,7 +172,10 @@ package brushes
 			return "Undefined";	
 		}		
 		
-		
+		public function isFinishable():Boolean
+		{
+			return false;
+		}
 		
 	}
 }
