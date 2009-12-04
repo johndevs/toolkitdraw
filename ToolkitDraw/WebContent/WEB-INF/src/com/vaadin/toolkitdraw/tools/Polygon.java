@@ -6,6 +6,7 @@ import com.vaadin.colorpicker.ColorSelector;
 import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.toolkitdraw.ToolkitDrawApplication;
 import com.vaadin.toolkitdraw.components.TwinColorPicker;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
@@ -16,6 +17,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TextField;
@@ -38,9 +40,13 @@ public class Polygon extends Tool implements ValueChangeListener, ColorChangeLis
 	
 	private Layout layout = new VerticalLayout();
 	
+	private Button endTool;
+	
 	public Polygon(PaintCanvas canvas){
 		this.canvas = canvas;
 		this.layout.setMargin(true);
+		
+		endTool = new Button("Finish editing", this);
 		
 		button = new Button();
 		button.setStyleName(Button.STYLE_LINK);
@@ -97,6 +103,12 @@ public class Polygon extends Tool implements ValueChangeListener, ColorChangeLis
 	}	
 	
 	public Layout createToolOptions(){	
+		
+		// Add the finish tool button
+		HorizontalLayout top = ToolkitDrawApplication.getBottomBar();		
+		top.addComponent(endTool);
+		top.setComponentAlignment(endTool, Alignment.MIDDLE_RIGHT);
+		
 		return layout;
 	}		
 	
@@ -142,7 +154,10 @@ public class Polygon extends Tool implements ValueChangeListener, ColorChangeLis
 				canvas.getInteractive().setFillColor(null);
 				canvas.getInteractive().setFillAlpha(0.0);
 			}
-		}					
+		}	
+		else if(event.getButton() == endTool){
+			canvas.getInteractive().finish();
+		}
 	}
 
 	@Override

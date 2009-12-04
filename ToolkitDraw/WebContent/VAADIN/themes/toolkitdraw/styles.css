@@ -152,3 +152,7 @@
 .v-table-resizer,.v-table-cell-content {
 	border-right: 1px solid #222222;
 }
+
+.v-toolkitdraw-bottombar {
+	border-bottom: 1px solid black;
+}

@@ -23,6 +23,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Slider;
@@ -146,11 +147,16 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		//Set the initial font to the first font
 		font.select(fontNames.get(0));
 		
-		HorizontalLayout top = ToolkitDrawApplication.getTopBar();
-		top.setVisible(true);
-		top.addComponent(endTool);
-		top.setComponentAlignment(endTool, Alignment.MIDDLE_RIGHT);
+		// Add the finish tool button
+		HorizontalLayout bar = ToolkitDrawApplication.getBottomBar();
+				
+		Label lbl = new Label("Text options:");	
+		bar.addComponent(lbl);
+		bar.setComponentAlignment(lbl, Alignment.MIDDLE_LEFT);
 		
+		bar.addComponent(endTool);
+		bar.setComponentAlignment(endTool, Alignment.MIDDLE_RIGHT);
+			
 		return layout;
 	}	
 		

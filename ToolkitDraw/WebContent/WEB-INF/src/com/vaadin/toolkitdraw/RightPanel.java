@@ -73,8 +73,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		//Create the layers tab
 		this.tabs.addComponent(createLayersTab());
 				
-		//Create the paper options
-		this.tabs.addComponent(createPaperOptionsTab());
+		//Create the paper options 
+		//this.tabs.addComponent(createPaperOptionsTab());
 	}
 	
 	private void createHistograms()
@@ -144,8 +144,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		tab2.setCaption("Layers");	
 		tab2.setSizeFull();
 			
-		HorizontalLayout layerTools = new HorizontalLayout();
-				
+		HorizontalLayout layerTools = new HorizontalLayout();		
+						
 		addLayer = new Button();
 		addLayer.setDescription("Add layer");
 		addLayer.setIcon(IconFactory.getIcon(Icons.PLUS));
@@ -176,12 +176,10 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layerTools.addComponent(downLayer);	
 		
 		HorizontalLayout layerToolsContainer = new HorizontalLayout();
-
 		layerToolsContainer.addComponent(layerTools);
 		layerToolsContainer.setComponentAlignment(layerTools, Alignment.MIDDLE_LEFT);
 		tab2.addComponent(layerToolsContainer);
-		tab2.setExpandRatio(layerToolsContainer, 1);
-		
+				
 		layerTable = new Table();
 		layerTable.setStyleName("layer-table");
 		layerTable.setSizeFull();
@@ -192,9 +190,9 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layerTable.setColumnHeader("Visible", "");
 		layerTable.addContainerProperty("Name",String.class, "");
 		layerTable.setNullSelectionAllowed(false);
-						
+								
 		tab2.addComponent(layerTable);	
-		tab2.setExpandRatio(layerTable, 20);
+		tab2.setExpandRatio(layerTable, 1);
 		
 		return tab2;
 	}
@@ -274,6 +272,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			refreshLayers();
 			
 			layerTable.select(newLayer);
+			canvas.getLayers().setActiveLayer(newLayer);
+			canvas.getInteractive().setBrush(canvas.getInteractive().getCurrentBrush());
 			
 		}else if(event.getButton() == removeLayer && layerTable.getValue() != null){
 			Layer selected = (Layer)layerTable.getValue();
@@ -285,14 +285,17 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			
 			//Remove layer
 			this.canvas.getLayers().removeLayer(selected);
-			layers.remove(selected);
-			
+					
 			refreshLayers();
 			
-			if(layers.size() > idx)
+			if(layers.size() > idx){
 				layerTable.select(layers.get(idx));
-			else
+				canvas.getLayers().setActiveLayer(layers.get(idx));
+			}else{
 				layerTable.select(layers.get(idx-1));
+				canvas.getLayers().setActiveLayer(layers.get(idx-1));
+			}
+				
 			
 		}else if(event.getButton() == upLayer && layerTable.getValue() != null ){
 			Layer selected = (Layer)layerTable.getValue();
@@ -303,11 +306,14 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			if(idx <= 1) return;
 			
 			//Swap the layers in both the table and the image component
-			this.canvas.getLayers().moveLayerUp(selected);
-			Collections.swap(layers, idx, idx-1);
+			this.canvas.getLayers().moveLayerUp(selected);			
 			
-			refreshLayers();			
+			// Refresh the layer listing
+			refreshLayers();		
+			
+			// Select the moved layer
 			layerTable.select(selected);
+			canvas.getLayers().setActiveLayer(selected);
 			
 		}else if(event.getButton() == downLayer && layerTable.getValue() != null){
 			Layer selected = (Layer)layerTable.getValue();
@@ -318,8 +324,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			if(idx == layers.size()-1 || idx == 0) return;
 			
 			//Swap the layers in both the table and the image component
-			this.canvas.getLayers().moveLayerDown(selected);
-			Collections.swap(layers, idx, idx+1);
+			this.canvas.getLayers().moveLayerDown(selected);			
 			
 			refreshLayers();
 			layerTable.select(selected);

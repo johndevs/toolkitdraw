@@ -443,7 +443,7 @@ public class PaintCanvasNativeUtil {
 	
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.removeLayer == 'function' && canvas.isReady() ){
-			canvas.moveLayerDown(name);
+			canvas.removeLayer(name);
 			return true;
 		}else{
 			alert("delaying removeLayer");
@@ -994,6 +994,14 @@ public class PaintCanvasNativeUtil {
 		getCanvas(id).clickEvent(x, y);
 	}
 	
+	public static void brushStartEvent(String id){
+		getCanvas(id).brushStartEvent();
+	}
+	
+	public static void brushEndEvent(String id){
+		getCanvas(id).brushEndEvent();
+	}
+	
 	/**
 	 * Define the native util methods so the flash can find them.
 	 * If the package changes then these need to be changed also!!!
@@ -1001,41 +1009,54 @@ public class PaintCanvasNativeUtil {
 	public static native void defineBridgeMethods()/*-{		
 		function PaintCanvasNativeUtil(){
 			this.error 	= function(message){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::error(Ljava/lang/String;)(message) };
+			
 			this.undo = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::undo(Ljava/lang/String;)(id); };
 			this.redo = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::redo(Ljava/lang/String;)(id); };
+			
 			this.setPaperHeight = function(id, height){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPaperHeight(Ljava/lang/String;I)(id,height); };
 			this.setPaperWidth = function(id, width){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPaperWidth(Ljava/lang/String;I)(id, width); };
+			
 			this.setPenSize = function(id, size){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenSize(Ljava/lang/String;D)(id,size); };
 			this.setPenColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenColor(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.setBrush = function(id, brush){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setBrush(Ljava/lang/String;Ljava/lang/String;)(id,brush); };
 			this.setFillColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFillColor(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.setFillAlpha = function(id, alpha){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFillAlpha(Ljava/lang/String;D)(id,alpha); };
 			this.setPenAlpha = function(id, alpha){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setPenAlpha(Ljava/lang/String;D)(id,alpha); };
+			
 			this.addLayer = function(id, name){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::addLayer(Ljava/lang/String;Ljava/lang/String;)(id,name); };
 			this.setLayerVisibility = function(id, visibility){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setLayerVisibility(Ljava/lang/String;Ljava/lang/String;Z)(id,visibility); };
 			this.selectLayer = function(id, name){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::selectLayer(Ljava/lang/String;Ljava/lang/String;)(id, name); };
 			this.setLayerColor = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setLayerColor(Ljava/lang/String;Ljava/lang/String;)(id, color); };
 			this.setLayerAlpha = function(id, alpha){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setLayerAlpha(Ljava/lang/String;D)(id,alpha); };
+			
 			this.getImageXML = function(id){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getImageXML(Ljava/lang/String;)(id); };
 			this.getImagePNG = function(id, dpi){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getImagePNG(Ljava/lang/String;I)(id,dpi); };
 			this.getImageJPG = function(id, dpi){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getImageJPG(Ljava/lang/String;I)(id,dpi); };
+			
 			this.setInteractive = function(id, interactive){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setInteractive(Ljava/lang/String;Z)(id,interactive); };
+			
 			this.drawLine =  function(id,x1,y1,x2,y2){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawLine(Ljava/lang/String;IIII)(id,x1,y1,x2,y2); };
 			this.drawSquare = function(id,x,y,width,height){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawSquare(Ljava/lang/String;IIII)(id,x,y,width,height); };
 			this.clear = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::clear(Ljava/lang/String;)(id); };
 			this.drawPolygon = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawPolygon(Ljava/lang/String;[I[I)(id,x,y); };
+			
 			this.setComponentBackground = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setComponentBackground(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.isReady = function(id){ return @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::isReady(Ljava/lang/String;)(id); };
 			this.setCanvasReady = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setCanvasReady(Ljava/lang/String;)(id); };
+			
 			this.drawText = function(id, text, x, y, width, height){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::drawText(Ljava/lang/String;Ljava/lang/String;IIII)(id,text,x,y,width,height); };
 			this.removeSelection = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::removeSelection(Ljava/lang/String;)(id); };
 			this.selectAll = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::selectAll(Ljava/lang/String;)(id); };
 			this.setAvailableFonts = function(id, fonts){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setAvailableFonts(Ljava/lang/String;[Ljava/lang/String;)(id, fonts); };
 			this.setFont = function(id, font){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setFont(Ljava/lang/String;Ljava/lang/String;)(id, font); };
+			
 			this.getServerCache = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::getServerCache(Ljava/lang/String;)(id); };
 			this.setServerCache = function(id, xml){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setServerCache(Ljava/lang/String;Ljava/lang/String;)(id, xml); };
 			this.setAutosaveTime = function(id, seconds){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::setAutosaveTime(Ljava/lang/String;I)(id, seconds); };
+			
 			this.clickEvent = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::clickEvent(Ljava/lang/String;II)(id, x, y); };
+			this.brushStartEvent = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::brushStartEvent(Ljava/lang/String;)(id); };
+			this.brushEndEvent = function(id){ @com.vaadin.toolkitdraw.gwt.client.PaintCanvasNativeUtil::brushEndEvent(Ljava/lang/String;)(id); };
 		}
 		
 		$wnd.PaintCanvasNativeUtil = new PaintCanvasNativeUtil();		

@@ -504,5 +504,13 @@ public class IPaintCanvas extends HTML implements Paintable {
 		client.updateVariable(this.uidlId, "click-event",new Object[]{x,y} , true);
 	}
 	
+	public void brushStartEvent(){
+		client.updateVariable(this.uidlId, "brush-start-event", true, true);
+	}
+	
+	public void brushEndEvent(){
+		client.updateVariable(this.uidlId, "brush-end-event", true, true);
+	}
+	
 
 }

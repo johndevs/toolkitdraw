@@ -375,6 +375,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 
 		private static final long serialVersionUID = 1L;
 		
+		private BrushType currentBrush;
+		
 		/**
 	     * Undo a previously done brush stroke
 	     */
@@ -508,8 +510,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	     * @param brush
 	     */
 	    public void setBrush(BrushType brush){
+	    	currentBrush = brush;
 	    	addToQueue("brush", brush.toString());
 	    	if(isImmediate()) requestRepaint();
+	    }
+	    
+	    public BrushType getCurrentBrush(){
+	    	return currentBrush;
 	    }
 	    
 	    /**
@@ -599,6 +606,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(layer.getName().equals("Background")) return;
 	    	
 	    	addToQueue("layerup", layer.getName());
+	    	
+	    	int index = layers.indexOf(layer);
+	    	Collections.swap(layers, index, index-1);
+	    	
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
@@ -613,6 +624,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(layer.getName().equals("Background")) return;
 	    	
 	    	addToQueue("layerdown", layer.getName());
+	    	
+	    	int index = layers.indexOf(layer);
+	    	Collections.swap(layers, index, index+1);
+	    	
 	    	if(isImmediate()) requestRepaint();
 	    }
 	    
@@ -686,6 +701,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		public void onClick(Component component, int x, int y);
 	}
 	
+	public interface BrushListener{
+		public void brushStart(Component component);
+		public void brushEnd(Component component);
+	}
+	
 	/** The command history is needed when the the session is reloaded(F5) **/
 	private Queue<Map<String, String>> commandHistory = new ArrayBlockingQueue<Map<String,String>>(10000);
 	
@@ -712,6 +732,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private Layer currentLayer;
 	
 	private Set<ClickListener> clickListeners = new HashSet<ClickListener>();
+	
+	private Set<BrushListener> brushListeners = new HashSet<BrushListener>();
 				
 	/**
 	 * 
@@ -1125,6 +1147,18 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     			}
     		}
     	}
+    	
+    	// Brush start event recieved
+    	if(variables.containsKey("brush-start-event")){    		
+    		for(BrushListener listener : brushListeners)
+    			listener.brushStart(this);
+    	}
+    	
+    	//Brush end event received
+    	if(variables.containsKey("brush-end-event")){    	
+    		for(BrushListener listener : brushListeners)
+    			listener.brushEnd(this);
+    	}
     }    
      
     public void getImageXML(){
@@ -1146,8 +1180,16 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	valueGetters.add(listener);
     }
     
+    public void addListener(BrushListener listener){
+    	brushListeners.add(listener);
+    }
+    
     public void removeListener(ValueChangeListener listener){
     	valueGetters.remove(listener);
+    }
+    
+    public void removeListener(BrushListener listener){
+    	brushListeners.remove(listener);
     }
     
     public void setInteractive(boolean interactive){

@@ -43,9 +43,12 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.Window.CloseEvent;
 
 
-public class ToolkitDrawApplication extends Application implements ClickListener, ValueChangeListener, SelectedTabChangeListener, Serializable {
+public class ToolkitDrawApplication extends Application 
+	implements ClickListener, ValueChangeListener, SelectedTabChangeListener, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final String STYLE_TOOLKITDRAW = ".v-toolkitdraw";
+	private static final String STYLE_BOTTOM_BAR = STYLE_TOOLKITDRAW+"-bottombar";
 	
 	private Window mainWindow;
 	
@@ -66,7 +69,7 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		
 	private Preferences preferences = new Preferences();
 	
-	private static HorizontalLayout topBar = new HorizontalLayout();
+	private static HorizontalLayout bottomBar = new HorizontalLayout();
 	
 	/** Supported filetypes **/
 	public enum FileType{
@@ -76,14 +79,15 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 	@Override
 	public void init() {	
 		
-		setTheme("toolkitdraw");
-				
 		mainWindow = new Window("IT Mill Toolkit - ToolkitDraw");
 		mainWindow.setStyleName("mainwindow");
+		mainWindow.addComponent(new Label("HEELO"));
+		
 		setMainWindow(mainWindow);			
+		setTheme("toolkitdraw");	
 			
 		VerticalLayout mainLayout = new VerticalLayout();
-		mainLayout.setStyleName("mainlayout");
+		mainLayout.setStyleName(STYLE_TOOLKITDRAW);
 		mainLayout.setSizeFull();
 		mainWindow.setContent(mainLayout);
 						
@@ -119,17 +123,15 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 						
 		center.addComponent(centerMiddle);
 		center.setExpandRatio(centerMiddle, 1);
-		
-		
+				
 		centerMiddle.addComponent(openFilesTabs);
 		centerMiddle.setExpandRatio(openFilesTabs, 1);
 		
-		topBar.setVisible(false);
-		centerMiddle.addComponent(topBar);		
-		
-		//center.addComponent(openFilesTabs);
-		//center.setExpandRatio(openFilesTabs, 1);
-		
+		bottomBar.setVisible(false);
+		bottomBar.setWidth("100%");
+		bottomBar.setStyleName(STYLE_BOTTOM_BAR);
+		centerMiddle.addComponent(bottomBar);		
+					
 		center.addComponent(rightPanel);
 		
 		mainLayout.addComponent(center);		
@@ -169,6 +171,26 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		//Set the autosave time
 		canvas.setAutosaveTime(preferences.getAutosaveTime());
 		
+		//Set brush listener
+		canvas.addListener(new PaintCanvas.BrushListener() {
+			
+			@Override
+			public void brushStart(Component component) {
+				if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
+					leftPanel.getSelectedBrush() == BrushType.POLYGON){
+					enableBottomBar(true);
+				}
+			}
+			
+			@Override
+			public void brushEnd(Component component) {
+				if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
+					leftPanel.getSelectedBrush() == BrushType.POLYGON){
+					enableBottomBar(false);
+				}
+			}
+		});
+						
 		//Set background layer to white
 		canvas.getLayers().setLayerBackground(canvas.getLayers().getActiveLayer(), "FFFFFF", 1);
 				
@@ -586,7 +608,15 @@ public class ToolkitDrawApplication extends Application implements ClickListener
 		}	
 	}	
 	
-	public static HorizontalLayout getTopBar(){
-		return topBar;
+	public static HorizontalLayout getBottomBar(){
+		return bottomBar;
+	}
+	
+	private void enableBottomBar(boolean enable){
+		bottomBar.setVisible(enable);
+	}
+	
+	public BrushType getSelectedBrush(){
+		return leftPanel.getSelectedBrush();
 	}
 }

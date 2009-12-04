@@ -42,7 +42,10 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 	private Panel optionPanel;
 		
 	private List<Tool>  tools = new ArrayList<Tool>();			
+	
 	private PaintCanvas canvas;
+	
+	private BrushType currentBrush;
 		
 	public LeftPanel(PaintCanvas canvas, BrushType selectedTool) {
 		super();
@@ -53,7 +56,8 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		this.canvas = canvas;
 	
 		//Create the tools tab
-		GridLayout toolGrid = new GridLayout(4,4);
+		GridLayout toolGrid = new GridLayout(5,4);
+		toolGrid.setSpacing(true);
 		for(Tool tool : tools)
 			toolGrid.addComponent(tool.getButton());
 		
@@ -144,7 +148,7 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		}
 		
 		//Set the tool options	
-		ToolkitDrawApplication.getTopBar().removeAllComponents();
+		ToolkitDrawApplication.getBottomBar().removeAllComponents();
 		optionPanel.setContent(selected.createToolOptions());
 		optionPanel.setCaption(selected.getName());
 		
@@ -154,10 +158,15 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		if(i != null){
 			i.setBrush(tool);
 			selected.sendCurrentSettings();
+			currentBrush = tool;
 		}
 		
 		else System.out.println("ERROR: Canvas is not interactive");
 		
+	}
+	
+	public BrushType getSelectedBrush(){
+		return currentBrush;
 	}
 	
 	@Override
