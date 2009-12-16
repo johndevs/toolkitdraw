@@ -7,6 +7,7 @@ import java.io.OutputStream;
 
 import org.omg.PortableInterceptor.SUCCESSFUL;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Upload;
@@ -43,17 +44,21 @@ public class OpenPopup extends Window implements ClickListener, Receiver, Upload
 		this.parent = parent;
 		setModal(true);
 		setCaption(caption);
-		setWidth("300px");
-		setHeight("100px");
+		setWidth("350px");
+		setHeight("200px");
+		setResizable(false);
 		
 		layout.setSizeFull();		
-		
+		layout.setMargin(true);
+		layout.setSpacing(true);
+				
 		upload = new Upload("File to open",this);
 		upload.addListener(this);
 		layout.addComponent(upload);
 		
 		
-		HorizontalLayout buttons = new HorizontalLayout();		
+		HorizontalLayout buttons = new HorizontalLayout();	
+		buttons.setSpacing(true);
 		
 		ok = new Button("Ok");
 		ok.addListener((ClickListener)this);
@@ -66,7 +71,7 @@ public class OpenPopup extends Window implements ClickListener, Receiver, Upload
 		buttons.addComponent(cancel);		
 		
 		layout.addComponent(buttons);	
-		
+		layout.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
 		
 		setContent(layout);
 		

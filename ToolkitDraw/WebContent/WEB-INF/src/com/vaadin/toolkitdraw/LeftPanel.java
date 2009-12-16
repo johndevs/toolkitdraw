@@ -63,15 +63,13 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		
 		//Create the tool panel
 		toolPanel = new Panel("Tools",toolGrid);
-		toolPanel.setSizeFull();
 		addComponent(toolPanel);
-		setExpandRatio(toolPanel, 1);
 					
 		//Create the tool options
 		optionPanel = new Panel("Tool Options");	
 		optionPanel.setSizeFull();
 		addComponent(optionPanel);		
-		setExpandRatio(optionPanel, 4);
+		setExpandRatio(optionPanel, 1);
 		
 	}	
 	
@@ -182,14 +180,11 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 	}	
 	
 	public void setCanvas(PaintCanvas canvas) {	
-		
 		if(canvas == null){
 			System.err.println("Cannot set null canvas");
 			return;
 		}
-				
-		System.out.println("LeftPanel: Setting new canvas");
-		
+					
 		this.canvas = canvas;
 		
 		//Update toolset canvas
@@ -197,6 +192,4 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 			tool.setCanvas(this.canvas);
 		}
 	}
-
-	
 }

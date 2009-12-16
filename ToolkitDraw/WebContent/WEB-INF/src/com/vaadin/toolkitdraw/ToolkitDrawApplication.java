@@ -572,36 +572,44 @@ public class ToolkitDrawApplication extends Application
 	public void processSavedFile(ValueChangeEvent event){		
 		DownloadStream stream = null;
 		Date now = new Date();		
+		String filename = "image";
 		
 		if(event instanceof ImageXMLRecievedEvent){
 			ImageXMLRecievedEvent evnt = (ImageXMLRecievedEvent)event;
 			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getXML().getBytes());
-			stream = new DownloadStream(iStream,"text/XML","image"+now.getTime()+".xml");			
+			
+			filename = "image"+now.getTime()+".xml";
+			stream = new DownloadStream(iStream,"text/XML",filename);
 		}
 		
 		else if(event instanceof ImagePNGRecievedEvent){			
 			ImagePNGRecievedEvent evnt = (ImagePNGRecievedEvent)event;
 			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());
-			stream = new DownloadStream(iStream,"Image/PNG","image"+now.getTime()+".png");
+			
+			filename = "image"+now.getTime()+".png";
+			stream = new DownloadStream(iStream,"Image/PNG",filename);
 		}
 		
 		else if(event instanceof ImageJPGRecievedEvent){			
 			ImageJPGRecievedEvent evnt = (ImageJPGRecievedEvent)event;
 			ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());
-			stream = new DownloadStream(iStream,"Image/JPG","image"+now.getTime()+".jpg");
+			
+			filename = "image"+now.getTime()+".jpg";
+			stream = new DownloadStream(iStream,"Image/JPG",filename);
 		}
 				
 		if(stream != null){
 			mainWindow.showNotification("Image saved");		
 			
 			final DownloadStream str = stream;
-			Resource res = new StreamResource(new StreamResource.StreamSource(){			
-				public InputStream getStream() {
+			Resource res = new FileStreamResource(new StreamResource.StreamSource() {				
+				@Override
+				public InputStream getStream() {					
 					return str.getStream();
-				}				
-			}, str.getFileName(), this);
-			
-			mainWindow.open(res, "img");			
+				}
+			}, filename, this);
+						
+			mainWindow.open(res);
 		}
 		else{	
 			mainWindow.showNotification("Saving image failed");

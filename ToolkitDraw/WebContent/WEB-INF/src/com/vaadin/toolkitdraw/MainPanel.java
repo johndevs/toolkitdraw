@@ -60,7 +60,9 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		MenuBar.MenuItem select = addItem("Selection",null,null);
 		MenuBar.MenuItem selectAll = select.addItem("Select all", null, this);
 		MenuBar.MenuItem selectNone  = select.addItem("Remove selection", null, this);
-		MenuBar.MenuItem crop = select.addItem("Crop to selection", null, this);
+		
+		// Hidden until implemented properly
+		//MenuBar.MenuItem crop = select.addItem("Crop to selection", null, this);
 		
 		//Create the demo menu
 		MenuBar.MenuItem demos = addItem("Demos", null,null);

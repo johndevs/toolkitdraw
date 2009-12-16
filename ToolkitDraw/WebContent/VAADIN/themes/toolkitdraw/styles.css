@@ -154,5 +154,7 @@
 }
 
 .v-toolkitdraw-bottombar {
+	background: blue !important;
 	border-bottom: 1px solid black;
 }
+

@@ -1,21 +1,13 @@
 package com.vaadin.toolkitdraw.gwt.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ObjectElement;
 import com.google.gwt.dom.client.ParamElement;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
-
-
 
 public class IPaintCanvas extends HTML implements Paintable {
 
@@ -46,8 +38,10 @@ public class IPaintCanvas extends HTML implements Paintable {
     
 	public IPaintCanvas(){		
 		super();				
-								
-		setSize("100%", "100%");			
+			
+		setHeight("99%");
+		setWidth("100%");
+		
 		
 		//Ensure that the methods are also available in javascript
 		PaintCanvasNativeUtil.defineBridgeMethods();
@@ -235,9 +229,17 @@ public class IPaintCanvas extends HTML implements Paintable {
 	private void createFlashComponent(	String url, String pageWidth, 
 										String pageHeight, String bgColor, 
 										String cacheMode, boolean interactive){	
-		
 		this.getElement().setId(id+"-canvas");	
-		setHTML("<DIV id='"+id+"'></DIV>");
+		
+		String pluginCouldNotLoad = 		
+			"<p>In order to view this page you need Flash Player 9+ support!</p>"+
+	        "<p>"+
+	            "<a href=\"http://www.adobe.com/go/getflashplayer\">"+
+	                "<img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" />"+
+	            "</a>"+
+	        "</p>";
+		
+		setHTML("<DIV id='"+id+"'>"+pluginCouldNotLoad+"</DIV>");
 		
 		//Embed the flash with SWFObject
 		createSWFObject(url,this.id, pageWidth, pageHeight, bgColor, cacheMode, interactive);		
