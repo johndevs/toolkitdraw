@@ -1,11 +1,13 @@
 package
 {
 	import brushes.ISelection;
+	import brushes.RectangleSelect;
 	
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.text.Font;
 	import flash.utils.Timer;
 	
@@ -425,6 +427,13 @@ package
 		
 		public function crop():void{
 			
+			if(GraphicsUtil.getCurrentSelection() != null){
+				if(GraphicsUtil.getCurrentSelection() is RectangleSelect){
+					var area:RectangleSelect = GraphicsUtil.getCurrentSelection() as RectangleSelect;
+					var selection:Rectangle = area.getSelection();
+					LayerUtil.cropImage(selection.x, selection.y, selection.width, selection.height);
+				}
+			}			
 		}		
 		
 		public function getClientId():String

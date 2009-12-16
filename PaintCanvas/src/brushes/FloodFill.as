@@ -28,12 +28,29 @@ package brushes
 				if(stroke.points == null || stroke.points.length == 0)	continue;	
 				
 				var bd:BitmapData = new BitmapData(layer.width, layer.height, false);
+				
+				if(GraphicsUtil.getCurrentSelection() != null)
+					GraphicsUtil.getCurrentSelection().hideSelection();						
+		 		
 		 		bd.draw(layer);
+		 		
+		 		if(GraphicsUtil.getCurrentSelection() != null)
+		 			GraphicsUtil.getCurrentSelection().showSelection();
 		 		
 		 		bd.floodFill((stroke.points[0] as Point).x, (stroke.points[0] as Point).y, stroke.color);
 		 		
 		 		currentStroke.sprite.graphics.beginBitmapFill(bd);
-		 		currentStroke.sprite.graphics.drawRect(0, 0, layer.width, layer.height);
+		 		
+		 		if(GraphicsUtil.getCurrentSelection() != null){
+		 			if(GraphicsUtil.getCurrentSelection() as RectangleSelect){
+		 				var rs:RectangleSelect = GraphicsUtil.getCurrentSelection() as RectangleSelect;
+		 				var rect:flash.geom.Rectangle = rs.getSelection();
+		 				currentStroke.sprite.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+		 			} 
+		 		}else{ 
+		 			currentStroke.sprite.graphics.drawRect(0, 0, layer.width, layer.height);
+		 		}
+		 		
 		 		currentStroke.sprite.graphics.endFill();
 				currentStroke.sprite.alpha = stroke.alpha;
 			}			
@@ -46,12 +63,29 @@ package brushes
 			layer.addChild(currentStroke.sprite);
 		 	
 		 	var bd:BitmapData = new BitmapData(layer.width, layer.height, false);
+		 	
+		 	if(GraphicsUtil.getCurrentSelection() != null)
+		 		GraphicsUtil.getCurrentSelection().hideSelection();
+		 	
 		 	bd.draw(layer);
+		 	
+		 	if(GraphicsUtil.getCurrentSelection() != null)
+		 		GraphicsUtil.getCurrentSelection().showSelection();
 		 	
 		 	bd.floodFill(p.x, p.y, color);
 		 	
 		 	currentStroke.sprite.graphics.beginBitmapFill(bd);
-		 	currentStroke.sprite.graphics.drawRect(0, 0, layer.width, layer.height);
+		 	
+		 	if(GraphicsUtil.getCurrentSelection() != null){
+		 			if(GraphicsUtil.getCurrentSelection() as RectangleSelect){
+		 				var rs:RectangleSelect = GraphicsUtil.getCurrentSelection() as RectangleSelect;
+		 				var rect:flash.geom.Rectangle = rs.getSelection();
+		 				currentStroke.sprite.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+		 			} 
+		 	}else{ 
+		 			currentStroke.sprite.graphics.drawRect(0, 0, layer.width, layer.height);
+		 	}
+		 	
 		 	currentStroke.sprite.graphics.endFill();
 		 	currentStroke.sprite.alpha = alpha;
 		 	

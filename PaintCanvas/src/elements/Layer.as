@@ -5,8 +5,8 @@ package elements
 	
 	import flash.display.BlendMode;
 	import flash.display.Sprite;
+	import flash.geom.Rectangle;
 	
-	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	
 	public class Layer extends UIComponent
@@ -168,5 +168,15 @@ package elements
 			
 			return xml;
 		}	
+		
+		public function crop(x:int, y:int, width:int, height:int):void
+		{
+			for(var i:int=0; i<this.numChildren; i++){
+				if(getChildAt(i) is Sprite){
+					var sprite:Sprite = getChildAt(i) as Sprite;
+					sprite.scrollRect = new Rectangle(x,y,width,height);
+				}
+			}
+		}
 	}
 }

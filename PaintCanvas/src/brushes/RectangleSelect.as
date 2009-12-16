@@ -76,5 +76,20 @@ package brushes
 			selection = null;
 			layer.removeChild(sprite);
 		}		
+		
+		public function getSelection():flash.geom.Rectangle{
+			return new flash.geom.Rectangle(leftTop.x, leftTop.y, rightBottom.x - leftTop.x, rightBottom.y - leftTop.y);
+		}
+		
+		public function hideSelection():void
+		{
+			layer.removeChild(sprite);
+		}
+		
+		public function showSelection():void
+		{
+			layer.addChild(sprite);
+		}
+		
 	}
 }

@@ -6,5 +6,7 @@ package brushes
 	{
 		function inSelection(p:Point):Boolean;
 		function removeSelection():void;
+		function hideSelection():void;
+		function showSelection():void;
 	}
 }

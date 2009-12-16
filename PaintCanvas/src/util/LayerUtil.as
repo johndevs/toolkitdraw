@@ -221,6 +221,12 @@ package util
 			return layers.length > 0;
 		}
 		
+		public static function cropImage(x:int, y:int, width:int, height:int):void
+		{
+			for each(var layer:Layer in layers){
+				layer.crop(x, y, width, height);
+			} 
+		} 
 
 	}
 }
