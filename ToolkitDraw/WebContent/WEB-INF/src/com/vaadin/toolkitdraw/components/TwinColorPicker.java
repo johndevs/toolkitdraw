@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TwinColorPicker.
  */

@@ -1,11 +1,8 @@
 package com.vaadin.toolkitdraw.components;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.omg.PortableInterceptor.SUCCESSFUL;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -15,8 +12,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Upload.FinishedEvent;
-import com.vaadin.ui.Upload.FinishedListener;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.SucceededEvent;
 

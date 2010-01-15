@@ -12,6 +12,8 @@ import com.vaadin.ui.Button.ClickListener;
 
 
 public class ConfirmPopup extends Window implements ClickListener{	
+	private static final long serialVersionUID = 1L;
+
 	private Window parent;
 	
 	private VerticalLayout layout = new VerticalLayout();

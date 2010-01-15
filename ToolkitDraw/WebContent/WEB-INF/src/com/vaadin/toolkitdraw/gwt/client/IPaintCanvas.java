@@ -467,7 +467,8 @@ public class IPaintCanvas extends HTML implements Paintable {
 	 */
 	public void setReady(boolean ready){
 		this.ready = ready;									
-		client.updateVariable(this.uidlId, "readyStatus", ready, true);
+		client.updateVariable(this.uidlId, "readyStatus", ready, false);
+		client.updateVariable(this.uidlId, "initData", true, true);
 	}
 	
 	/**

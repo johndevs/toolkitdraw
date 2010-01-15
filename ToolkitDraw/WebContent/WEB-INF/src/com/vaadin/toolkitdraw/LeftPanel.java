@@ -1,17 +1,8 @@
 package com.vaadin.toolkitdraw;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.catalina.startup.SetAllPropertiesRule;
-
-import com.vaadin.Application;
-import com.vaadin.toolkitdraw.MainPanel.Type;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
 import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
@@ -24,10 +15,7 @@ import com.vaadin.toolkitdraw.tools.Select;
 import com.vaadin.toolkitdraw.tools.Square;
 import com.vaadin.toolkitdraw.tools.Text;
 import com.vaadin.toolkitdraw.tools.Tool;
-import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;

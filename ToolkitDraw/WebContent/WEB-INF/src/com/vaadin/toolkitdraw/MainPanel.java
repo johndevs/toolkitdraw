@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -15,7 +14,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.MenuBar.Command;
 
 public class MainPanel extends MenuBar implements ValueChangeListener, Command{
-		
+	private static final long serialVersionUID = 1L;
 	private List<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
 	private Map<String, Type> typeMap = new HashMap<String, Type>();
 	
@@ -45,20 +44,29 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		
 		//Create the file menu
 		MenuBar.MenuItem file = addItem("File",null,null);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem newFile = file.addItem("New", null,this);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem openFile = file.addItem("Open", null, this);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem saveFile = file.addItem("Save", null, this);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem closeFile = file.addItem("Close", null, this);
 		
 		//Create the edit menu
 		MenuBar.MenuItem edit = addItem("Edit",null,null);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem undo = edit.addItem("Undo", null, this);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem redo = edit.addItem("Redo", null, this);	
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem prefs = edit.addItem("Preferences", null, this);
 		
 		//Create the select menu
 		MenuBar.MenuItem select = addItem("Selection",null,null);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem selectAll = select.addItem("Select all", null, this);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem selectNone  = select.addItem("Remove selection", null, this);
 		
 		// Hidden until implemented properly
@@ -66,7 +74,9 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		
 		//Create the demo menu
 		MenuBar.MenuItem demos = addItem("Demos", null,null);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem simpleGraphDemo = demos.addItem("Simple graph", null, this);
+		@SuppressWarnings("unused")
 		MenuBar.MenuItem ticTacToeDemo = demos.addItem("Tic-Tac-Toe",null,this);
 	}
 	
@@ -90,6 +100,8 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		final Type type = typeMap.get(selectedItem.getText());
 		
 		ValueChangeEvent evnt = new Property.ValueChangeEvent(){
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Property getProperty() {				
 				return new ObjectProperty(type);				

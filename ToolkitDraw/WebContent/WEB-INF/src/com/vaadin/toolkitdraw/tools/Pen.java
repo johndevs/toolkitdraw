@@ -2,7 +2,6 @@ package com.vaadin.toolkitdraw.tools;
 
 import java.awt.Color;
 
-import com.vaadin.colorpicker.ColorPicker;
 import com.vaadin.colorpicker.ColorSelector;
 import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -18,7 +17,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Slider;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Slider.ValueOutOfBoundsException;
 

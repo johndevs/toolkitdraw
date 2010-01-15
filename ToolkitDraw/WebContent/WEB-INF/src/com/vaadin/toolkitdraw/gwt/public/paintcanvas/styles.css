@@ -1,2 +1,6 @@
 /* Prevent borders from appearing in firefox when clicking */
-object { outline:none; }
+.v-paintcanvas object { outline:none; }
+
+.v-paintcanvas{
+	overflow: hidden;	
+}

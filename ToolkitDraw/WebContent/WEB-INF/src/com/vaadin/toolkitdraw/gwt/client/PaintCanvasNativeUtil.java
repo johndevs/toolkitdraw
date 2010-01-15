@@ -1,11 +1,5 @@
 package com.vaadin.toolkitdraw.gwt.client;
 
-import java.util.List;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dev.GWTMain;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class PaintCanvasNativeUtil.
  */
@@ -518,7 +512,7 @@ public class PaintCanvasNativeUtil {
 	public static native boolean setInteractive(String id, boolean interactive)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
-	
+		
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.setInteractive == 'function' && canvas.isReady() ){
 			canvas.setInteractive(interactive);

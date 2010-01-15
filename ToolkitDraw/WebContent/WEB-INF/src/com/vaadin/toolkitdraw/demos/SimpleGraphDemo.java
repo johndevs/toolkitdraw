@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import sun.awt.HorizBagLayout;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -20,7 +18,6 @@ import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
@@ -194,7 +191,7 @@ public class SimpleGraphDemo extends Window {
 			int value = Integer.valueOf((item.getItemProperty("Value").getValue().toString()));
 						
 			//Draw the front of the bars
-			gc.drawSquare(counter*70+20, 280-value*2, 50, value*2,"CC0000","FF0000");
+			gc.drawSquare(counter*70+20, 280-value*2, 50, value*2,new Color(0xCC, 0x0, 0x0),Color.RED);
 			
 			//Draw the tops of the bars
 			int[] topX = new int[4];
@@ -227,8 +224,8 @@ public class SimpleGraphDemo extends Window {
 			gc.drawText(id.toString(), 
 						counter*70+20, 280-value*2, // Coordinates
 						100, 100, 					// Text area size
-						12, "000000", 0.0,			// Font properties
-						"000000", 0.0);				// Background properties
+						12, Color.BLACK, 0.0,			// Font properties
+						Color.BLACK, 0.0);				// Background properties
 			
 			counter++;
 		}		

@@ -59,10 +59,11 @@ public class TicTacToe extends Window implements ClickListener {
 		gc.clear();
 		
 		//Draw the board
-		gc.drawLine(100, 10, 100, 290, "FF0000");
-		gc.drawLine(200, 10, 200, 290, "FF0000");
-		gc.drawLine(10, 100, 290, 100, "FF0000");
-		gc.drawLine(10, 200, 290, 200, "FF0000");
+		
+		gc.drawLine(100, 10, 100, 290, Color.RED);
+		gc.drawLine(200, 10, 200, 290, Color.RED);
+		gc.drawLine(10, 100, 290, 100, Color.RED);
+		gc.drawLine(10, 200, 290, 200, Color.RED);
 		
 		//Draw the marks
 		for(int i=0; i<3; i++){

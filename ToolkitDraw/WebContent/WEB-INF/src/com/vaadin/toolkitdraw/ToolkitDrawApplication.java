@@ -112,7 +112,7 @@ public class ToolkitDrawApplication extends Application
 	
 		currentCanvas = null;
 				
-		rightPanel = new RightPanel(currentCanvas);
+		rightPanel = new RightPanel(currentCanvas, preferences);
 		rightPanel.setWidth("250px");
 						
 		leftPanel = new LeftPanel(currentCanvas, BrushType.PEN);
@@ -626,5 +626,9 @@ public class ToolkitDrawApplication extends Application
 	
 	public BrushType getSelectedBrush(){
 		return leftPanel.getSelectedBrush();
+	}
+	
+	public Preferences getPreferences(){
+		return preferences;
 	}
 }

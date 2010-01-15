@@ -23,14 +23,25 @@ import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEven
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
 
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
 import com.vaadin.toolkitdraw.components.paintcanvas.enums.Plugin;
+import com.vaadin.toolkitdraw.gwt.client.IPaintCanvas;
 import com.vaadin.toolkitdraw.util.XMLUtil;
 
+/**
+ * The PaintCanvas component for creating flash graphics easily. 
+ * You can use this for the end users to draw on with different brushes
+ * or programmatically draw on the canvas.
+ * 
+ * @author John Ahlroos, ITMill Oy Ltd 2010
+ * @version 0.1
+ */
 @SuppressWarnings("unchecked")
+@ClientWidget(IPaintCanvas.class)
 public class PaintCanvas extends AbstractField implements Component, Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -51,12 +62,26 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 		private Queue<Map<String, String>> batch = new ArrayBlockingQueue<Map<String,String>>(1000);
 		
+		/**
+		 * Add command into a batch
+		 * @param command
+		 * 		The command to execute
+		 * @param value
+		 * 		The value of the command
+		 */
 		private void addToBatch(String command, String value){
 			Map<String, String> entry = new HashMap<String, String>();
 			entry.put(command, value);	
 			batch.add(entry);
 		}
 		
+		/**
+		 * Converts a color into a string representation
+		 * @param c
+		 * 		The color
+		 * @return
+		 * 		A CSS color string
+		 */
 		private String color2String(Color c){
 			String red = Integer.toHexString(c.getRed());
 			String green = Integer.toHexString(c.getGreen());
@@ -116,16 +141,28 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(isImmediate() && !batchMode) requestRepaint();
 		}
 		
-		public void drawLine(int x1, int y1, int x2, int y2, String color){
-			//Do some color string checks
-	    	if(color.contains("#")) color = color.replaceAll("#", "0x");	    		    	
-	    	if(!color.contains("x")) color = "0x"+color;			
+		/**
+		 * This method draws a line between two points. The coordinates are
+		 * from the top-left corner.
+		 * 
+		 * @param x1
+		 * 		x-coordinate for the first point		
+		 * @param y1
+		 * 		y-coordinate for the first point
+		 * @param x2
+		 * 		x-coordinate for the second point
+		 * @param y2
+		 * 		y-coordinate for the second point
+		 * @param coor
+		 * 		The color of the line
+		 */
+		public void drawLine(int x1, int y1, int x2, int y2, Color color){
 			
 			if(batchMode){
-				addToBatch("penColor", color);
+				addToBatch("penColor", color2String(color));
 				addToBatch("graphics-line", x1+","+y1+","+x2+","+y2);
 			} else {
-				addToQueue("penColor", color);
+				addToQueue("penColor", color2String(color));
 				addToQueue("graphics-line", x1+","+y1+","+x2+","+y2);
 			}
 			
@@ -152,22 +189,30 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(isImmediate() && !batchMode) requestRepaint();		
 		}		
 		
-		public void drawSquare(int x, int y, int width, int height, String frameColor, String fillColor){		
-			
-			//Do some color string checks
-	    	if(frameColor.contains("#")) frameColor = frameColor.replaceAll("#", "0x");
-	    	if(fillColor.contains("#")) fillColor = fillColor.replaceAll("#", "0x");
-	    	
-	    	if(!frameColor.contains("x")) frameColor = "0x"+frameColor;
-	    	if(!fillColor.contains("x")) fillColor = "0x"+fillColor;
-						
+		/**
+		 * Draws a square shape
+		 * @param x
+		 * 		The left upper corner
+		 * @param y
+		 * 		The left upper corner
+		 * @param width
+		 * 		The width
+		 * @param height
+		 * 		The height
+		 * @param frameColor
+		 * 		The color of the frame
+		 * @param fillColor
+		 * 		The fill color
+		 */
+		public void drawSquare(int x, int y, int width, int height, Color frameColor, Color fillColor){		
+									
 			if(batchMode){
 				//We need to change the brush to a squeare before the operation so 
 				//we can set the fillcolor
 				addToBatch("brush", BrushType.SQUARE.toString());
 				addToBatch("penSize","1");				
-				addToBatch("penColor", frameColor);
-				addToBatch("fillColor", fillColor);
+				addToBatch("penColor", color2String(frameColor));
+				addToBatch("fillColor", color2String(fillColor));
 				addToBatch("fillAlpha", "1");
 				addToBatch("graphics-square", x+","+y+","+width+","+height);	
 			} else {
@@ -175,8 +220,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 				//we can set the fillcolor
 				addToQueue("brush", BrushType.SQUARE.toString());				
 				addToQueue("penSize","1");
-				addToQueue("penColor", frameColor);
-				addToQueue("fillColor", fillColor);
+				addToQueue("penColor", color2String(frameColor));
+				addToQueue("fillColor", color2String(fillColor));
 				addToQueue("fillAlpha", "1");
 				addToQueue("graphics-square", x+","+y+","+width+","+height);
 			}			
@@ -184,11 +229,37 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(isImmediate() && !batchMode) requestRepaint();	
 		}
 		
+		/**
+		 * Draws an ellipse shape
+		 * @param x
+		 * 		The left upper corner
+		 * @param y
+		 * 		The left upper corner
+		 * @param width
+		 * 		The width of the shape
+		 * @param height
+		 * 		The height of the shape
+		 */
 		public void drawEllipse(int x, int y, int width, int height){
 			if(batchMode) addToBatch("graphics-ellipse",  x+","+y+","+width+","+height);	
 			else addToQueue("graphics-ellipse",  x+","+y+","+width+","+height);	
 		}
 		
+		/**
+		 * Draws an ellipse shape
+		 * @param x
+		 * 		The left upper corner
+		 * @param y
+		 * 		The left upper corner
+		 * @param width
+		 * 		The with of the shape
+		 * @param height
+		 * 		The height of the shape
+		 * @param frameColor
+		 * 		The frame color
+		 * @param fillColor
+		 * 		The fill color
+		 */
 		public void drawEllipse(int x, int y, int width, int height, Color frameColor, Color fillColor){
 			if(batchMode){
 				addToBatch("brush", BrushType.ELLIPSE.toString());
@@ -220,9 +291,14 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		}
 		
 		/**
-		 * Draws a polygon
+		 * Draws an poluygon shape along the points given.
+		 * If the first and last point is not the same the shape 
+		 * will be closes automatically.
+		 * @param x
+		 * 		An array of x-coordinates
+		 * @param y
+		 * 		An array of y-coordinates
 		 */
-		
 		public void drawPolygon(int[]x, int[]y){
 			
 			if(x.length == 0 || x.length != y.length)
@@ -243,6 +319,20 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 			if(isImmediate() && !batchMode) requestRepaint();				
 		}
 		
+		/**
+		 * Draws an poluygon shape along the points given.
+		 * If the first and last point is not the same the shape 
+		 * will be closes automatically.
+		 * 
+		 * @param x
+		 * 		An array of x-coordinates
+		 * @param y
+		 * 		An array of y-coordinates
+		 * @param color
+		 * 		The color of the outer border
+		 * @param fillColor
+		 * 		The fill color
+		 */
 		public void drawPolygon(int[]x, int[]y, Color color, Color fillColor){
 			if(x.length == 0 || x.length != y.length)
 				return;
@@ -293,15 +383,8 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		 * @param alpha
 		 * 		The transparency of the background
 		 */
-		public void drawText(String text, int x, int y, int width, int height, int fontSize, String fontColor, double fontAlpha,  String fillColor, double fillAlpha){
-			
-			//Do some color string checks
-	    	if(fontColor.contains("#")) fontColor = fontColor.replaceAll("#", "0x");
-	    	if(fillColor.contains("#")) fillColor = fillColor.replaceAll("#", "0x");
-	    	
-	    	if(!fontColor.contains("x")) fontColor = "0x"+fontColor;
-	    	if(!fillColor.contains("x")) fillColor = "0x"+fillColor;
-	    		    	
+		public void drawText(String text, int x, int y, int width, int height, int fontSize, Color fontColor, double fontAlpha,  Color fillColor, double fillAlpha){
+				    		    	
 	    	StringBuilder value = new StringBuilder(text);
 	    	value.append(";");
 	    	value.append(x);
@@ -315,16 +398,16 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	    	if(batchMode){
 	    		addToBatch("brush", BrushType.TEXT.toString());
 	    		addToBatch("penSize",String.valueOf(fontSize));				
-				addToBatch("penColor", fontColor);
-				addToBatch("fillColor", fillColor);	
+				addToBatch("penColor", color2String(fontColor));
+				addToBatch("fillColor", color2String(fillColor));	
 				addToBatch("fillAlpha", String.valueOf(fillAlpha));
 				addToBatch("penAlpha", String.valueOf(fontAlpha));
 				addToBatch("graphics-text", value.toString());	    		
 	    	} else {
 	    		addToQueue("brush", BrushType.TEXT.toString());
 	    		addToQueue("penSize",String.valueOf(fontSize));				
-	    		addToQueue("penColor", fontColor);
-	    		addToQueue("fillColor", fillColor);	
+	    		addToQueue("penColor", color2String(fontColor));
+	    		addToQueue("fillColor", color2String(fillColor));	
 	    		addToQueue("fillAlpha", String.valueOf(fillAlpha));
 	    		addToQueue("penAlpha", String.valueOf(fontAlpha));
 	    		addToQueue("graphics-text", value.toString());	    		    		
@@ -358,6 +441,29 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 				addToBatch("graphics-image", value.toString());
 			} else {
 				addToQueue("graphics-image", value.toString());
+			}
+			
+			if(isImmediate() && !batchMode){			
+				requestRepaint();				
+			}
+		}
+		
+		/**
+		 * Bucket fills an area
+		 * @param x
+		 * 		The point to start filling
+		 * @param y	
+		 * 		The point to start filling
+		 *@param color
+		 *		The color of the fill
+		 */
+		public void fill(int x, int y, Color color){
+			if(batchMode){
+				addToBatch("brush", BrushType.FILL.toString());
+				addToBatch("penColor", color2String(color));
+			} else {
+				addToQueue("brush", BrushType.FILL.toString());
+				addToQueue("penColor", color2String(color));
 			}
 			
 			if(isImmediate() && !batchMode){			
@@ -697,10 +803,20 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		
 	}
 	
+	/**
+	 * The clickListener interface
+	 * @author John Ahlroos, ITMill Oy Ltd 2010
+	 * @since 0.1
+	 */
 	public interface ClickListener{
 		public void onClick(Component component, int x, int y);
 	}
 	
+	/**
+	 * The brush listener interface
+	 * @author John Ahlroos, ITMill Oy Ltd 2010
+	 * @since 0.1
+	 */
 	public interface BrushListener{
 		public void brushStart(Component component);
 		public void brushEnd(Component component);
@@ -736,7 +852,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	private Set<BrushListener> brushListeners = new HashSet<BrushListener>();
 				
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public PaintCanvas(){	
 		this.addStyleName(CLASSNAME);
@@ -751,7 +867,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		Layer background = new Layer("Background", this);
 		layers.add(background);
 		currentLayer = background;
-			
+					
 		setImmediate(true);		
 		requestRepaint();				
 	}
@@ -904,7 +1020,7 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 	 * 		The height of the image
 	 * @param interactive
 	 * 		Is the canvas interactive
-	 */
+	 */	
 	public PaintCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
 		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
@@ -958,14 +1074,13 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
 		return graphics;
 	}	
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.vaadin.ui.AbstractField#getType()
+	 */
 	@Override
 	public Class<?> getType() {		
 		return PaintCanvas.class;
-	}
-
-	@Override
-	public String getTag() {		
-		return "paintcanvas";
 	}
 	
 	 /** Paint (serialize) the component for the client. */
@@ -1113,13 +1228,10 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	
     	//Send the initialization data
     	if(variables.containsKey("initData")){
-    		interactive.setPaperHeight(configuration.getPaperHeight());
-    		interactive.setPaperWidth(configuration.getPaperWidth());
     		setComponentBackgroundColor(configuration.getComponentColor());
     		setInteractive(configuration.isInteractive());
     		setCacheMode(configuration.getCacheMode());
-    		setPlugin(configuration.getPlugin());
-    		configuration.setInitializationComplete(false);    		
+    		setPlugin(configuration.getPlugin());   		
     		requestRepaint();    		
     	}   	
     	
@@ -1161,43 +1273,132 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	}
     }    
      
+	/**
+	 * Returns the XML representation of the image.
+	 * To get the image attach an ValueChangeListener to the canvas
+	 * and listen for an ImageXMLRecieved event.
+	 * Like this: <pre>
+	 * canvas.addListener(new ValueChangeListener(){
+	 * 		public void valueChange(ValueChangeEvent event) {						
+	 *			if(event instanceof ImageXMLRecievedEvent){							
+	 *				// Process image here
+	 *			}									
+	 *		}					
+	 *	});</pre>
+	 */
     public void getImageXML(){
     	addToQueue("getImageXML", "");
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Returns the image as a PNG image. 
+     * To get the image attach an ValueChangeListener to the canvas
+	 * and listen for an ImagePNGRecieved event.
+	 * Like this: <pre>
+	 * canvas.addListener(new ValueChangeListener(){
+	 * 		public void valueChange(ValueChangeEvent event) {						
+	 *			if(event instanceof ImagePNGRecievedEvent){							
+	 *				// Process image here
+	 *			}									
+	 *		}					
+	 *	});</pre>
+     * @param dpi
+     * 		The dpi of the image
+     */
     public void getImagePNG(int dpi){
     	addToQueue("getImagePNG", String.valueOf(dpi));
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Returns the image as a JPG image. 
+     * To get the image attach an ValueChangeListener to the canvas
+	 * and listen for an ImageJPGRecieved event.
+	 * Like this: <pre>
+	 * canvas.addListener(new ValueChangeListener(){
+	 * 		public void valueChange(ValueChangeEvent event) {						
+	 *			if(event instanceof ImageJPGRecievedEvent){							
+	 *				// Process image here
+	 *			}									
+	 *		}					
+	 *	});</pre>
+     * @param dpi
+     * 		The dpi of the image
+     */
     public void getImageJPG(int dpi){
     	addToQueue("getImageJPG", String.valueOf(dpi));
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Adds an value change listener
+     * @param listener
+     * 		The listener
+     */
     public void addListener(ValueChangeListener listener){
     	valueGetters.add(listener);
     }
     
+    /**
+     * Adds a brush listener
+     * @param listener
+     * 		The listener
+     */
     public void addListener(BrushListener listener){
     	brushListeners.add(listener);
     }
     
+    /**
+     * Removes a value change listener
+     *  @param listener
+     * 		The listener to remove
+     */
     public void removeListener(ValueChangeListener listener){
     	valueGetters.remove(listener);
     }
     
+    /**
+     * Removes a brush listener
+     * @param listener
+     * 		The listener to remove
+     */
     public void removeListener(BrushListener listener){
     	brushListeners.remove(listener);
     }
     
+    /**
+     * Sets the canvas in interactive state.
+     * If true the users can draw on the canvas, if false
+     * only the application can draw on the canvas.
+     * @param interactive
+     */
     public void setInteractive(boolean interactive){
     	configuration.setInteractive(interactive);    	
     	addToQueue("interactive", String.valueOf(interactive));
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Alias for setInteractive
+     */
+    @Override
+    public void setReadOnly(boolean readOnly) {
+    	setInteractive(!readOnly);
+    }
+    
+    /**
+     * Returns true if the canvas is read only.
+     */
+    @Override
+    public boolean isReadOnly(){
+    	return configuration.isInteractive();
+    }
+    
+    /**
+     * Returns the interactive controls
+     * @return
+     */
     public Interactive getInteractive() {
     	if(configuration.isInteractive()) 
     		return interactive;
@@ -1205,6 +1406,15 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     		return null;
 	}
     
+    /**
+     * Sets the background color of the component.
+     * This is the color that is shown behind the image if the 
+     * image is smaller than the canvas itself. By default the image is
+     * the same size as the canvas so this is not visible.
+     * 
+     * @param color
+     * 		The background color
+     */
     public void setComponentBackgroundColor(Color color){    	    	
     	configuration.setComponentColor(color);    
     	
@@ -1220,34 +1430,66 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	addToQueue("componentColor", "0x"+red+green+blue);
     	if(isImmediate()) requestRepaint();
     }        
-        
+       
+    /**
+     * Returns the defined layers
+     * @return
+     * 		The layers of the image
+     */
     public Layers getLayers(){
     	return Ilayers;
     }  
     
+    /**
+     * Returns the configuration of the canvas
+     * @return
+     * 		The configuration
+     */
     public Config getConfiguration(){
     	return configuration;
     }
     
+    /**
+     * Sets the cache mode of the canvas.
+     * The cache mode is used to determine where the image
+     * is saved between edits. Default is <b>CacheMode.Server</b>
+     * @param mode
+     * 		The cache mode 
+     */
     public void setCacheMode(CacheMode mode){
     	configuration.setCacheMode(mode);
     	addToQueue("cache-mode", mode.getId());
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Set which plugin should be used.
+     * <b>At this time only the Flash plugin is supported!</b>
+     * @param plugin
+     */
     public void setPlugin(Plugin plugin){
     	configuration.setPlugin(plugin);
     	addToQueue("plugin", plugin.getId());
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Set the time between autosaves. Default is 1 second
+     * @param seconds
+     * 		The amount of seconds between autosave
+     */
     public void setAutosaveTime(int seconds){
-    	if(seconds < 0) return;
+    	if(seconds < 1) return;
     	configuration.setAutosave(seconds);
     	addToQueue("autosave", String.valueOf(seconds));
     	if(isImmediate()) requestRepaint();
     }
     
+    /**
+     * Adds a click listener
+     * @param listener
+     * 		The listening component
+     */
     public void addListener(ClickListener listener){   	
     	
     	//Turn on click listening
@@ -1259,6 +1501,11 @@ public class PaintCanvas extends AbstractField implements Component, Serializabl
     	clickListeners.add(listener);
     }
     
+    /**
+     * Removes a click listener
+     * @param listener
+     * 		The listening component to remove
+     */
     public void removeListener(ClickListener listener){
     	clickListeners.remove(listener);
     	

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.org.apache.bcel.internal.generic.Select;
 import com.vaadin.colorpicker.ColorSelector;
 import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -25,9 +24,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Slider;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;

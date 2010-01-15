@@ -30,7 +30,7 @@ public class Config implements Serializable{
 	
 	private Set<String> availableFonts = new HashSet<String>();
 	
-	private int autosave = 60;
+	private int autosave = 1;
 
 	public CacheMode getCacheMode() {
 		return cacheMode;

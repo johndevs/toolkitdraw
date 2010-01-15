@@ -1,18 +1,14 @@
 package com.vaadin.toolkitdraw.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 
 
 public class IconFactory implements Serializable {
-	
+	private static final long serialVersionUID = 1L;
+
 	public static enum Icons{
 		ICON_PEN, ICON_SQUARE, ICON_ELLIPSE, ICON_LINE, ICON_POLY, ICON_TEXT, ICON_FILL,
 		DOWN_ARROW, UP_ARROW, PLUS, MINUS, SELECT,

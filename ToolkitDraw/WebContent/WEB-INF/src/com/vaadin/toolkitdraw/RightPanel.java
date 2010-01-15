@@ -1,7 +1,6 @@
 package com.vaadin.toolkitdraw;
 
 import java.awt.Color;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -37,7 +33,6 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 
 	private PaintCanvas canvas;	
 	
-	private GridLayout tab1;
 	private VerticalLayout tab2;
 	
 	private TextField paperHeight;
@@ -54,12 +49,15 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	private TabSheet histograms;
 	private Map<String, PaintCanvas> histogramCanvases = new HashMap<String, PaintCanvas>();
 	
-	public RightPanel(PaintCanvas canvas){
-		
+	private Preferences preferences;
+	
+	public RightPanel(PaintCanvas canvas, Preferences pref){		
 		super();
 		setStyleName("rightpanel");
 		setHeight("100%");
+				
 		this.canvas = canvas;
+		this.preferences = pref;
 		
 		//Add the histograms
 		addComponent(createHistogramsTab());
@@ -79,12 +77,26 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	
 	private void createHistograms()
 	{
-		//Create RGB channel histogram
-		PaintCanvas rgb = new PaintCanvas("300px","200px", new Color(Integer.parseInt("44",16),
-																	 Integer.parseInt("44",16),
-																	 Integer.parseInt("44",16) ));
-		;	
+		Color bgColor = new Color(	Integer.parseInt("44",16),
+				 					Integer.parseInt("44",16),
+				 					Integer.parseInt("44",16) );
 		
+		//Create RGB channel histogram
+		PaintCanvas rgb = new PaintCanvas("250px","200px", bgColor);
+		;	
+				
+		//Set the caching mode of the canvas
+		rgb.setCacheMode(preferences.getCacheMode());
+			
+		//Set the plugin to use
+		rgb.setPlugin(preferences.getPlugin());
+			
+		//Set the autosave time
+		rgb.setAutosaveTime(preferences.getAutosaveTime());
+		
+		//Set paper color to background color
+		rgb.getGraphics().drawSquare(0, 0, 250, 200, bgColor, bgColor);
+						
 		String caption = "Histogram";
 		histogramCanvases.put(caption, rgb);		
 	}
@@ -102,6 +114,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 						
 			VerticalLayout layout = new VerticalLayout();
 			layout.addComponent(c);
+			layout.setComponentAlignment(c, Alignment.MIDDLE_CENTER);
 			layout.setCaption(caption);
 			
 			histograms.addTab(layout);
@@ -109,35 +122,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		return histograms;
 	}
-	
-	private Component createPaperOptionsTab(){
-		GridLayout grid = new GridLayout(4,1);
-		grid.setCaption("Paper Options");	
 		
-		grid.addComponent(new Label("Paper dimensions "),0,0);	
-		
-		paperWidth = new TextField();
-		paperWidth.setValue(300);		
-		if(this.canvas != null) this.canvas.getInteractive().setPaperWidth(300);
-		paperWidth.setWidth("50px");
-		paperWidth.addListener((Property.ValueChangeListener)this);
-		paperWidth.setImmediate(true);
-		grid.addComponent(paperWidth,1,0);
-		
-		grid.addComponent(new Label("x"),2,0);
-		
-		paperHeight = new TextField();
-		paperHeight.setValue(400);
-		if(this.canvas != null) this.canvas.getInteractive().setPaperHeight(400);
-		paperHeight.setWidth("50px");
-		paperHeight.addListener((Property.ValueChangeListener)this);
-		paperHeight.setImmediate(true);
-		grid.addComponent(paperHeight,3,0);
-		
-		tab1 = grid;
-		return tab1;
-	}
-	
 	private Component createLayersTab()
 	{
 		tab2 = new VerticalLayout();		
@@ -227,6 +212,8 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 			visible.setImmediate(true);
 			visible.setValue(layer.getVisible());
 			visible.addListener(new Button.ClickListener(){
+				private static final long serialVersionUID = 1L;
+
 				public void buttonClick(ClickEvent event) {
 					if(event.getButton().getValue() == null) return;
 					

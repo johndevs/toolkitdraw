@@ -16,6 +16,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 public class SavePopup extends Window implements ClickListener{
+	private static final long serialVersionUID = 1L;
 
 	private Window parent;
 	
@@ -56,6 +57,8 @@ public class SavePopup extends Window implements ClickListener{
 		}
 		
 		filetype.addListener(new ValueChangeListener(){
+			private static final long serialVersionUID = 1L;
+
 			public void valueChange(ValueChangeEvent event) {
 				FileType type = (FileType)filetype.getValue();
 				if(type == FileType.XML){

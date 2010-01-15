@@ -3,7 +3,7 @@ package com.vaadin.toolkitdraw.components.paintcanvas.events;
 import com.vaadin.ui.Field.ValueChangeEvent;
 
 public class ImageJPGRecievedEvent extends ValueChangeEvent {
-
+	private static final long serialVersionUID = 1L;
 	private byte[] data;
 	
 	public ImageJPGRecievedEvent(com.vaadin.ui.Field source, byte[] data) {

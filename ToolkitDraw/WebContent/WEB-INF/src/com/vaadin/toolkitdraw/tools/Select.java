@@ -14,8 +14,6 @@ import com.vaadin.ui.VerticalLayout;
 public class Select extends Tool {
 
 	private static final long serialVersionUID = 1L;
-
-	private PaintCanvas canvas;
 	
 	private com.vaadin.ui.Select mode;
 	
