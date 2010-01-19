@@ -1,9 +1,9 @@
 <module>	
 	<!-- Add SWFObject library -->
-	<script src="paintcanvas/swfobject.js" />
+	<script src="flashcanvas/swfobject.js" />
 	
 	<!-- WidgetSet default theme -->	
-	<stylesheet src="paintcanvas/styles.css"/> 
+	<stylesheet src="flashcanvas/styles.css"/> 
 
     <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 

@@ -21,12 +21,12 @@ import com.vaadin.toolkitdraw.components.ConfirmPopup;
 import com.vaadin.toolkitdraw.components.OpenPopup;
 import com.vaadin.toolkitdraw.components.PreferencesPopup;
 import com.vaadin.toolkitdraw.components.SavePopup;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
-import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageJPGRecievedEvent;
-import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
-import com.vaadin.toolkitdraw.components.paintcanvas.events.ImageXMLRecievedEvent;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.flashcanvas.events.ImageJPGRecievedEvent;
+import com.vaadin.toolkitdraw.components.flashcanvas.events.ImagePNGRecievedEvent;
+import com.vaadin.toolkitdraw.components.flashcanvas.events.ImageXMLRecievedEvent;
 import com.vaadin.toolkitdraw.demos.SimpleGraphDemo;
 import com.vaadin.toolkitdraw.demos.TicTacToe;
 import com.vaadin.ui.Button;
@@ -62,10 +62,10 @@ public class ToolkitDrawApplication extends Application
 	
 	private HorizontalLayout statusbar;
 	
-	private Map<String,PaintCanvas> openFiles = new HashMap<String, PaintCanvas>();	
+	private Map<String,FlashCanvas> openFiles = new HashMap<String, FlashCanvas>();	
 	private Map<String, Boolean> savedStatusFiles = new HashMap<String, Boolean>();
 	
-	private PaintCanvas currentCanvas;
+	private FlashCanvas currentCanvas;
 		
 	private Preferences preferences = new Preferences();
 	
@@ -151,9 +151,9 @@ public class ToolkitDrawApplication extends Application
 		
 	}
 
-	private PaintCanvas addNewFile(){
+	private FlashCanvas addNewFile(){
 		
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400, new Color(51,51,51));					
+		FlashCanvas canvas = new FlashCanvas("100%","100%",300,400, new Color(51,51,51));					
 		if(canvas == null){
 			System.err.println("ERROR: Creating canvas failed!");	
 			return null;
@@ -172,7 +172,7 @@ public class ToolkitDrawApplication extends Application
 		canvas.setAutosaveTime(preferences.getAutosaveTime());
 		
 		//Set brush listener
-		canvas.addListener(new PaintCanvas.BrushListener() {
+		canvas.addListener(new FlashCanvas.BrushListener() {
 			
 			@Override
 			public void brushStart(Component component) {
@@ -215,10 +215,10 @@ public class ToolkitDrawApplication extends Application
 		return canvas;
 	}
 	
-	private PaintCanvas openFile(){
+	private FlashCanvas openFile(){
 		
 		//Create a new image
-		PaintCanvas canvas = new PaintCanvas("100%","100%",300,400, new Color(51,51,51));			
+		FlashCanvas canvas = new FlashCanvas("100%","100%",300,400, new Color(51,51,51));			
 		
 		
 		if(canvas == null){
@@ -242,7 +242,7 @@ public class ToolkitDrawApplication extends Application
 				if(bytes == null) return;
 				
 				//Get the canvas and set the caption
-				PaintCanvas canvas = (PaintCanvas)selectFile.getData();
+				FlashCanvas canvas = (FlashCanvas)selectFile.getData();
 				canvas.setCaption(selectFile.getFilename());
 				
 				//Draw the image onto the canvas
@@ -274,7 +274,7 @@ public class ToolkitDrawApplication extends Application
 	
 	private boolean closeCurrentFile(){
 						
-		final PaintCanvas canvas = (PaintCanvas)openFilesTabs.getSelectedTab();
+		final FlashCanvas canvas = (FlashCanvas)openFilesTabs.getSelectedTab();
 	
 		if(canvas == null){
 			System.err.println("No canvas");
@@ -310,7 +310,7 @@ public class ToolkitDrawApplication extends Application
 			openFilesTabs.removeComponent(canvas);	
 			
 			if(openFilesTabs.getSelectedTab() != null){
-				currentCanvas = (PaintCanvas)openFilesTabs.getSelectedTab();
+				currentCanvas = (FlashCanvas)openFilesTabs.getSelectedTab();
 				if(currentCanvas == null) System.err.println("Setting canvas to null!");
 			}else{
 				System.err.println("Setting canvas to null!");
@@ -346,7 +346,7 @@ public class ToolkitDrawApplication extends Application
 						openFilesTabs.removeComponent(canvas);
 						
 						if(openFilesTabs.getSelectedTab() != null){
-							currentCanvas = (PaintCanvas)openFilesTabs.getSelectedTab();
+							currentCanvas = (FlashCanvas)openFilesTabs.getSelectedTab();
 							if(currentCanvas == null) System.err.println("Setting canvas to null!");
 						}else{
 							System.err.println("Setting canvas to null!");
@@ -482,7 +482,7 @@ public class ToolkitDrawApplication extends Application
 			return;
 		}	
 		
-		PaintCanvas canvas = openFiles.get(filename);
+		FlashCanvas canvas = openFiles.get(filename);
 		
 		if(canvas == null){
 			System.err.println("Canvas was null!");

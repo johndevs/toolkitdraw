@@ -9,7 +9,7 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-public class IPaintCanvas extends HTML implements Paintable {
+public class VFlashCanvas extends HTML implements Paintable {
 
 	/** The identifier of the embedded Flash plugin **/
 	private String id = "";
@@ -21,10 +21,10 @@ public class IPaintCanvas extends HTML implements Paintable {
     private ApplicationConnection client;	
     
     /** Relative path to the executable Flash **/ 
-    public static String SWFPATH = "paintcanvas/PaintCanvas.swf";
+    public static String SWFPATH = "flashcanvas/PaintCanvas.swf";
     
     /** Relative path to the executable Java Applet **/
-    public static String JAVAPATH = "paintcanvas/PaintCanvas.jar";
+    public static String JAVAPATH = "flashcanvas/PaintCanvas.jar";
           
     /** Indicates if the flash has been inited and is ready to be used **/
     private boolean ready = false;
@@ -36,7 +36,7 @@ public class IPaintCanvas extends HTML implements Paintable {
     private Long transactionCount = 0L;
       
     
-	public IPaintCanvas(){		
+	public VFlashCanvas(){		
 		super();				
 			
 		setHeight("99%");
@@ -44,10 +44,10 @@ public class IPaintCanvas extends HTML implements Paintable {
 		
 		
 		//Ensure that the methods are also available in javascript
-		PaintCanvasNativeUtil.defineBridgeMethods();
+		FlashCanvasNativeUtil.defineBridgeMethods();
 		
 		//Register the canvas with the native util
-		PaintCanvasNativeUtil.registerCanvas(this);		
+		FlashCanvasNativeUtil.registerCanvas(this);		
 	}
 			
 	/**
@@ -67,33 +67,33 @@ public class IPaintCanvas extends HTML implements Paintable {
 			setWidth(value);
 		}
 				
-		if(command.equals("undo")) 				PaintCanvasNativeUtil.undo(id);
-		else if(command.equals("redo")) 		PaintCanvasNativeUtil.redo(id);
-		else if(command.equals("newlayer")) 	PaintCanvasNativeUtil.addLayer(id, value);
-		else if(command.equals("paperWidth"))	PaintCanvasNativeUtil.setPaperWidth(id, Integer.parseInt(value));
-		else if(command.equals("paperHeight"))	PaintCanvasNativeUtil.setPaperHeight(id, Integer.parseInt(value));
-		else if(command.equals("penSize"))		PaintCanvasNativeUtil.setPenSize(id, Double.parseDouble(value));		
-		else if(command.equals("penColor"))		PaintCanvasNativeUtil.setPenColor(id, value);
-		else if(command.equals("penAlpha"))		PaintCanvasNativeUtil.setPenAlpha(id, Double.parseDouble(value));
-		else if(command.equals("brush"))		PaintCanvasNativeUtil.setBrush(id, value);
-		else if(command.equals("fillColor"))	PaintCanvasNativeUtil.setFillColor(id, value);
-		else if(command.equals("fillAlpha"))	PaintCanvasNativeUtil.setFillAlpha(id, Double.parseDouble(value));
-		else if(command.equals("showLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, true);
-		else if(command.equals("hideLayer"))	PaintCanvasNativeUtil.setLayerVisibility(id, value, false);
-		else if(command.equals("activeLayer"))	PaintCanvasNativeUtil.selectLayer(id, value);
-		else if(command.equals("layerup"))		PaintCanvasNativeUtil.moveLayerUp(id, value);
-		else if(command.equals("layerdown"))	PaintCanvasNativeUtil.moveLayerDown(id, value);
-		else if(command.equals("removelayer"))	PaintCanvasNativeUtil.removeLayer(id, value);
+		if(command.equals("undo")) 				FlashCanvasNativeUtil.undo(id);
+		else if(command.equals("redo")) 		FlashCanvasNativeUtil.redo(id);
+		else if(command.equals("newlayer")) 	FlashCanvasNativeUtil.addLayer(id, value);
+		else if(command.equals("paperWidth"))	FlashCanvasNativeUtil.setPaperWidth(id, Integer.parseInt(value));
+		else if(command.equals("paperHeight"))	FlashCanvasNativeUtil.setPaperHeight(id, Integer.parseInt(value));
+		else if(command.equals("penSize"))		FlashCanvasNativeUtil.setPenSize(id, Double.parseDouble(value));		
+		else if(command.equals("penColor"))		FlashCanvasNativeUtil.setPenColor(id, value);
+		else if(command.equals("penAlpha"))		FlashCanvasNativeUtil.setPenAlpha(id, Double.parseDouble(value));
+		else if(command.equals("brush"))		FlashCanvasNativeUtil.setBrush(id, value);
+		else if(command.equals("fillColor"))	FlashCanvasNativeUtil.setFillColor(id, value);
+		else if(command.equals("fillAlpha"))	FlashCanvasNativeUtil.setFillAlpha(id, Double.parseDouble(value));
+		else if(command.equals("showLayer"))	FlashCanvasNativeUtil.setLayerVisibility(id, value, true);
+		else if(command.equals("hideLayer"))	FlashCanvasNativeUtil.setLayerVisibility(id, value, false);
+		else if(command.equals("activeLayer"))	FlashCanvasNativeUtil.selectLayer(id, value);
+		else if(command.equals("layerup"))		FlashCanvasNativeUtil.moveLayerUp(id, value);
+		else if(command.equals("layerdown"))	FlashCanvasNativeUtil.moveLayerDown(id, value);
+		else if(command.equals("removelayer"))	FlashCanvasNativeUtil.removeLayer(id, value);
 		else if(command.equals("getImageXML")){
 			//Feth the xml from the flash compoent
-			String xml = PaintCanvasNativeUtil.getImageXML(id);
+			String xml = FlashCanvasNativeUtil.getImageXML(id);
 			
 			//Send the result back to the server
 			client.updateVariable(uidlId, "getImageXML", xml, true);		
 		}
 		else if(command.equals("getImagePNG")){
 			//Fetch the base64 png image from the component
-			String base64 = PaintCanvasNativeUtil.getImagePNG(id, Integer.valueOf(value));
+			String base64 = FlashCanvasNativeUtil.getImagePNG(id, Integer.valueOf(value));
 			
 			//Send the result back to the server
 			client.updateVariable(uidlId, "getImagePNG", base64, true);
@@ -101,24 +101,24 @@ public class IPaintCanvas extends HTML implements Paintable {
 		
 		else if(command.equals("getImageJPG")){
 			//Fetch the base64 png image from the component
-			String base64 = PaintCanvasNativeUtil.getImageJPG(id, Integer.valueOf(value));
+			String base64 = FlashCanvasNativeUtil.getImageJPG(id, Integer.valueOf(value));
 			
 			//Send the result back to the server
 			client.updateVariable(uidlId, "getImageJPG", base64, true);
 		}    	
 		
-		else if(command.equals("interactive"))	PaintCanvasNativeUtil.setInteractive(id, Boolean.valueOf(value));
-		else if(command.equals("graphics-clear"))	PaintCanvasNativeUtil.clear(id);
+		else if(command.equals("interactive"))	FlashCanvasNativeUtil.setInteractive(id, Boolean.valueOf(value));
+		else if(command.equals("graphics-clear"))	FlashCanvasNativeUtil.clear(id);
 		else if(command.equals("graphics-line")){
 			String[] coords = value.split(",");	
-			PaintCanvasNativeUtil.drawLine(id, 	Integer.valueOf(coords[0]), 
+			FlashCanvasNativeUtil.drawLine(id, 	Integer.valueOf(coords[0]), 
 												Integer.valueOf(coords[1]), 
 												Integer.valueOf(coords[2]), 
 												Integer.valueOf(coords[3]));    			
 		}
 		else if(command.equals("graphics-square")){
 			String[] coords = value.split(",");		
-			PaintCanvasNativeUtil.drawSquare(id, Integer.valueOf(coords[0]), 
+			FlashCanvasNativeUtil.drawSquare(id, Integer.valueOf(coords[0]), 
 												Integer.valueOf(coords[1]), 
 												Integer.valueOf(coords[2]), 
 												Integer.valueOf(coords[3]));	
@@ -137,12 +137,12 @@ public class IPaintCanvas extends HTML implements Paintable {
     				yi[j] = Integer.parseInt(y[j]);
     			}        		
     			
-    			PaintCanvasNativeUtil.drawPolygon(id, xi, yi);
+    			FlashCanvasNativeUtil.drawPolygon(id, xi, yi);
 			}   			
 		}
 		else if(command.equals("graphics-ellipse")){
 			String[] coords = value.split(",");		
-			PaintCanvasNativeUtil.drawEllipse(id, Integer.valueOf(coords[0]), 
+			FlashCanvasNativeUtil.drawEllipse(id, Integer.valueOf(coords[0]), 
 												Integer.valueOf(coords[1]), 
 												Integer.valueOf(coords[2]), 
 												Integer.valueOf(coords[3]));	
@@ -153,10 +153,10 @@ public class IPaintCanvas extends HTML implements Paintable {
 			//PaintCanvasNativeUtil.setComponentBackground(id, value);
 		}    		
 		else if(command.equals("layercolor")){    		
-			PaintCanvasNativeUtil.setLayerColor(id, value); 
+			FlashCanvasNativeUtil.setLayerColor(id, value); 
 		}
 		else if(command.equals("layeralpha")){
-			PaintCanvasNativeUtil.setLayerAlpha(id, Double.parseDouble(value));
+			FlashCanvasNativeUtil.setLayerAlpha(id, Double.parseDouble(value));
 		}    		
 		else if(command.equals("graphics-text")){
 			String args[] = value.split(";");
@@ -169,20 +169,20 @@ public class IPaintCanvas extends HTML implements Paintable {
 			for(int i=0; i<args.length-4; i++)
 				text = text + args[i];					
 			
-			PaintCanvasNativeUtil.drawText(id, text, x, y, width, height); 																
+			FlashCanvasNativeUtil.drawText(id, text, x, y, width, height); 																
 		}
 		else if(command.equals("selectionRemove")){
-			PaintCanvasNativeUtil.removeSelection(id);
+			FlashCanvasNativeUtil.removeSelection(id);
 		}
 		else if(command.equals("selectionAll")){
-			PaintCanvasNativeUtil.selectAll(id);
+			FlashCanvasNativeUtil.selectAll(id);
 		}
 		else if(command.equals("selectionCrop")){
-			PaintCanvasNativeUtil.selectCrop(id);
+			FlashCanvasNativeUtil.selectCrop(id);
 		}		
 		else if(command.equals("setCurrentFont")){
 			String fontName = value;
-			PaintCanvasNativeUtil.setFont(id, fontName);
+			FlashCanvasNativeUtil.setFont(id, fontName);
 		}
 		else if(command.equals("graphics-image")){
 			int marker1 = value.indexOf(";");
@@ -194,32 +194,32 @@ public class IPaintCanvas extends HTML implements Paintable {
 			double alpha = Double.parseDouble(value.substring(marker2+1,marker3));
 			String img = value.substring(marker3+1);
 					
-			PaintCanvasNativeUtil.drawImage(id, img, x, y, alpha);
+			FlashCanvasNativeUtil.drawImage(id, img, x, y, alpha);
 		}
 		else if(command.equals("cache-mode")){
-			PaintCanvasNativeUtil.setCacheMode(id, value);
+			FlashCanvasNativeUtil.setCacheMode(id, value);
 		}				
 		else if(command.equals("cache")){		
 			
 			String val = value.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");			
-			PaintCanvasNativeUtil.setImageCache(id, val);
+			FlashCanvasNativeUtil.setImageCache(id, val);
 		}		
 		else if(command.equals("plugin")){
 			//Plugin change while editing not supported at this time. 
 		}
 		else if(command.equals("autosave")){
 			int seconds = Integer.parseInt(value);
-			PaintCanvasNativeUtil.setAutosaveTime(id, seconds);
+			FlashCanvasNativeUtil.setAutosaveTime(id, seconds);
 		}		
 		else if(command.equals("clicklisten")){
 			boolean on = Boolean.parseBoolean(value);
-			PaintCanvasNativeUtil.setClickListening(id, on);
+			FlashCanvasNativeUtil.setClickListening(id, on);
 		}		
 		else if(command.equals("finish")){
-			PaintCanvasNativeUtil.finish(id);
+			FlashCanvasNativeUtil.finish(id);
 		}
 		
-		else	PaintCanvasNativeUtil.error("No command \""+command+"\" found!");		
+		else	FlashCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
 	
 	/**
@@ -272,7 +272,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 		obj.setType("application/x-java-applet;version=1.6.0");		
 		obj.setCode("java:com.vaadin.paintcanvas.PaintCanvasApplet.class");
 		
-		if(PaintCanvasNativeUtil.isIE()){			
+		if(FlashCanvasNativeUtil.isIE()){			
 			obj.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
 		} else {			
 			obj.setAttribute("classid", "java:com.vaadin.paintcanvas.PaintCanvasApplet.class");		
@@ -394,7 +394,7 @@ public class IPaintCanvas extends HTML implements Paintable {
             
             //check that all values came with the transmission
             if(commands.length != values.length){
-            	PaintCanvasNativeUtil.error("Transmission error!");
+            	FlashCanvasNativeUtil.error("Transmission error!");
             	return;
             }        
                         
@@ -403,7 +403,7 @@ public class IPaintCanvas extends HTML implements Paintable {
 	            for(int i=0; i<commands.length; i++)
 	       		 	executeCommand(commands[i], values[i]);            
             } else {
-            	PaintCanvasNativeUtil.error("Plugin not ready!");
+            	FlashCanvasNativeUtil.error("Plugin not ready!");
             }
         }
         
@@ -445,7 +445,7 @@ public class IPaintCanvas extends HTML implements Paintable {
             	
             	//No suitable plugin found
             	else{
-            		PaintCanvasNativeUtil.error("No suitable plugin \""+plugin+"\" found!");
+            		FlashCanvasNativeUtil.error("No suitable plugin \""+plugin+"\" found!");
             		init = false;
             	}            	
         }	         	

@@ -13,9 +13,9 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
-import com.vaadin.toolkitdraw.components.paintcanvas.events.ImagePNGRecievedEvent;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.flashcanvas.events.ImagePNGRecievedEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
@@ -28,7 +28,7 @@ public class SimpleGraphDemo extends Window {
 
 	private static final long serialVersionUID = 1L;
 
-	private PaintCanvas canvas;
+	private FlashCanvas canvas;
 	
 	private Table table;
 	
@@ -53,7 +53,7 @@ public class SimpleGraphDemo extends Window {
 		setContent(layout);
 		
 		//Create a paintcanvas 
-		canvas = new PaintCanvas("300px","300px",  new Color(51,51,51));	
+		canvas = new FlashCanvas("300px","300px",  new Color(51,51,51));	
 		
 		//Disable drawing on the canvas
 		canvas.setInteractive(false);
@@ -179,7 +179,7 @@ public class SimpleGraphDemo extends Window {
 	private void renderBarGraph(){			
 						
 		//Get the graphics object
-		PaintCanvas.Graphics gc = canvas.getGraphics();
+		FlashCanvas.Graphics gc = canvas.getGraphics();
 					
 		// This clears the whole screen
 		gc.clear();	

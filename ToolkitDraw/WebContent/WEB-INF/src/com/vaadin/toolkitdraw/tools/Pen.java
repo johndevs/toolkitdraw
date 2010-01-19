@@ -7,9 +7,9 @@ import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.toolkitdraw.components.TwinColorPicker;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas.Interactive;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Alignment;
@@ -32,7 +32,7 @@ public class Pen extends Tool implements ValueChangeListener, ColorChangeListene
 		
 	private TwinColorPicker colorpicker;
 		
-	public Pen(PaintCanvas canvas){
+	public Pen(FlashCanvas canvas){
 		
 		this.canvas = canvas;
 		this.layout.setMargin(true);

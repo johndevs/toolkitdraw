@@ -7,9 +7,9 @@ import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.toolkitdraw.components.TwinColorPicker;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas.Interactive;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Alignment;
@@ -30,7 +30,7 @@ public class Fill extends Tool implements ValueChangeListener, ColorChangeListen
 
 	private TwinColorPicker colorpicker;	
 		
-	public Fill(PaintCanvas canvas){
+	public Fill(FlashCanvas canvas){
 		
 		this.canvas = canvas;
 		this.layout.setMargin(true);

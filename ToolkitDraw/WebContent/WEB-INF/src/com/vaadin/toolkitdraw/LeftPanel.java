@@ -3,9 +3,9 @@ package com.vaadin.toolkitdraw;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Interactive;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas.Interactive;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.tools.Ellipse;
 import com.vaadin.toolkitdraw.tools.Fill;
 import com.vaadin.toolkitdraw.tools.Line;
@@ -31,11 +31,11 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		
 	private List<Tool>  tools = new ArrayList<Tool>();			
 	
-	private PaintCanvas canvas;
+	private FlashCanvas canvas;
 	
 	private BrushType currentBrush;
 		
-	public LeftPanel(PaintCanvas canvas, BrushType selectedTool) {
+	public LeftPanel(FlashCanvas canvas, BrushType selectedTool) {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
@@ -69,7 +69,7 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 	 * @return
 	 * 		List of tools
 	 */
-	private List<Tool> createToolset(PaintCanvas canvas){
+	private List<Tool> createToolset(FlashCanvas canvas){
 		List<Tool> toolset = new ArrayList<Tool>();
 	
 		Pen pen = new Pen(canvas);
@@ -163,11 +163,11 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		}		
 	}
 	
-	public PaintCanvas getCanvas() {
+	public FlashCanvas getCanvas() {
 		return canvas;
 	}	
 	
-	public void setCanvas(PaintCanvas canvas) {	
+	public void setCanvas(FlashCanvas canvas) {	
 		if(canvas == null){
 			System.err.println("Cannot set null canvas");
 			return;

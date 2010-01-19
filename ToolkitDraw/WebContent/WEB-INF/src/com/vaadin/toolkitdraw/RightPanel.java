@@ -10,8 +10,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.toolkitdraw.components.paintcanvas.Layer;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.Layer;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Accordion;
@@ -31,7 +31,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 
 	private static final long serialVersionUID = 1L;
 
-	private PaintCanvas canvas;	
+	private FlashCanvas canvas;	
 	
 	private VerticalLayout tab2;
 	
@@ -47,11 +47,11 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 	private Accordion tabs;
 	
 	private TabSheet histograms;
-	private Map<String, PaintCanvas> histogramCanvases = new HashMap<String, PaintCanvas>();
+	private Map<String, FlashCanvas> histogramCanvases = new HashMap<String, FlashCanvas>();
 	
 	private Preferences preferences;
 	
-	public RightPanel(PaintCanvas canvas, Preferences pref){		
+	public RightPanel(FlashCanvas canvas, Preferences pref){		
 		super();
 		setStyleName("rightpanel");
 		setHeight("100%");
@@ -82,7 +82,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 				 					Integer.parseInt("44",16) );
 		
 		//Create RGB channel histogram
-		PaintCanvas rgb = new PaintCanvas("250px","200px", bgColor);
+		FlashCanvas rgb = new FlashCanvas("250px","200px", bgColor);
 		;	
 				
 		//Set the caching mode of the canvas
@@ -109,7 +109,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		histograms.setHeight("250px");
 	
 		for(String caption : histogramCanvases.keySet()){			
-			PaintCanvas c = histogramCanvases.get(caption);
+			FlashCanvas c = histogramCanvases.get(caption);
 			c.setVisible(false);
 						
 			VerticalLayout layout = new VerticalLayout();
@@ -188,7 +188,7 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		
 		//Show the histogram
 		for(String caption : histogramCanvases.keySet()){			
-			PaintCanvas c = histogramCanvases.get(caption);
+			FlashCanvas c = histogramCanvases.get(caption);
 			c.setVisible(true);
 		}
 		
@@ -326,11 +326,11 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 		layer.getCanvas().getLayers().setActiveLayer(layer);
 	}
 	
-	public PaintCanvas getCanvas() {
+	public FlashCanvas getCanvas() {
 		return canvas;
 	}
 
-	public void setCanvas(PaintCanvas canvas) {
+	public void setCanvas(FlashCanvas canvas) {
 		
 		if(canvas == null) return;
 		

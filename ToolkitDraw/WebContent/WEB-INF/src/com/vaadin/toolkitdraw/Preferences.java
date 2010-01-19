@@ -1,7 +1,7 @@
 package com.vaadin.toolkitdraw;
 
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.Plugin;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.Plugin;
 
 public class Preferences {
 

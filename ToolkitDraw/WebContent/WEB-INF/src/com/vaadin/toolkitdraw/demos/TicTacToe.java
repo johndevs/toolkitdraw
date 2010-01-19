@@ -2,10 +2,10 @@ package com.vaadin.toolkitdraw.demos;
 
 import java.awt.Color;
 
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.ClickListener;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas.Graphics;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.CacheMode;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas.ClickListener;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas.Graphics;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.CacheMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -14,7 +14,7 @@ public class TicTacToe extends Window implements ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private PaintCanvas canvas;
+	private FlashCanvas canvas;
 	
 	private int[][] board = new int[3][3];
 		
@@ -29,7 +29,7 @@ public class TicTacToe extends Window implements ClickListener {
 		layout.setMargin(true);
 		
 		//Create a paintcanvas 
-		canvas = new PaintCanvas("300px","300px",  new Color(34,34,34));	
+		canvas = new FlashCanvas("300px","300px",  new Color(34,34,34));	
 		
 		//Disable drawing on the canvas
 		canvas.setInteractive(false);

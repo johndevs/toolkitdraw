@@ -14,7 +14,7 @@
         </init-param>
          <init-param>
             <param-name>widgetset</param-name>
-            <param-value>com.vaadin.toolkitdraw.gwt.PaintCanvasWidgetSet</param-value>
+            <param-value>com.vaadin.toolkitdraw.gwt.ToolkitDrawWidgetSet</param-value>
         </init-param>
     
         

@@ -3,8 +3,8 @@ package com.vaadin.toolkitdraw.tools;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.toolkitdraw.components.paintcanvas.PaintCanvas;
-import com.vaadin.toolkitdraw.components.paintcanvas.enums.BrushType;
+import com.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
+import com.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import com.vaadin.toolkitdraw.util.IconFactory;
 import com.vaadin.toolkitdraw.util.IconFactory.Icons;
 import com.vaadin.ui.Button;
@@ -34,7 +34,7 @@ public class Select extends Tool {
 	}
 	
 	@SuppressWarnings("serial")
-	public Select(PaintCanvas canvas){
+	public Select(FlashCanvas canvas){
 		this.canvas = canvas;
 		this.layout.setMargin(true);
 		
