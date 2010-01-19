@@ -5,15 +5,15 @@ package util
 	public class EventUtil
 	{
 		public static function fireBrushStartedEvent(clientID:String):void{
-			ExternalInterface.call("PaintCanvasNativeUtil.brushStartEvent", clientID);			
+			ExternalInterface.call("FlashCanvasNativeUtil.brushStartEvent", clientID);			
 		}
 		
 		public static function fireBrushEnded(clientID:String):void{
-			ExternalInterface.call("PaintCanvasNativeUtil.brushEndEvent", clientID);			
+			ExternalInterface.call("FlashCanvasNativeUtil.brushEndEvent", clientID);			
 		}
 		
 		public static function fireClickEvent(clientID:String, x:int, y:int):void{
-			ExternalInterface.call("PaintCanvasNativeUtil.clickEvent", clientID, x , y);				
+			ExternalInterface.call("FlashCanvasNativeUtil.clickEvent", clientID, x , y);				
 		}
 
 	}

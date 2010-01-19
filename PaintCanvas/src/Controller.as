@@ -11,6 +11,7 @@ package
 	import flash.text.Font;
 	import flash.utils.Timer;
 	
+	import mx.controls.Alert;
 	import mx.core.Application;
 	import mx.graphics.ImageSnapshot;
 	import mx.graphics.codec.IImageEncoder;
@@ -107,10 +108,13 @@ package
 				ExternalInterface.addCallback("selectAll",						selectAll);			
 				ExternalInterface.addCallback("cropSelected",					crop);	
 				
+				//Image functions
+				// ExternalInterface.addCallback("getRedHistogram",				ImageUtil.getRedHistogram());
+				
 				//Send available fonts to the server
 				var fonts:Array = new Array();
 				for each(var font:Font in Font.enumerateFonts(true)) fonts.push(font.fontName);					
-				ExternalInterface.call("PaintCanvasNativeUtil.setAvailableFonts", clientID, fonts);													
+				ExternalInterface.call("FlashCanvasNativeUtil.setAvailableFonts", clientID, fonts);													
 			}										
 		}
 	
@@ -194,7 +198,7 @@ package
 		{
 			// Notify server that the canvas is ready
 			isFlashReady = true;
-			ExternalInterface.call("PaintCanvasNativeUtil.setCanvasReady", clientID);	
+			ExternalInterface.call("FlashCanvasNativeUtil.setCanvasReady", clientID);	
 			
 			// Start autosave and do a save
 			autosaveTimer.addEventListener(TimerEvent.TIMER, autosave);
@@ -319,7 +323,7 @@ package
 		 * operations can be done on the canvas.
 		 */ 
 		public function setInteractive(interactive:Boolean):void
-		{					
+		{						
 			if(interactive && !isInteractive)
 			{
 				Application.application.frame.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
@@ -440,5 +444,6 @@ package
 		{
 			return clientID;
 		}
+		
 	}
 }

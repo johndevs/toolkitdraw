@@ -12,13 +12,13 @@ package util
 		
 		public static function sendCacheToServer(id:String, cache:String):void
 		{
-			ExternalInterface.call("PaintCanvasNativeUtil.setServerCache", id, cache);
+			ExternalInterface.call("FlashCanvasNativeUtil.setServerCache", id, cache);
 		}
 		
 		public static function requestCacheFromServer(id:String, callback:Function):void
 		{
 			callbackFunction = callback;
-			ExternalInterface.call("PaintCanvasNativeUtil.getServerCache", id);
+			ExternalInterface.call("FlashCanvasNativeUtil.getServerCache", id);
 		}
 		
 		public static function sendCacheToClient(id:String, cache:String):Boolean
@@ -54,7 +54,7 @@ package util
 				}
 			}catch(e:Error){
 				//The xml the server returned is not valid XML		
-				ExternalInterface.call("PaintCanvasNativeUtil.error", e.message);				
+				ExternalInterface.call("FlashCanvasNativeUtil.error", e.message);				
 				if(callbackFunction != null){
 					callbackFunction(null);																
 					callbackFunction = null;

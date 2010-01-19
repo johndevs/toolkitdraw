@@ -31,5 +31,10 @@
 			<type>2</type>
 			<location>/home/john/workspace/ToolkitDraw/WebContent/WEB-INF/src/com/vaadin/toolkitdraw/gwt/public/paintcanvas</location>
 		</link>
+		<link>
+			<name>bin-release3</name>
+			<type>2</type>
+			<location>/home/johnnie/Projects/Java/workspace/ToolkitDraw/WebContent/WEB-INF/src/com/vaadin/toolkitdraw/gwt/public/flashcanvas</location>
+		</link>
 	</linkedResources>
 </projectDescription>
