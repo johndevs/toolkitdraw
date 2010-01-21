@@ -145,8 +145,18 @@ public class VFlashCanvas extends HTML implements Paintable {
 			FlashCanvasNativeUtil.drawEllipse(id, Integer.valueOf(coords[0]), 
 												Integer.valueOf(coords[1]), 
 												Integer.valueOf(coords[2]), 
-												Integer.valueOf(coords[3]));	
-		
+												Integer.valueOf(coords[3]));			
+		}
+		else if(command.equals("graphics-fill")){
+			String[] coords = value.split(";");
+			int x = Integer.parseInt(coords[0]);
+			int y = Integer.parseInt(coords[1]);
+			String color = coords[2];
+			double alpha = Double.parseDouble(coords[3]);
+			
+			FlashCanvasNativeUtil.setPenColor(id, color);
+			FlashCanvasNativeUtil.setPenAlpha(id, alpha);
+			FlashCanvasNativeUtil.fill(id,x,y);
 		}
 		else if(command.equals("componentColor")){
 			//this.getElement().setPropertyString("style", "background:"+value);

@@ -75,24 +75,7 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 			batch.add(entry);
 		}
 		
-		/**
-		 * Converts a color into a string representation
-		 * @param c
-		 * 		The color
-		 * @return
-		 * 		A CSS color string
-		 */
-		private String color2String(Color c){
-			String red = Integer.toHexString(c.getRed());
-			String green = Integer.toHexString(c.getGreen());
-			String blue = Integer.toHexString(c.getBlue());
-			
-			red = red.length() < 2 ? "0"+red : red;
-			green = green.length() < 2 ? "0"+green : green;
-			blue = blue.length() < 2 ? "0"+blue : blue;
-			
-			return "0x"+red+green+blue;
-		}
+		
 		
 		/**
 		 * Set the batch mode which only sends the graphics commands when the batch is sent
@@ -457,13 +440,21 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 		 *@param color
 		 *		The color of the fill
 		 */
-		public void fill(int x, int y, Color color){
-			if(batchMode){
-				addToBatch("brush", BrushType.FILL.toString());
-				addToBatch("penColor", color2String(color));
+		public void fill(int x, int y, Color color, double alpha){
+			
+			StringBuilder value = new StringBuilder();
+			value.append(x);
+			value.append(";");
+			value.append(y);
+			value.append(";");
+			value.append(color2String(color));
+			value.append(";");
+			value.append(alpha);
+			
+			if(batchMode){				
+				addToBatch("graphics-fill", value.toString());
 			} else {
-				addToQueue("brush", BrushType.FILL.toString());
-				addToQueue("penColor", color2String(color));
+				addToQueue("graphics-fill", value.toString());
 			}
 			
 			if(isImmediate() && !batchMode){			
@@ -923,6 +914,7 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 		 * This layer is created automatically in the flash plugin at initialization
 		 */
 		Layer background = new Layer("Background", this);
+		background.setColor(FlashCanvas.color2String(color));
 		layers.add(background);
 		currentLayer = background;
 				
@@ -1050,6 +1042,25 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 		setImmediate(true);
 		requestRepaint();	
 	}		
+	
+	/**
+	 * Converts a color into a string representation
+	 * @param c
+	 * 		The color
+	 * @return
+	 * 		A CSS color string
+	 */
+	private static String color2String(Color c){
+		String red = Integer.toHexString(c.getRed());
+		String green = Integer.toHexString(c.getGreen());
+		String blue = Integer.toHexString(c.getBlue());
+		
+		red = red.length() < 2 ? "0"+red : red;
+		green = green.length() < 2 ? "0"+green : green;
+		blue = blue.length() < 2 ? "0"+blue : blue;
+		
+		return "0x"+red+green+blue;
+	}
 		
 	/**
 	 * Adds an element to the changed variables sent to the client
@@ -1417,17 +1428,8 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
      */
     public void setComponentBackgroundColor(Color color){    	    	
     	configuration.setComponentColor(color);    
-    	
-    	String red = Integer.toHexString(color.getRed());
-    	red = red.length() < 2 ? "0"+red : red;
-    	
-    	String green = Integer.toHexString(color.getGreen());
-    	green = green.length() < 2 ? "0"+green : green;
-    	
-    	String blue = Integer.toHexString(color.getBlue());
-    	blue = blue.length() < 2 ? "0"+blue : blue;
-    	    	
-    	addToQueue("componentColor", "0x"+red+green+blue);
+    	    	    	
+    	addToQueue("componentColor", FlashCanvas.color2String(color));
     	if(isImmediate()) requestRepaint();
     }        
        

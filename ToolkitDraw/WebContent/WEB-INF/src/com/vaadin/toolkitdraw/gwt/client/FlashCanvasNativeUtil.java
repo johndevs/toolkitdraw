@@ -704,6 +704,21 @@ public class FlashCanvasNativeUtil {
 		}		
 	}-*/;
 	
+	public static native boolean fill(String id, int x, int y) /*-{
+		var canvas = $wnd.document.getElementById(id);
+		if(canvas == null) alert("Canvas not found!");
+		
+		// Check if function exists, if it does not then wait for the plugin to make it available
+		if(typeof canvas.graphicsFill == 'function' && canvas.isReady() ){
+			canvas.graphicsFill(x, y);
+			return true;
+		}else{
+			alert("delaying fill");
+			var func = function() { canvas.graphicsFill(x,y); };		
+			setTimeout(func,1000);
+			return false;
+		}		
+	}-*/;
 
 	/**
 	 * Sets the background color of the component.
@@ -1033,6 +1048,7 @@ public class FlashCanvasNativeUtil {
 			this.drawSquare = function(id,x,y,width,height){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::drawSquare(Ljava/lang/String;IIII)(id,x,y,width,height); };
 			this.clear = function(id){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::clear(Ljava/lang/String;)(id); };
 			this.drawPolygon = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::drawPolygon(Ljava/lang/String;[I[I)(id,x,y); };
+			this.fill = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::fill(Ljava/lang/String;II)(id,x,y); };
 			
 			this.setComponentBackground = function(id, color){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::setComponentBackground(Ljava/lang/String;Ljava/lang/String;)(id,color); };
 			this.isReady = function(id){ return @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::isReady(Ljava/lang/String;)(id); };
@@ -1051,6 +1067,7 @@ public class FlashCanvasNativeUtil {
 			this.clickEvent = function(id, x, y){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::clickEvent(Ljava/lang/String;II)(id, x, y); };
 			this.brushStartEvent = function(id){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::brushStartEvent(Ljava/lang/String;)(id); };
 			this.brushEndEvent = function(id){ @com.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::brushEndEvent(Ljava/lang/String;)(id); };
+			
 		}
 		
 		$wnd.FlashCanvasNativeUtil = new FlashCanvasNativeUtil();		
