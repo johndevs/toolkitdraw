@@ -1,11 +1,8 @@
 package util
 {
+	import flash.geom.Point;
 	import brushes.FilledBrush;
 	import brushes.Text;
-	
-	import flash.geom.Point;
-	
-	import mx.controls.Alert;
 	
 	public class DrawingUtil
 	{
@@ -114,6 +111,21 @@ package util
 			GraphicsUtil.getBrush().mouseMove(new Point(x2, y2));
 			GraphicsUtil.getBrush().mouseUp(new Point(x2, y2));
 			GraphicsUtil.getBrush().finalize();			
+		}
+		
+		public static function fill(x:int, y:int):void{
+			var color:Number = GraphicsUtil.getBrush().getColor();
+			var alpha:Number = GraphicsUtil.getBrush().getAlpha();
+			var fillcolor:Number = -1;
+			var fillalpha:Number = -1;
+			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_FLOODFILL);
+			GraphicsUtil.setBrushColor(color);
+			GraphicsUtil.setBrushAlpha(alpha);
+			
+			GraphicsUtil.getBrush().mouseDown(new Point(x, y));
+			GraphicsUtil.getBrush().mouseUp(new Point(x, y));
+			GraphicsUtil.getBrush().finalize();
 		}
 		
 		public static function drawEllipse(x:int, y:int, width:int, height:int):void
