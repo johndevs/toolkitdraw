@@ -10,11 +10,11 @@
         </servlet-class>
         <init-param>
             <param-name>application</param-name>
-            <param-value>com.vaadin.toolkitdraw.ToolkitDrawApplication</param-value>
+            <param-value>org.vaadin.toolkitdraw.ToolkitDrawApplication</param-value>
         </init-param>
          <init-param>
             <param-name>widgetset</param-name>
-            <param-value>com.vaadin.toolkitdraw.gwt.ToolkitDrawWidgetSet</param-value>
+            <param-value>org.vaadin.toolkitdraw.gwt.ToolkitDrawWidgetSet</param-value>
         </init-param>
     
         

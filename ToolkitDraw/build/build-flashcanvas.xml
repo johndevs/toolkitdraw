@@ -77,7 +77,7 @@
 		</copy>		
 		
 		<!-- Create custom widgetset file -->
-		<echo file= "${build-path}/temp/com/vaadin/toolkitdraw/gwt/FlashCanvasWidgetSet.gwt.xml">
+		<echo file= "${build-path}/temp/org/vaadin/toolkitdraw/gwt/FlashCanvasWidgetSet.gwt.xml">
 			&#60;module&#62;
 			&#60;script src="flashcanvas/swfobject.js" /&#62;
 			&#60;stylesheet src="flashcanvas/styles.css"/&#62;
@@ -88,10 +88,10 @@
 		<jar jarfile="${build-path}/flashcanvas-${build-version}.jar" basedir="${build-path}/temp">
 			<manifest>
 						<attribute name="Vaadin-Package-Version" value="1" />
-						<attribute name="Vaadin-Widgetsets" value="com.vaadin.toolkitdraw.gwt.FlashCanvasWidgetSet" />
-						<attribute name="Implementation-Title" value="FlashCanvas Widget" />
+						<attribute name="Vaadin-Widgetsets" value="org.vaadin.toolkitdraw.gwt.FlashCanvasWidgetSet" />
+						<attribute name="Implementation-Title" value="FlashCanvas" />
 						<attribute name="Implementation-Version" value="${build-version}" />
-						<attribute name="Implementation-Vendor" value="IT Mill Oy" />
+						<attribute name="Implementation-Vendor" value="John Ahlroos" />
 						<attribute name="Vaadin-License-Title" value="Apache2" />
 						<attribute name="Vaadin-License-File" value="http://www.apache.org/licenses/LICENSE-2.0" />
 			</manifest>
