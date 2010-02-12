@@ -1,24 +1,12 @@
 package util
 {
-	import brushes.Ellipse;
-	import brushes.FloodFill;
-	import brushes.IBrush;
-	import brushes.ISelection;
-	import brushes.Line;
-	import brushes.Pen;
-	import brushes.Polygon;
-	import brushes.Rectangle;
-	import brushes.RectangleSelect;
-	import brushes.FilledBrush;
-	import brushes.Text;
+	import brushes.*;
 	
 	import elements.Layer;
 	
 	import mx.controls.Alert;
 	import mx.core.Application;
-	
-
-	
+		
 	public class GraphicsUtil
 	{
 		private static var currentBrush:IBrush;
@@ -32,6 +20,7 @@ package util
 		public static const BRUSH_FLOODFILL:String = "Floodfill";	
 		public static const BRUSH_TEXT:String = "Text";
 		public static const BRUSH_RECTANGLE_SELECT:String = "Rectangle-Select"
+		public static const BRUSH_IMAGE:String = "Image";
 		
 		public static function setBrush(type:String):void
 		{		
@@ -46,6 +35,7 @@ package util
 				case BRUSH_FLOODFILL:			brush = new FloodFill(); break;
 				case BRUSH_TEXT:				brush = new Text(); break;
 				case BRUSH_RECTANGLE_SELECT: 	brush = new RectangleSelect(); break;
+				case BRUSH_IMAGE:				brush = new ImageBrush(); break;
 				default: return;
 			}	
 			
@@ -108,6 +98,14 @@ package util
 			}
 		}
 		
+		public static function setBrushImage(data:String, width:int, height:int):void
+		{
+			if(currentBrush != null && currentBrush is ImageBrush)
+			{
+				(currentBrush as ImageBrush).setImage(data, width, height);
+			}
+		}
+		
 		public static function createBrushFromXML(xml:XML, layer:Layer):IBrush
 		{
 			if(layer == null)
@@ -124,6 +122,7 @@ package util
 				case BRUSH_POLYGON:		brush = new Polygon(); break;
 				case BRUSH_FLOODFILL:	brush = new FloodFill(); break;
 				case BRUSH_TEXT:		brush = new Text(); break;
+				case BRUSH_IMAGE:		brush = new ImageBrush(); break;
 			}
 			
 			if(brush == null){

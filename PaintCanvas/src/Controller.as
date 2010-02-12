@@ -100,7 +100,7 @@ package
 				ExternalInterface.addCallback("graphicsClear",					DrawingUtil.clear);
 				ExternalInterface.addCallback("graphicsDrawPolygon",			DrawingUtil.drawPolygon);
 				ExternalInterface.addCallback("graphicsDrawText",				DrawingUtil.drawText);
-		//		ExternalInterface.addCallback("graphicsDrawImage",				DrawingUtil.drawImage);	
+				ExternalInterface.addCallback("graphicsDrawImage",				DrawingUtil.drawImage);	
 				ExternalInterface.addCallback("graphicsDrawEllipse",			DrawingUtil.drawEllipse);	
 				ExternalInterface.addCallback("graphicsFill",					DrawingUtil.fill);
 				

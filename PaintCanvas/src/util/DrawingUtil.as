@@ -1,8 +1,11 @@
 package util
 {
+	import brushes.*;
+	
+	import flash.external.ExternalInterface;
 	import flash.geom.Point;
-	import brushes.FilledBrush;
-	import brushes.Text;
+	
+	import mx.controls.Alert;
 	
 	public class DrawingUtil
 	{
@@ -159,6 +162,16 @@ package util
 		public static function clear():void
 		{
 			LayerUtil.getCurrentLayer().clear();
+		}
+		
+		public static function drawImage(x:int, y:int, width:int, height:int, data:String, alpha:Number):void
+		{			
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_IMAGE);
+			GraphicsUtil.setBrushImage(data, width, height);
+			GraphicsUtil.getBrush().mouseDown(new Point(x,y));
+			GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
+			GraphicsUtil.getBrush().finalize();		
 		}
 		
 		

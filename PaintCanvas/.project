@@ -22,6 +22,11 @@
 			<location>/home/johnnie/Projects/ITMill/ToolkitDraw/WebContent/WEB-INF/src/com/vaadin/toolkitdraw/gwt/public/paintcanvas</location>
 		</link>
 		<link>
+			<name>bin-release4</name>
+			<type>2</type>
+			<location>/home/johnnie/Projects/Java/workspace/ToolkitDraw/WebContent/WEB-INF/src/org/vaadin/toolkitdraw/gwt/public/flashcanvas</location>
+		</link>
+		<link>
 			<name>bin-release</name>
 			<type>2</type>
 			<location>/home/john/ITMill/ToolkitDraw/WebContent/WEB-INF/src/com/vaadin/toolkitdraw/gwt/public/paintcanvas</location>

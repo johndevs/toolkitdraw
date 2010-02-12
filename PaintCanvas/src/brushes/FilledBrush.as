@@ -7,6 +7,7 @@ package brushes
 	{
 		protected var fillColor:uint = 0;		
 		protected var fillAlpha:Number = 0;
+		protected var fillImage:String = "";
 		
 		public function FilledBrush()
 		{
@@ -23,6 +24,11 @@ package brushes
 			this.fillAlpha = alpha;
 		}
 		
+		public function setFillImage(data:String):void
+		{
+			this.fillImage = data;	
+		}
+		
 		public function getFillColor():uint
 		{
 			return this.fillColor;
@@ -31,6 +37,11 @@ package brushes
 		public function getFillAlpha():Number
 		{
 			return this.fillAlpha;
+		}
+		
+		public function getFillImage():String
+		{
+			return this.fillImage;
 		}
 		
 		override public function toXML():XML
@@ -42,6 +53,7 @@ package brushes
 			brushXML.@alpha = getAlpha();
 			brushXML.@fillalpha = getFillAlpha();
 			brushXML.@fillcolor = getFillColor();
+			brushXML.data = getFillImage();
 			
 			for each(var stroke:FilledBrushStroke in strokes){
 				var strokeXML:XML = new XML("<stroke></stroke>");
@@ -56,7 +68,8 @@ package brushes
 				for each(var p:Point in stroke.points)
 					points += p.x+","+p.y+";";
 					
-				strokeXML.points = points;							
+				strokeXML.points = points;		
+				strokeXML.data = stroke.fillImage;					
 				brushXML.appendChild(strokeXML);	
 			}			
 			
@@ -79,6 +92,9 @@ package brushes
 				this.setFillAlpha(brushXML.@fillalpha);
 			if(brushXML.hasOwnProperty("@fillcolor"))
 				this.setFillColor(brushXML.@fillcolor);
+			
+			if(brushXML.hasOwnProperty("data"))
+				this.setFillImage(brushXML.data);
 						
 			if(!brushXML.hasOwnProperty("stroke")) return;
 			for each(var strokeXML:XML in brushXML.stroke)
@@ -95,6 +111,9 @@ package brushes
 					(currentStroke as FilledBrushStroke).fillAlpha = strokeXML.@fillalpha;
 				if(strokeXML.hasOwnProperty("@fillcolor"))
 					(currentStroke as FilledBrushStroke).fillColor = strokeXML.@fillcolor;
+										
+				if(strokeXML.hasOwnProperty("data"))
+					(currentStroke as FilledBrushStroke).fillImage = strokeXML.data;						
 										
 				if(!strokeXML.hasOwnProperty("points")) continue;
 				var pointsStr:String = strokeXML.points;
