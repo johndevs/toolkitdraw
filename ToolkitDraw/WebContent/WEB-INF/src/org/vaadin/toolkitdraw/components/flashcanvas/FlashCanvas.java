@@ -410,12 +410,16 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 		 * @param alpha
 		 * 		The alpha value of the image
 		 */
-		public void drawImage(String base64EncodedImage, int x, int y, double alpha){
+		public void drawImage(String base64EncodedImage, int x, int y, int width, int height, double alpha){
 			
 			StringBuilder value = new StringBuilder();
 			value.append(x);
 			value.append(";");
 			value.append(y);
+			value.append(";");
+			value.append(width);
+			value.append(";");
+			value.append(height);
 			value.append(";");
 			value.append(alpha);
 			value.append(";");
@@ -812,6 +816,7 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 	public interface BrushListener{
 		public void brushStart(Component component);
 		public void brushEnd(Component component);
+		public void loadingComplete(Component component);
 	}
 	
 	/** The command history is needed when the the session is reloaded(F5) **/
@@ -1282,6 +1287,12 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
     	if(variables.containsKey("brush-end-event")){    	
     		for(BrushListener listener : brushListeners)
     			listener.brushEnd(this);
+    	}
+    	
+    	//Brush loading complete event recieved
+    	if(variables.containsKey("brush-loading-complete-event")){
+    		for(BrushListener listener : brushListeners)
+    			listener.loadingComplete(this);
     	}
     }    
      

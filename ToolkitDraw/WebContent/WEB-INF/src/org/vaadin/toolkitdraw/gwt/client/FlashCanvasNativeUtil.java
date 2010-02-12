@@ -1,5 +1,7 @@
 package org.vaadin.toolkitdraw.gwt.client;
 
+import com.google.gwt.user.client.Window;
+
 /**
  * The Class PaintCanvasNativeUtil.
  */
@@ -688,17 +690,17 @@ public class FlashCanvasNativeUtil {
 	 * @param y The y-position of the top left corner of the image
 	 * @param alpha The alpha value of the image
 	 */
-	public static native boolean drawImage(String id, String image, int x, int y, double alpha)/*-{
+	public static native boolean drawImage(String id, String image, int x, int y, int w, int h, double alpha)/*-{
 		var canvas = $wnd.document.getElementById(id);
 		if(canvas == null) alert("Canvas not found!");
 
 		// Check if function exists, if it does not then wait for the plugin to make it available
 		if(typeof canvas.graphicsDrawImage == 'function' && canvas.isReady() ){
-			canvas.graphicsDrawImage(image, x, y,alpha);
+			canvas.graphicsDrawImage(x, y, w, h, image, alpha);
 			return true;
 		}else{
 			alert("delaying drawImage");
-			var func = function() { canvas.graphicsDrawImage(image, x, y,alpha); };
+			var func = function() { canvas.graphicsDrawImage(x, y, w, h, image, alpha); };
 			setTimeout(func,1000);
 			return false;
 		}
@@ -1010,6 +1012,11 @@ public class FlashCanvasNativeUtil {
 	public static void brushEndEvent(String id){
 		getCanvas(id).brushEndEvent();
 	}
+	
+	public static void brushLoadingCompleteEvent(String id){
+		Window.alert("EVENT");
+		getCanvas(id).brushLoadingCompleteEvent();
+	}
 
 	/**
 	 * Define the native util methods so the flash can find them.
@@ -1067,6 +1074,7 @@ public class FlashCanvasNativeUtil {
                                                    this.clickEvent = function(id, x, y){ @org.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::clickEvent(Ljava/lang/String;II)(id, x, y); };
                                                    this.brushStartEvent = function(id){ @org.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::brushStartEvent(Ljava/lang/String;)(id); };
                                                    this.brushEndEvent = function(id){ @org.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::brushEndEvent(Ljava/lang/String;)(id); };
+                                                   this.brushLoadingCompleteEvent = function(id){ @org.vaadin.toolkitdraw.gwt.client.FlashCanvasNativeUtil::brushLoadingCompleteEvent(Ljava/lang/String;)(id); };
                                                    
                                                    }
                                                    

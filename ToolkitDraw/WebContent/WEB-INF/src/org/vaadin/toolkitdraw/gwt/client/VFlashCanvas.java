@@ -1,5 +1,7 @@
 package org.vaadin.toolkitdraw.gwt.client;
 
+import java.io.Console;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ObjectElement;
@@ -198,13 +200,17 @@ public class VFlashCanvas extends HTML implements Paintable {
 			int marker1 = value.indexOf(";");
 			int marker2 = marker1 + value.substring(marker1+1).indexOf(";") +1;
 			int marker3 = marker2 + value.substring(marker2+1).indexOf(";") +1;
+			int marker4 = marker3 + value.substring(marker3+1).indexOf(";") +1;
+			int marker5 = marker4 + value.substring(marker4+1).indexOf(";") +1;
 			
 			int x = Integer.parseInt(value.substring(0,marker1));
 			int y = Integer.parseInt(value.substring(marker1+1, marker2));
-			double alpha = Double.parseDouble(value.substring(marker2+1,marker3));
-			String img = value.substring(marker3+1);
+			int w = Integer.parseInt(value.substring(marker2+1, marker3));
+			int h = Integer.parseInt(value.substring(marker3+1, marker4));
+			double alpha = Double.parseDouble(value.substring(marker4+1,marker5));
+			String img = value.substring(marker5+1);
 					
-			FlashCanvasNativeUtil.drawImage(id, img, x, y, alpha);
+			FlashCanvasNativeUtil.drawImage(id, img, x, y, w, h, alpha);
 		}
 		else if(command.equals("cache-mode")){
 			FlashCanvasNativeUtil.setCacheMode(id, value);
@@ -523,6 +529,10 @@ public class VFlashCanvas extends HTML implements Paintable {
 	
 	public void brushEndEvent(){
 		client.updateVariable(this.uidlId, "brush-end-event", true, true);
+	}
+	
+	public void brushLoadingCompleteEvent(){
+		client.updateVariable(this.uidlId, "brush-loading-complete-event",true, true);
 	}
 	
 

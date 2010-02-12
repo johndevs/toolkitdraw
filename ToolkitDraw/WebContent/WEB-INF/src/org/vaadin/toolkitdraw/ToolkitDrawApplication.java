@@ -190,6 +190,12 @@ public class ToolkitDrawApplication extends Application
 					enableBottomBar(false);
 				}
 			}
+
+			@Override
+			public void loadingComplete(Component component) {
+				System.out.println("Loading complete");
+				
+			}
 		});
 						
 		//Set background layer to white
@@ -217,20 +223,8 @@ public class ToolkitDrawApplication extends Application
 	}
 	
 	private FlashCanvas openFile(){
-		
-		//Create a new image
-		FlashCanvas canvas = new FlashCanvas("100%","100%",300,400, new Color(51,51,51));			
-		
-		
-		if(canvas == null){
-			System.err.println("ERROR: Creating canvas failed!");	
-			return null;
-		}
-		
-		canvas.setCacheMode(CacheMode.AUTO);	
-		
+			
 		final OpenPopup selectFile = new OpenPopup("Open file", mainWindow);
-		selectFile.setData(canvas);
 		selectFile.addListener(new Window.CloseListener(){
 			private static final long serialVersionUID = 1L;
 
@@ -242,17 +236,57 @@ public class ToolkitDrawApplication extends Application
 				//No image was selected
 				if(bytes == null) return;
 				
-				//Get the canvas and set the caption
-				FlashCanvas canvas = (FlashCanvas)selectFile.getData();
-				canvas.setCaption(selectFile.getFilename());
+				//Create a new image
+				FlashCanvas canvas = new FlashCanvas("100%","100%",300,400, new Color(51,51,51));			
+								
+				//Set the caching mode of the canvas
+				canvas.setCacheMode(preferences.getCacheMode());
 				
+				//Set the plugin to use
+				canvas.setPlugin(preferences.getPlugin());
+				
+				//Set the canvas in intactive mode
+				canvas.setInteractive(true);
+				
+				//Set the autosave time
+				canvas.setAutosaveTime(preferences.getAutosaveTime());
+				
+				//Set brush listener
+				canvas.addListener(new FlashCanvas.BrushListener() {
+					
+					@Override
+					public void brushStart(Component component) {
+						if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
+							leftPanel.getSelectedBrush() == BrushType.POLYGON){
+							enableBottomBar(true);
+						}
+					}
+					
+					@Override
+					public void brushEnd(Component component) {
+						if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
+							leftPanel.getSelectedBrush() == BrushType.POLYGON){
+							enableBottomBar(false);
+						}
+					}
+
+					@Override
+					public void loadingComplete(Component component) {
+						System.out.println("Loading complete");
+						
+					}
+				});
+				
+				//Set background layer to white
+				canvas.getLayers().setLayerBackground(canvas.getLayers().getActiveLayer(), "FFFFFF", 1);
+			
 				//Draw the image onto the canvas
 				BASE64Encoder enc = new BASE64Encoder();
 				String encString = enc.encode(bytes);
-											
+			
 				//Draw the loaded image onto the image
-				canvas.getGraphics().drawImage(encString, 0, 0, 1.0);
-								
+				canvas.getGraphics().drawImage(encString, 0, 0,100,100, 1.0);
+																
 				//Put the canvas in the map and create a tab for it
 				openFiles.put(selectFile.getFilename(), canvas);		
 				savedStatusFiles.put(selectFile.getFilename(), true);		
@@ -270,7 +304,7 @@ public class ToolkitDrawApplication extends Application
 		//Show poup
 		selectFile.show();
 		
-		return canvas;
+		return currentCanvas;
 	}
 	
 	private boolean closeCurrentFile(){

@@ -333,13 +333,13 @@ public class RightPanel extends VerticalLayout implements Property.ValueChangeLi
 
 	public void setCanvas(FlashCanvas canvas) {
 		
-		if(canvas == null) return;
-		
-		System.out.println("RightPanel: Setting new canvas");		
+		if(canvas == null){
+			System.err.println("Cannot set null canvas");
+			return;
+		}
 		
 		this.canvas = canvas;
 		refreshLayers();
-		
 	}
 	
 	public void updateHistogram(){
