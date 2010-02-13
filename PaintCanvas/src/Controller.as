@@ -3,20 +3,23 @@ package
 	import brushes.ISelection;
 	import brushes.RectangleSelect;
 	
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.Font;
+	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
-	import mx.controls.Alert;
 	import mx.core.Application;
 	import mx.graphics.ImageSnapshot;
 	import mx.graphics.codec.IImageEncoder;
 	import mx.graphics.codec.JPEGEncoder;
 	import mx.graphics.codec.PNGEncoder;
+	import mx.utils.Base64Decoder;
 	
 	import util.CacheUtil;
 	import util.DrawingUtil;
@@ -65,6 +68,8 @@ package
 				ExternalInterface.addCallback("setImageCache",					CacheUtil.imageCacheRecieved);
 				ExternalInterface.addCallback("setAutosaveTime",				setAutosaveTimerDelay);
 				ExternalInterface.addCallback("setClickListening",				setExternalClickListening);
+				ExternalInterface.addCallback("openImage",						openImage);
+				
 				
 				//Filetypes
 				ExternalInterface.addCallback("getImageXML",					getImageXML);
@@ -446,5 +451,36 @@ package
 			return clientID;
 		}
 		
+		public function setImageWidth(width:int):void{
+			
+		}
+		
+		public function setImageHeight(height:int):void{
+			
+		}
+				
+		public function openImage(data:String):void{
+			var decoder:Base64Decoder = new Base64Decoder();
+            decoder.decode(data);
+            
+            var byteArr:ByteArray;
+            byteArr = decoder.toByteArray();
+         
+         	var loader:Loader = new Loader();
+         	loader.contentLoaderInfo.addEventListener(Event.COMPLETE,  function(e:Event):void{
+         		
+         		// Get width and height of image
+         		var width:int = loader.content.width;
+         		var height:int = loader.content.height;
+         		         		
+         		//Resize image to right dimensions
+         		LayerUtil.resizeImage(width, height);
+         		
+         		//Draw the image on to the new image
+         		DrawingUtil.drawImageWithLoader(0, 0, width, height, loader, data, 1);         		
+         	}); 
+         	
+         	loader.loadBytes(byteArr);        			
+		}
 	}
 }

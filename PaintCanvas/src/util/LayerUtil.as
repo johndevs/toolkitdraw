@@ -227,6 +227,13 @@ package util
 				layer.crop(x, y, width, height);
 			} 
 		} 
+		
+		public static function resizeImage(width:int, height:int):void
+		{
+			for each(var layer:Layer in layers){
+				layer.resize(width, height);
+			} 
+		}
 
 	}
 }

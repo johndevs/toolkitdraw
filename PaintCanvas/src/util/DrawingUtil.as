@@ -2,10 +2,9 @@ package util
 {
 	import brushes.*;
 	
-	import flash.external.ExternalInterface;
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.geom.Point;
-	
-	import mx.controls.Alert;
 	
 	public class DrawingUtil
 	{
@@ -166,12 +165,27 @@ package util
 		
 		public static function drawImage(x:int, y:int, width:int, height:int, data:String, alpha:Number):void
 		{			
+			var previousBrush:IBrush = GraphicsUtil.getBrush();
 			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_IMAGE);
-			GraphicsUtil.setBrushImage(data, width, height);
+			GraphicsUtil.setBrushImage(data, function(e:Event):void{
+				GraphicsUtil.getBrush().mouseDown(new Point(x,y));
+				GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
+				GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
+				GraphicsUtil.getBrush().finalize();				
+				GraphicsUtil.setBrush(previousBrush.getType());		
+			});			
+		}
+		
+		public static function drawImageWithLoader(x:int, y:int, width:int, height:int, data:Loader, dataString:String, alpha:Number):void
+		{				
+			var previousBrush:IBrush = GraphicsUtil.getBrush();
+			GraphicsUtil.setBrush(GraphicsUtil.BRUSH_IMAGE);
+			GraphicsUtil.setBrushImageWithLoader(data, dataString);
 			GraphicsUtil.getBrush().mouseDown(new Point(x,y));
 			GraphicsUtil.getBrush().mouseMove(new Point(x+width, y+height));
 			GraphicsUtil.getBrush().mouseUp(new Point(x+width, y+height));
 			GraphicsUtil.getBrush().finalize();		
+			GraphicsUtil.setBrush(previousBrush.getType());		
 		}
 		
 		

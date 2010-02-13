@@ -26,6 +26,10 @@ package elements
 			super();
 			this.identifier = identifier;
 			this.blendMode = BlendMode.LAYER;
+			this.setStyle("paddingTop", 0);
+			this.setStyle("paddingBottom",0); 
+			this.setStyle("paddingLeft",0); 
+			this.setStyle("paddingRight",0);
 		}
 
 		override protected function createChildren():void
@@ -177,6 +181,21 @@ package elements
 					sprite.scrollRect = new Rectangle(x,y,width,height);
 				}
 			}
+		}
+		
+		public function resize(width:int, height:int):void{
+			for(var i:int=0; i<this.numChildren; i++){
+				background.width = width;
+				background.height = height;
+				if(getChildAt(i) is Sprite){
+					var sprite:Sprite = getChildAt(i) as Sprite;
+					sprite.width = width;
+					sprite.height = height;
+				}
+			}
+			
+			this.width = width;
+			this.height = height;
 		}
 	}
 }

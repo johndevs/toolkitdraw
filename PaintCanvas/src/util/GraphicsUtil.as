@@ -4,6 +4,8 @@ package util
 	
 	import elements.Layer;
 	
+	import flash.display.Loader;
+	
 	import mx.controls.Alert;
 	import mx.core.Application;
 		
@@ -98,12 +100,20 @@ package util
 			}
 		}
 		
-		public static function setBrushImage(data:String, width:int, height:int):void
+		public static function setBrushImage(data:String, loadedHandler:Function):void
 		{
 			if(currentBrush != null && currentBrush is ImageBrush)
 			{
-				(currentBrush as ImageBrush).setImage(data, width, height);
+				(currentBrush as ImageBrush).setImage(data, loadedHandler);
 			}
+		}
+		
+		public static function setBrushImageWithLoader(data:Loader, dataString:String):void
+		{
+			if(currentBrush != null && currentBrush is ImageBrush)
+			{
+				(currentBrush as ImageBrush).setImageWithLoader(data, dataString);
+			}	
 		}
 		
 		public static function createBrushFromXML(xml:XML, layer:Layer):IBrush
