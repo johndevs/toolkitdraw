@@ -933,6 +933,21 @@ public class FlashCanvasNativeUtil {
 			return false;
 		}
 	}-*/;
+	
+	public static native boolean openImage(String id, String image)/*-{
+	var canvas = $wnd.document.getElementById(id);
+	if(canvas == null) alert("Canvas not found!");
+
+	// Check if function exists, if it does not then wait for the plugin to make it available
+	if(typeof canvas.openImage == 'function' && canvas.isReady() ){
+		canvas.openImage(image);
+		return true;
+	}else{
+		var func = function() { canvas.openImage(image); };
+		setTimeout(func,1000);
+		return false;
+	}
+}-*/;
 
 	/**
 	 * Set the available fonts. This is done by the Flash component and should

@@ -853,6 +853,8 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 	 */
 	public FlashCanvas(){	
 		this.addStyleName(CLASSNAME);
+		super.setWidth("100%");
+		super.setHeight("100%");		
 		
 		//Create a random component identifier
 		Random r = new Random();
@@ -866,6 +868,20 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 		currentLayer = background;
 					
 		setImmediate(true);		
+		requestRepaint();				
+	}
+	
+	
+	/**
+	 * Constructor
+	 * @param base64EncodedImage
+	 * 		Image encoded in Base64 encoding
+	 */
+	public FlashCanvas(String base64EncodedImage){
+		this();
+		
+		addToQueue("open-image", base64EncodedImage.replaceAll("\r", "").replaceAll("\n", ""));
+		
 		requestRepaint();				
 	}
 	

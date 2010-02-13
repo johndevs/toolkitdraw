@@ -235,9 +235,13 @@ public class ToolkitDrawApplication extends Application
 				
 				//No image was selected
 				if(bytes == null) return;
+								
+				//Encode the image to Base64
+				BASE64Encoder enc = new BASE64Encoder();
+				String encString = enc.encode(bytes);				
 				
 				//Create a new image
-				FlashCanvas canvas = new FlashCanvas("100%","100%",300,400, new Color(51,51,51));			
+				FlashCanvas canvas = new FlashCanvas(encString);			
 								
 				//Set the caching mode of the canvas
 				canvas.setCacheMode(preferences.getCacheMode());
@@ -250,6 +254,9 @@ public class ToolkitDrawApplication extends Application
 				
 				//Set the autosave time
 				canvas.setAutosaveTime(preferences.getAutosaveTime());
+				
+				//Set the background color of the component
+				canvas.setComponentBackgroundColor(new Color(51,51,51));
 				
 				//Set brush listener
 				canvas.addListener(new FlashCanvas.BrushListener() {
@@ -276,17 +283,7 @@ public class ToolkitDrawApplication extends Application
 						
 					}
 				});
-				
-				//Set background layer to white
-				canvas.getLayers().setLayerBackground(canvas.getLayers().getActiveLayer(), "FFFFFF", 1);
-			
-				//Draw the image onto the canvas
-				BASE64Encoder enc = new BASE64Encoder();
-				String encString = enc.encode(bytes);
-			
-				//Draw the loaded image onto the image
-				canvas.getGraphics().drawImage(encString, 0, 0,100,100, 1.0);
-																
+																							
 				//Put the canvas in the map and create a tab for it
 				openFiles.put(selectFile.getFilename(), canvas);		
 				savedStatusFiles.put(selectFile.getFilename(), true);		

@@ -234,6 +234,9 @@ public class VFlashCanvas extends HTML implements Paintable {
 		else if(command.equals("finish")){
 			FlashCanvasNativeUtil.finish(id);
 		}
+		else if(command.equals("open-image")){
+			FlashCanvasNativeUtil.openImage(id, value);
+		}
 		
 		else	FlashCanvasNativeUtil.error("No command \""+command+"\" found!");		
 	}
