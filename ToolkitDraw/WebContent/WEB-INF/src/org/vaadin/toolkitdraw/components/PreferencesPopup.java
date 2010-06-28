@@ -120,7 +120,6 @@ public class PreferencesPopup extends Window implements ClickListener{
 		autosave.setWidth("90%");
 		autosave.addListener(new Property.ValueChangeListener() {	
 			private static final long serialVersionUID = 1L;
-			@Override
 			public void valueChange(ValueChangeEvent event) {
 				int seconds = (int)Double.parseDouble(event.getProperty().getValue().toString());
 				preferenses.setAutosaveTime(seconds);
@@ -214,7 +213,6 @@ public class PreferencesPopup extends Window implements ClickListener{
 		parent.removeWindow(this);
 	}
 
-	@Override
 	public void buttonClick(ClickEvent event) {		
 		if(event.getButton() == cancel){
 			preferenses.copy(oldValues);

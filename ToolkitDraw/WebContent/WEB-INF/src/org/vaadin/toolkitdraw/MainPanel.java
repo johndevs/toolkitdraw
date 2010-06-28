@@ -1,9 +1,7 @@
 package org.vaadin.toolkitdraw;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -16,68 +14,90 @@ import com.vaadin.ui.MenuBar.Command;
 public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 	private static final long serialVersionUID = 1L;
 	private List<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
-	private Map<String, Type> typeMap = new HashMap<String, Type>();
-	
+
 	public static enum Type { 
-		NEW, SAVE, UNDO, REDO, CLOSE,OPEN,PREFERENCES,
-		DEMO1, DEMO2,
-		SELECTION_ALL, SELECTION_REMOVE, CROP
+		NEW("New"), 
+		SAVE("Save"), 
+		UNDO("Undo"), 
+		REDO("Redo"), 
+		CLOSE("Close"),
+		OPEN("Open"),
+		PREFERENCES("Preferences"),
+		
+		DEMO1("Simple graph"), 
+		DEMO2("Tic-Tac-Toe"),
+		
+		SELECTION_ALL("Select all"), 
+		SELECTION_REMOVE("Remove selection"), 
+		CROP("Crop to selection"),
+		
+		TOOL_WINDOW("Tools"), 
+		TOOL_OPTIONS_WINDOW("Tool Options"), 
+		IMAGE_INFO_WINDOW("Image Info"), 
+		LAYER_WINDOW("Layers");
+		
+		private String caption;
+		private Type(String caption){
+			this.caption = caption;
+		}
+		
+		@Override
+		public String toString(){
+			return caption;
+		}
 	};
 	
 	public MainPanel(){
 		
 		setStyleName("menu");
-		
-		//Map menuitem with a type
-		typeMap.put("New", Type.NEW);
-		typeMap.put("Open", Type.OPEN);
-		typeMap.put("Save", Type.SAVE);
-		typeMap.put("Undo", Type.UNDO);
-		typeMap.put("Redo", Type.REDO);
-		typeMap.put("Close", Type.CLOSE);
-		typeMap.put("Simple graph", Type.DEMO1);
-		typeMap.put("Tic-Tac-Toe", Type.DEMO2);
-		typeMap.put("Select all", Type.SELECTION_ALL);
-		typeMap.put("Remove selection", Type.SELECTION_REMOVE);
-		typeMap.put("Crop to selection", Type.CROP);
-		typeMap.put("Preferences", Type.PREFERENCES);
-		
+				
 		//Create the file menu
 		MenuBar.MenuItem file = addItem("File",null,null);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem newFile = file.addItem("New", null,this);
+		MenuBar.MenuItem newFile = file.addItem(Type.NEW.toString(), null,this);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem openFile = file.addItem("Open", null, this);
+		MenuBar.MenuItem openFile = file.addItem(Type.OPEN.toString(), null, this);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem saveFile = file.addItem("Save", null, this);
+		MenuBar.MenuItem saveFile = file.addItem(Type.SAVE.toString(), null, this);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem closeFile = file.addItem("Close", null, this);
+		MenuBar.MenuItem closeFile = file.addItem(Type.CLOSE.toString(), null, this);
 		
 		//Create the edit menu
 		MenuBar.MenuItem edit = addItem("Edit",null,null);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem undo = edit.addItem("Undo", null, this);
+		MenuBar.MenuItem undo = edit.addItem(Type.UNDO.toString(), null, this);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem redo = edit.addItem("Redo", null, this);	
+		MenuBar.MenuItem redo = edit.addItem(Type.REDO.toString(), null, this);	
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem prefs = edit.addItem("Preferences", null, this);
+		MenuBar.MenuItem prefs = edit.addItem(Type.PREFERENCES.toString(), null, this);
 		
 		//Create the select menu
 		MenuBar.MenuItem select = addItem("Selection",null,null);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem selectAll = select.addItem("Select all", null, this);
+		MenuBar.MenuItem selectAll = select.addItem(Type.SELECTION_ALL.toString(), null, this);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem selectNone  = select.addItem("Remove selection", null, this);
+		MenuBar.MenuItem selectNone  = select.addItem(Type.SELECTION_REMOVE.toString(), null, this);
 		
 		// Hidden until implemented properly
 		//MenuBar.MenuItem crop = select.addItem("Crop to selection", null, this);
 		
+		//Create the window menu
+		MenuBar.MenuItem window = addItem("Window",null,null);
+		@SuppressWarnings("unused")
+		MenuBar.MenuItem toolWindow = window.addItem(Type.TOOL_WINDOW.toString(), null, this);
+		@SuppressWarnings("unused")
+		MenuBar.MenuItem toolOptionsWindow = window.addItem(Type.TOOL_OPTIONS_WINDOW.toString(), null, this);
+		@SuppressWarnings("unused")
+		MenuBar.MenuItem infoWindow = window.addItem(Type.IMAGE_INFO_WINDOW.toString(), null, this);
+		@SuppressWarnings("unused")
+		MenuBar.MenuItem layerWindow = window.addItem(Type.LAYER_WINDOW.toString(), null, this);
+		
 		//Create the demo menu
 		MenuBar.MenuItem demos = addItem("Demos", null,null);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem simpleGraphDemo = demos.addItem("Simple graph", null, this);
+		MenuBar.MenuItem simpleGraphDemo = demos.addItem(Type.DEMO1.toString(), null, this);
 		@SuppressWarnings("unused")
-		MenuBar.MenuItem ticTacToeDemo = demos.addItem("Tic-Tac-Toe",null,this);
+		MenuBar.MenuItem ticTacToeDemo = demos.addItem(Type.DEMO2.toString(), null, this);
 	}
 	
 	public void setImageToolsEnabled(boolean enabled){
@@ -94,24 +114,31 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		listeners.remove(listener);
 	}
 
-	@Override
 	public void menuSelected(MenuItem selectedItem) {
 		
-		final Type type = typeMap.get(selectedItem.getText());
+		Type selectedType = null;
+		String caption = selectedItem.getText();
+		for(Type t : Type.values()){
+			if(t.toString().equals(caption)){
+				selectedType = t;
+				break;
+			}
+		}
 		
-		ValueChangeEvent evnt = new Property.ValueChangeEvent(){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Property getProperty() {				
-				return new ObjectProperty(type);				
-			}			
-		};
-		
-		valueChange(evnt);
+		if(selectedType != null){
+			final Type type = selectedType;		
+			ValueChangeEvent evnt = new Property.ValueChangeEvent(){
+				private static final long serialVersionUID = 1L;
+	
+				public Property getProperty() {				
+					return new ObjectProperty(type);				
+				}			
+			};
+			
+			valueChange(evnt);
+		}
 	}
 
-	@Override
 	public void valueChange(ValueChangeEvent event) {
 		for(ValueChangeListener listener : listeners){					
 			listener.valueChange(event);

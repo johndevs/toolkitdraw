@@ -121,7 +121,6 @@ public class SimpleGraphDemo extends Window {
 		refresh = new Button("Refresh");
 		refresh.addListener(new Button.ClickListener(){		
 			private static final long serialVersionUID = 1L;
-			@Override
 			public void buttonClick(ClickEvent event) {
 				randomlyCreateValues();												
 				renderBarGraph();							
@@ -135,7 +134,6 @@ public class SimpleGraphDemo extends Window {
 		close = new Button("Close");
 		close.addListener(new Button.ClickListener() {		
 			private static final long serialVersionUID = 1L;
-			@Override
 			public void buttonClick(ClickEvent event) {
 				setVisible(false);				
 			}

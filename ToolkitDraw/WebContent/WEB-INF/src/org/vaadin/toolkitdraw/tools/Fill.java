@@ -9,8 +9,9 @@ import org.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import org.vaadin.toolkitdraw.util.IconFactory;
 import org.vaadin.toolkitdraw.util.IconFactory.Icons;
 
-import com.vaadin.colorpicker.ColorSelector;
-import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
+import com.vaadin.addon.colorpicker.ColorSelector;
+import com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener;
+import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -74,19 +75,12 @@ public class Fill extends Tool implements ValueChangeListener, ColorChangeListen
 		return BrushType.FILL;
 	}
 	
-	@Override
 	public void valueChange(ValueChangeEvent event) {
 		if(canvas == null) return;			
 		
 		if(event.getProperty() == opacity){
 			canvas.getInteractive().setAlpha(1.0-Double.parseDouble(event.getProperty().getValue().toString())/100.0);
 		}
-	}
-	
-	@Override
-	public void changed(ColorSelector selector, Color color) {
-		colorpicker.selectForegroundColorPicker();	
-		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));	
 	}
 
 	@Override
@@ -106,5 +100,14 @@ public class Fill extends Tool implements ValueChangeListener, ColorChangeListen
 		
 		colorpicker.selectForegroundColorPicker();			
 		i.setColor(colorToHex(colorpicker.getColor()));		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener#colorChanged(com.vaadin.addon.colorpicker.events.ColorChangeEvent)
+	 */
+	public void colorChanged(ColorChangeEvent event) {
+		colorpicker.selectForegroundColorPicker();	
+		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));			
 	}	
 }

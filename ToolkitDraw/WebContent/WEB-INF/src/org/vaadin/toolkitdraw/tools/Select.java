@@ -81,7 +81,6 @@ public class Select extends Tool {
 		return BrushType.SELECT;
 	}
 
-	@Override
 	public void valueChange(ValueChangeEvent event) {
 		// TODO Auto-generated method stub
 

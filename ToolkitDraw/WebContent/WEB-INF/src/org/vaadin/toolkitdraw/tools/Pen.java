@@ -9,8 +9,9 @@ import org.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import org.vaadin.toolkitdraw.util.IconFactory;
 import org.vaadin.toolkitdraw.util.IconFactory.Icons;
 
-import com.vaadin.colorpicker.ColorSelector;
-import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
+import com.vaadin.addon.colorpicker.ColorSelector;
+import com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener;
+import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -101,12 +102,6 @@ public class Pen extends Tool implements ValueChangeListener, ColorChangeListene
 	}
 
 	@Override
-	public void changed(ColorSelector selector, Color color) {
-		colorpicker.selectForegroundColorPicker();	
-		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));		
-	}
-
-	@Override
 	public String getName() {
 		return "Pencil";
 	}
@@ -124,6 +119,9 @@ public class Pen extends Tool implements ValueChangeListener, ColorChangeListene
 		
 		i.setAlpha(1.0-Double.parseDouble(opacity.getValue().toString())/100.0);		
 	}
-	
-	
+
+	public void colorChanged(ColorChangeEvent event) {
+		colorpicker.selectForegroundColorPicker();	
+		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));				
+	}	
 }

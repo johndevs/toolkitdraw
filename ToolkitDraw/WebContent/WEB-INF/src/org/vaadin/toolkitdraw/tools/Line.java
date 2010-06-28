@@ -1,6 +1,5 @@
 package org.vaadin.toolkitdraw.tools;
 
-
 import java.awt.Color;
 
 import org.vaadin.toolkitdraw.components.TwinColorPicker;
@@ -10,8 +9,9 @@ import org.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import org.vaadin.toolkitdraw.util.IconFactory;
 import org.vaadin.toolkitdraw.util.IconFactory.Icons;
 
-import com.vaadin.colorpicker.ColorSelector;
-import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
+import com.vaadin.addon.colorpicker.ColorSelector;
+import com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener;
+import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -90,7 +90,6 @@ public class Line extends Tool implements ValueChangeListener, ColorChangeListen
 		return BrushType.LINE;
 	}	
 	
-	@Override
 	public void valueChange(ValueChangeEvent event) {
 		if(canvas == null) return;
 		
@@ -107,14 +106,6 @@ public class Line extends Tool implements ValueChangeListener, ColorChangeListen
 		return "Line";
 	}
 
-
-	@Override
-	public void changed(ColorSelector selector, Color color) {
-		colorpicker.selectForegroundColorPicker();	
-		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));		
-	}
-
-
 	@Override
 	public void sendCurrentSettings() {
 		if(this.canvas == null) return;
@@ -128,6 +119,15 @@ public class Line extends Tool implements ValueChangeListener, ColorChangeListen
 		
 		i.setAlpha(1.0-Double.parseDouble(opacity.getValue().toString())/100.0);		
 	
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener#colorChanged(com.vaadin.addon.colorpicker.events.ColorChangeEvent)
+	 */
+	public void colorChanged(ColorChangeEvent event) {
+		colorpicker.selectForegroundColorPicker();	
+		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));				
 	}
 
 }

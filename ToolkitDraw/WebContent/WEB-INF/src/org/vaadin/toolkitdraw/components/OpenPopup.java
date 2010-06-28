@@ -4,20 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ContentHandler;
-import java.net.ContentHandlerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
-import sun.awt.image.URLImageSource;
 
-import com.vaadin.terminal.ErrorMessage;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.Paintable.RepaintRequestListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -31,7 +22,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Upload.FinishedListener;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
@@ -197,14 +187,12 @@ public class OpenPopup extends Window
 		}	
 	}
 
-	@Override
 	public OutputStream receiveUpload(String filename, String MIMEType) {		
 		recievedImage = new ByteArrayOutputStream();	
 		this.filename = filename;
 		return recievedImage;
 	}
 
-	@Override
 	public void uploadSucceeded(SucceededEvent event) {
 		try{
 			recievedImage.flush();
@@ -232,7 +220,6 @@ public class OpenPopup extends Window
 		return this.filename;
 	}
 
-	@Override
 	public void uploadStarted(StartedEvent event) {
 		upload.setVisible(false);
 		
@@ -245,7 +232,6 @@ public class OpenPopup extends Window
 	    tabs.setEnabled(false);
 	}
 
-	@Override
 	public void updateProgress(long readBytes, long contentLength) {
 		uploadProgress.setValue(new Float(readBytes / (float) contentLength));	
 	}

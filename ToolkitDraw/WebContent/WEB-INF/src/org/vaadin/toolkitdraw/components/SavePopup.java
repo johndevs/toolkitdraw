@@ -106,8 +106,7 @@ public class SavePopup extends Window implements ClickListener{
 		
 		setContent(layout);		
 	}	
-	
-	@Override
+
 	public void buttonClick(ClickEvent event) {
 		ok.setEnabled(false);
 		cancel.setEnabled(false);

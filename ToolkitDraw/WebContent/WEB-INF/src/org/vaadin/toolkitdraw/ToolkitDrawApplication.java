@@ -174,8 +174,7 @@ public class ToolkitDrawApplication extends Application
 		
 		//Set brush listener
 		canvas.addListener(new FlashCanvas.BrushListener() {
-			
-			@Override
+
 			public void brushStart(Component component) {
 				if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
 					leftPanel.getSelectedBrush() == BrushType.POLYGON){
@@ -183,7 +182,6 @@ public class ToolkitDrawApplication extends Application
 				}
 			}
 			
-			@Override
 			public void brushEnd(Component component) {
 				if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
 					leftPanel.getSelectedBrush() == BrushType.POLYGON){
@@ -191,7 +189,6 @@ public class ToolkitDrawApplication extends Application
 				}
 			}
 
-			@Override
 			public void loadingComplete(Component component) {
 				System.out.println("Loading complete");
 				
@@ -261,7 +258,6 @@ public class ToolkitDrawApplication extends Application
 				//Set brush listener
 				canvas.addListener(new FlashCanvas.BrushListener() {
 					
-					@Override
 					public void brushStart(Component component) {
 						if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
 							leftPanel.getSelectedBrush() == BrushType.POLYGON){
@@ -269,7 +265,6 @@ public class ToolkitDrawApplication extends Application
 						}
 					}
 					
-					@Override
 					public void brushEnd(Component component) {
 						if(leftPanel.getSelectedBrush() == BrushType.TEXT ||
 							leftPanel.getSelectedBrush() == BrushType.POLYGON){
@@ -277,7 +272,6 @@ public class ToolkitDrawApplication extends Application
 						}
 					}
 
-					@Override
 					public void loadingComplete(Component component) {
 						System.out.println("Loading complete");
 						
@@ -289,19 +283,22 @@ public class ToolkitDrawApplication extends Application
 				savedStatusFiles.put(selectFile.getFilename(), true);		
 				
 				canvas.setCaption(selectFile.getFilename());
-				openFilesTabs.addTab(canvas,selectFile.getFilename(),null);			
+				openFilesTabs.addTab(canvas,selectFile.getFilename(),null);		
+				openFilesTabs.setSelectedTab(canvas);
 				
 				//Set the canvas as the current canvas
 				leftPanel.setCanvas(canvas);
 				rightPanel.setCanvas(canvas);
 				currentCanvas = canvas;
+				
+				leftPanel.setTool(BrushType.PEN);
 			}			
 		});		
 		
 		//Show poup
 		selectFile.show();
 		
-		return currentCanvas;
+		return null;
 	}
 	
 	private boolean closeCurrentFile(){
@@ -403,13 +400,11 @@ public class ToolkitDrawApplication extends Application
 	}
 	
 	
-	@Override
 	public void buttonClick(ClickEvent event) {
-		
+		//TODO
 	
 	}
 
-	@Override
 	public void valueChange(ValueChangeEvent event) {		
 		Object value = event.getProperty().getValue();
 				
@@ -432,10 +427,8 @@ public class ToolkitDrawApplication extends Application
 							setStatusbarText("New file opened");
 				break;
 				
-				case OPEN:	openFilesTabs.setSelectedTab(openFile());
-							setImageToolsEnabled(true);
-							leftPanel.setTool(BrushType.PEN);
-							setStatusbarText("New file opened");
+				case OPEN:	openFile();
+						
 				break;
 							
 				case CLOSE:{
@@ -496,11 +489,27 @@ public class ToolkitDrawApplication extends Application
 						setStatusbarText("Opening tic-tac-toe");
 						break;
 				}
+				
+				//Windows
+				case IMAGE_INFO_WINDOW:{
+					
+				}
+				
+				case LAYER_WINDOW:{
+					
+				}
+				
+				case TOOL_OPTIONS_WINDOW:{
+					leftPanel.addComponent(leftPanel.getToolOptionsPanel());
+				}
+				
+				case TOOL_WINDOW:{
+					leftPanel.addComponent(leftPanel.getToolsPanel(),0);
+				}
 			}
 		}		
 	}
 
-	@Override
 	public void selectedTabChange(SelectedTabChangeEvent event) {
 		TabSheet tabs = (TabSheet)event.getSource();
 		
@@ -635,7 +644,6 @@ public class ToolkitDrawApplication extends Application
 			
 			final DownloadStream str = stream;
 			Resource res = new FileStreamResource(new StreamResource.StreamSource() {				
-				@Override
 				public InputStream getStream() {					
 					return str.getStream();
 				}

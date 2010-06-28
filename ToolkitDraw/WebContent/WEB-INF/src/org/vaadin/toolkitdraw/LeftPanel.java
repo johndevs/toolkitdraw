@@ -6,6 +6,8 @@ import java.util.List;
 import org.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas;
 import org.vaadin.toolkitdraw.components.flashcanvas.FlashCanvas.Interactive;
 import org.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
+import org.vaadin.toolkitdraw.panels.ToolOptionsPanel;
+import org.vaadin.toolkitdraw.panels.ToolsPanel;
 import org.vaadin.toolkitdraw.tools.Ellipse;
 import org.vaadin.toolkitdraw.tools.Fill;
 import org.vaadin.toolkitdraw.tools.Line;
@@ -16,6 +18,7 @@ import org.vaadin.toolkitdraw.tools.Square;
 import org.vaadin.toolkitdraw.tools.Text;
 import org.vaadin.toolkitdraw.tools.Tool;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -26,40 +29,36 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private Panel toolPanel;
+	private ToolsPanel toolsPanel;
 	
-	private Panel optionPanel;
+	private ToolOptionsPanel optionPanel;
 		
 	private List<Tool>  tools = new ArrayList<Tool>();			
 	
 	private FlashCanvas canvas;
 	
 	private BrushType currentBrush;
+	
+	private boolean minimized = false;
 		
 	public LeftPanel(FlashCanvas canvas, BrushType selectedTool) {
 		super();
 		setStyleName("leftpanel");
 		setSizeFull();
+		
+		this.canvas = canvas;
 				
 		tools = createToolset(canvas);
-		this.canvas = canvas;
-	
-		//Create the tools tab
-		GridLayout toolGrid = new GridLayout(5,4);
-		toolGrid.setSpacing(true);
-		for(Tool tool : tools)
-			toolGrid.addComponent(tool.getButton());
 		
-		//Create the tool panel
-		toolPanel = new Panel("Tools",toolGrid);
-		addComponent(toolPanel);
-					
+		toolsPanel = new ToolsPanel(tools);
+		toolsPanel.setWidth("250px");
+		addComponent(toolsPanel);
+		
 		//Create the tool options
-		optionPanel = new Panel("Tool Options");	
+		optionPanel = new ToolOptionsPanel(tools);
 		optionPanel.setSizeFull();
 		addComponent(optionPanel);		
-		setExpandRatio(optionPanel, 1);
-		
+		setExpandRatio(optionPanel, 1);		
 	}	
 	
 	/**
@@ -120,12 +119,8 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		for(Tool t : tools){
 			if(t.getType() == tool){
 				selected = t;
-				t.getButton().removeStyleName("tool-unselected");
-				t.getButton().addStyleName("tool-selected");
-			} else {				
-				t.getButton().removeStyleName("tool-selected");
-				t.getButton().addStyleName("tool-unselected");
-			}
+				break;
+			} 
 		}
 		
 		//Tool is not in toolset
@@ -134,21 +129,24 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 			return;		
 		}
 		
-		//Set the tool options	
+		// Remove anything in the bottom bar
 		ToolkitDrawApplication.getBottomBar().removeAllComponents();
-		optionPanel.setContent(selected.createToolOptions());
-		optionPanel.setCaption(selected.getName());
+	
+		// Select the tool
+		toolsPanel.selectTool(selected);
+		optionPanel.selectTool(selected);
 		
 		//Check for interactivity
 		Interactive i = this.canvas.getInteractive();
 		
+		// Send current settings to brush
 		if(i != null){
 			i.setBrush(tool);
 			selected.sendCurrentSettings();
 			currentBrush = tool;
+		} else {
+			System.out.println("ERROR: Canvas is not interactive");
 		}
-		
-		else System.out.println("ERROR: Canvas is not interactive");
 		
 	}
 	
@@ -156,7 +154,6 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		return currentBrush;
 	}
 	
-	@Override
 	public void buttonClick(ClickEvent event) {		
 		if(event.getButton().getData() instanceof BrushType){
 			BrushType type = (BrushType)event.getButton().getData();
@@ -181,4 +178,36 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 			tool.setCanvas(this.canvas);
 		}
 	}
+	
+	
+	@Override
+	public void addComponent(Component c) {		
+		if(minimized){
+			setWidth("250px");
+			minimized = false;
+		}
+		
+		super.addComponent(c);		
+		
+		if(c == optionPanel)
+			setExpandRatio(optionPanel, 1);		
+	}
+	
+	@Override 
+	public void removeComponent(Component c) {
+		super.removeComponent(c);		
+		if(!minimized && !getComponentIterator().hasNext()){
+			setWidth("1px");
+			minimized = true;			
+		}
+	}	
+
+	public ToolsPanel getToolsPanel() {
+		return toolsPanel;
+	}
+
+	public ToolOptionsPanel getToolOptionsPanel() {
+		return optionPanel;
+	}
+
 }

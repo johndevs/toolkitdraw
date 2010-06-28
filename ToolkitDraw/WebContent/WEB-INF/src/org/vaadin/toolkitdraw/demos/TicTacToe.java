@@ -119,7 +119,6 @@ public class TicTacToe extends Window implements ClickListener {
 		}		
 	}
 
-	@Override
 	public void onClick(Component component, int x, int y) {
 		
 		int i = (int)Math.floor((float)x/100f);

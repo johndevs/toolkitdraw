@@ -1,8 +1,10 @@
 package org.vaadin.toolkitdraw.components;
 
-import com.vaadin.colorpicker.ColorPicker;
-import com.vaadin.colorpicker.ColorSelector;
-import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
+import com.vaadin.addon.colorpicker.ColorPicker;
+import com.vaadin.addon.colorpicker.ColorSelector;
+import com.vaadin.addon.colorpicker.ColorPicker.ButtonStyle;
+import com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener;
+import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -54,12 +56,14 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 		background.addListener(this);
 		background.setWidth("33px");
 		background.setHeight("30px");
+		background.setButtonStyle(ButtonStyle.BUTTON_AREA);
 		addComponent(background, "top:15px;left:15px");
 		
 		foreground = new ColorPicker("Foreground", Color.BLACK);
 		foreground.addListener(this);
 		foreground.setWidth("33px");
 		foreground.setHeight("30px");
+		foreground.setButtonStyle(ButtonStyle.BUTTON_AREA);
 		addComponent(foreground, "top:0px;left:0px");
 		
 		resetButton = new Button("", this);	
@@ -78,28 +82,16 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 	}
 
 	/* (non-Javadoc)
-	 * @see com.vaadin.colorpicker.ColorSelector$ColorChangeListener#changed(com.vaadin.colorpicker.ColorSelector, java.awt.Color)
+	 * @see com.vaadin.addon.colorpicker.ColorSelector#addListener(com.vaadin.addon.colorpicker.ColorSelector.ColorChangeListener)
 	 */
-	@Override
-	public void changed(ColorSelector selector, Color color) {
-		for(ColorChangeListener listener :listeners){
-			listener.changed(selector, color);
-		}		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.vaadin.colorpicker.ColorSelector#addListener(com.vaadin.colorpicker.ColorSelector.ColorChangeListener)
-	 */
-	@Override
 	public void addListener(ColorChangeListener listener) {
 		listeners.add(listener);
 		
 	}
 
 	/* (non-Javadoc)
-	 * @see com.vaadin.colorpicker.ColorSelector#getColor()
+	 * @see com.vaadin.addon.colorpicker.ColorSelector#getColor()
 	 */
-	@Override
 	public Color getColor() {
 		if(foregroundSelected)
 			return foreground.getColor();
@@ -108,18 +100,16 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 	}
 
 	/* (non-Javadoc)
-	 * @see com.vaadin.colorpicker.ColorSelector#removeListener(com.vaadin.colorpicker.ColorSelector.ColorChangeListener)
+	 * @see com.vaadin.addon.colorpicker.ColorSelector#removeListener(com.vaadin.addon.colorpicker.ColorSelector.ColorChangeListener)
 	 */
-	@Override
 	public void removeListener(ColorChangeListener listener) {
 		listeners.remove(listener);
 		
 	}
 
 	/* (non-Javadoc)
-	 * @see com.vaadin.colorpicker.ColorSelector#setColor(java.awt.Color)
+	 * @see com.vaadin.addon.colorpicker.ColorSelector#setColor(java.awt.Color)
 	 */
-	@Override
 	public void setColor(Color color) {
 		if(foregroundSelected){
 			foreground.setColor(color);
@@ -147,15 +137,15 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 	/* (non-Javadoc)
 	 * @see com.vaadin.ui.Button$ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
 	 */
-	@Override
 	public void buttonClick(ClickEvent event) {
 		if(event.getButton() == resetButton){
 			foreground.setColor(Color.BLACK);
 			background.setColor(Color.WHITE);
 			foreground.requestRepaint();
 			background.requestRepaint();
-			changed(foreground, Color.BLACK);
-			changed(background, Color.WHITE);
+			
+			colorChanged(new ColorChangeEvent(foreground, Color.BLACK));
+			colorChanged(new ColorChangeEvent(background, Color.WHITE));
 		} 
 		else if(event.getButton() == switchButton){
 			Color fgColor = foreground.getColor();
@@ -165,8 +155,19 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 			background.setColor(fgColor);
 			foreground.requestRepaint();
 			background.requestRepaint();
-			changed(foreground, bgColor);
-			changed(background, fgColor);
+			
+			colorChanged(new ColorChangeEvent(foreground, bgColor));
+			colorChanged(new ColorChangeEvent(background, fgColor));
 		}		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener#colorChanged(com.vaadin.addon.colorpicker.events.ColorChangeEvent)
+	 */
+	public void colorChanged(ColorChangeEvent event) {
+		for(ColorChangeListener listener :listeners){
+			listener.colorChanged(event);
+		}				
 	}	
 }

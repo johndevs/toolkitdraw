@@ -2,10 +2,14 @@
 	<!-- Add SWFObject library -->
 	<script src="flashcanvas/swfobject.js" />
 	
-	<!-- WidgetSet default theme -->	
+	<!-- Flashcanvas theme -->
 	<stylesheet src="flashcanvas/styles.css"/> 
+	
+	<stylesheet src="detachablePanel/styles.css" />
 
     <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 
-    <inherits name="com.vaadin.colorpicker.gwt.ColorPickerWidgetSet" />
+    
+
+    <inherits name="com.vaadin.addon.colorpicker.gwt.ColorPickerWidgetSet" />
 </module>

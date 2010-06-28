@@ -13,8 +13,9 @@ import org.vaadin.toolkitdraw.components.flashcanvas.enums.BrushType;
 import org.vaadin.toolkitdraw.util.IconFactory;
 import org.vaadin.toolkitdraw.util.IconFactory.Icons;
 
-import com.vaadin.colorpicker.ColorSelector;
-import com.vaadin.colorpicker.ColorSelector.ColorChangeListener;
+import com.vaadin.addon.colorpicker.ColorSelector;
+import com.vaadin.addon.colorpicker.ColorPicker.ColorChangeListener;
+import com.vaadin.addon.colorpicker.events.ColorChangeEvent;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -113,7 +114,6 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		layout.addComponent(font);
 	}
 	
-	@Override
 	public void valueChange(ValueChangeEvent event) {
 		if(canvas == null) return;			
 		
@@ -167,19 +167,6 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		return "Text";
 	}
 
-	@Override
-	public void changed(ColorSelector selector, Color color) {
-		colorpicker.selectForegroundColorPicker();	
-		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));	
-		
-		if(disableFillcolor.booleanValue()){
-			colorpicker.selectBackgroundColorPicker();
-			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));
-			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
-		}		
-	}
-
-	@Override
 	public void buttonClick(ClickEvent event) {
 		if(event.getButton() == disableFillcolor){
 			boolean state = event.getButton().booleanValue();
@@ -221,5 +208,17 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		
 		i.setFont(font.getValue().toString());
 	}
+
+	public void colorChanged(ColorChangeEvent event) {
+		colorpicker.selectForegroundColorPicker();	
+		canvas.getInteractive().setColor(colorToHex(colorpicker.getColor()));	
+		
+		if(disableFillcolor.booleanValue()){
+			colorpicker.selectBackgroundColorPicker();
+			canvas.getInteractive().setFillColor(colorToHex(colorpicker.getColor()));
+			canvas.getInteractive().setFillAlpha(1.0-Double.parseDouble(backgroundOpacity.getValue().toString())/100.0);
+		}				
+	}
+
 
 }

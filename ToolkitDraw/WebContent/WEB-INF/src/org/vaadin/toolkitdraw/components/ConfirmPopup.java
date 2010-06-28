@@ -73,7 +73,6 @@ public class ConfirmPopup extends Window implements ClickListener{
 		cancel.removeListener(listener);
 	}
 
-	@Override
 	public void buttonClick(ClickEvent event) {
 		hide();		
 	}

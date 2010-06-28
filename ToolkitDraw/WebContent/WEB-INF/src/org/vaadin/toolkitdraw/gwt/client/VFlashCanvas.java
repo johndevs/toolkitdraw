@@ -1,7 +1,5 @@
 package org.vaadin.toolkitdraw.gwt.client;
 
-import java.io.Console;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ObjectElement;
