@@ -23,8 +23,9 @@ public class ToolsPanel extends DetachablePanel {
 		
 		this.tools = tools;
 		
-		layout = new GridLayout(5, (int)Math.ceil((double)tools.size()/5.0));
+		layout = new GridLayout(4, (int)Math.ceil((double)tools.size()/4.0));
 		layout.setSpacing(true);
+		layout.setMargin(true);
 		
 		for(Tool tool : tools)
 			layout.addComponent(tool.getButton());
