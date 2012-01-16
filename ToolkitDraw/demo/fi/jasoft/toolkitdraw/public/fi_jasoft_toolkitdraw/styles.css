@@ -1,0 +1,11 @@
+.v-detachable-panel{
+
+}
+
+.v-detachable-panel .left-caption{
+	float:left;
+}
+
+.v-detachable-panel .right-caption{
+	float:right;
+}

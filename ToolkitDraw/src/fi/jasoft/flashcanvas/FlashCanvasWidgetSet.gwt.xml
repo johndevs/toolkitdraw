@@ -1,0 +1,9 @@
+<module>	
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+
+	<!-- Add SWFObject library -->
+	<script src="fi_jasoft_flashcanvas/swfobject.js" />
+	
+	<!-- Flashcanvas theme -->
+	<stylesheet src="fi_jasoft_flashcanvas/styles.css"/> 
+</module>

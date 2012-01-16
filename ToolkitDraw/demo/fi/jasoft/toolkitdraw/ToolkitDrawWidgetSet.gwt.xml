@@ -1,0 +1,7 @@
+<module>	
+	<stylesheet src="fi_jasoft_toolkitdraw/styles.css" />
+    
+    <inherits name="fi.jasoft.flashcanvas.FlashCanvasWidgetSet" />
+    <inherits name="com.vaadin.addon.colorpicker.gwt.ColorPickerWidgetSet" />
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+</module>

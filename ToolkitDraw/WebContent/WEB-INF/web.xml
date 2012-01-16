@@ -3,21 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
                         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-
     <servlet>
         <servlet-name>ToolkitDraw</servlet-name>
-        <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet
-        </servlet-class>
+        <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
         <init-param>
             <param-name>application</param-name>
-            <param-value>org.vaadin.toolkitdraw.ToolkitDrawApplication</param-value>
+            <param-value>fi.jasoft.toolkitdraw.ToolkitDrawApplication</param-value>
         </init-param>
          <init-param>
             <param-name>widgetset</param-name>
-            <param-value>org.vaadin.toolkitdraw.gwt.ToolkitDrawWidgetSet</param-value>
+            <param-value>fi.jasoft.toolkitdraw.ToolkitDrawWidgetSet</param-value>
         </init-param>
-    
-        
     </servlet>
 
     <servlet-mapping>
