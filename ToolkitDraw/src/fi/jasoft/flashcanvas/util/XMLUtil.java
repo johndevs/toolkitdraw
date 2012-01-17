@@ -1,4 +1,4 @@
-package fi.jasoft.toolkitdraw.util;
+package fi.jasoft.flashcanvas.util;
 
 public class XMLUtil {
 

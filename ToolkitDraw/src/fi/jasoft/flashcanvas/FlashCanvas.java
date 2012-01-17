@@ -31,7 +31,7 @@ import fi.jasoft.flashcanvas.enums.Plugin;
 import fi.jasoft.flashcanvas.events.ImageJPGRecievedEvent;
 import fi.jasoft.flashcanvas.events.ImagePNGRecievedEvent;
 import fi.jasoft.flashcanvas.events.ImageXMLRecievedEvent;
-import fi.jasoft.toolkitdraw.util.XMLUtil;
+import fi.jasoft.flashcanvas.util.XMLUtil;
 
 
 /**
