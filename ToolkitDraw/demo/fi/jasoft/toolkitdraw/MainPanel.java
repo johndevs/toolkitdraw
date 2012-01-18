@@ -81,7 +81,8 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		// Hidden until implemented properly
 		//MenuBar.MenuItem crop = select.addItem("Crop to selection", null, this);
 		
-		//Create the window menu
+		//Create the window menu (Hidden until needed)
+		/*
 		MenuBar.MenuItem window = addItem("Window",null,null);
 		@SuppressWarnings("unused")
 		MenuBar.MenuItem toolWindow = window.addItem(Type.TOOL_WINDOW.toString(), null, this);
@@ -91,6 +92,7 @@ public class MainPanel extends MenuBar implements ValueChangeListener, Command{
 		MenuBar.MenuItem infoWindow = window.addItem(Type.IMAGE_INFO_WINDOW.toString(), null, this);
 		@SuppressWarnings("unused")
 		MenuBar.MenuItem layerWindow = window.addItem(Type.LAYER_WINDOW.toString(), null, this);
+		*/
 		
 		//Create the demo menu
 		MenuBar.MenuItem demos = addItem("Demos", null,null);

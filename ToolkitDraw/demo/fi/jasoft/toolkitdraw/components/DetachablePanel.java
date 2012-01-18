@@ -17,8 +17,6 @@ import fi.jasoft.toolkitdraw.client.ui.VDetachablePanel;
 @ClientWidget(VDetachablePanel.class)
 public class DetachablePanel extends Panel {
 
-	private static final long serialVersionUID = 1L;
-	
 	public enum PanelState{
 		ATTACHED, DETACHED, CLOSED;
 	}

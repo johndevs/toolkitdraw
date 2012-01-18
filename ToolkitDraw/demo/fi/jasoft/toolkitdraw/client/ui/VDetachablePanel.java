@@ -61,6 +61,8 @@ public class VDetachablePanel extends VPanel{
 		captionNode.appendChild(captionTextWrapper);
 		
 		//Add controls
+		// FIXME Hidden controls since they do not work as expected
+		/*
 		controls = DOM.createDiv();
 		controls.setClassName(CLASS_RIGHT_CAPTION);
 		
@@ -73,6 +75,7 @@ public class VDetachablePanel extends VPanel{
 		DOM.sinkEvents(closeButton.getElement(), Event.ONCLICK);
 		
 		captionNode.appendChild(controls);
+		*/
 	}
 	
 	

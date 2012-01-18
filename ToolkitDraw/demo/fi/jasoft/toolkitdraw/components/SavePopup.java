@@ -1,6 +1,5 @@
 package fi.jasoft.toolkitdraw.components;
 
-
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -15,7 +14,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-import fi.jasoft.toolkitdraw.ToolkitDrawApplication.FileType;
+import fi.jasoft.flashcanvas.events.ImageUploadEvent.ImageType;
 
 public class SavePopup extends Window implements ClickListener{
 	private static final long serialVersionUID = 1L;
@@ -54,7 +53,7 @@ public class SavePopup extends Window implements ClickListener{
 		filetype = new Select();
 		filetype.setImmediate(true);
 		filetype.setNullSelectionAllowed(false);
-		for(FileType type : FileType.values()){
+		for(ImageType type : ImageType.values()){
 			filetype.addItem(type);
 		}
 		
@@ -62,8 +61,8 @@ public class SavePopup extends Window implements ClickListener{
 			private static final long serialVersionUID = 1L;
 
 			public void valueChange(ValueChangeEvent event) {
-				FileType type = (FileType)filetype.getValue();
-				if(type == FileType.XML){
+				ImageType type = (ImageType)filetype.getValue();
+				if(type == ImageType.XML){
 					dpi.setEnabled(false);
 				} else {
 					dpi.setEnabled(true);
@@ -87,7 +86,7 @@ public class SavePopup extends Window implements ClickListener{
 		layout.addComponent(grid);
 	
 		//Select the defualt image format
-		filetype.select(FileType.PNG);
+		filetype.select(ImageType.PNG);
 		dpi.setEnabled(true);
 				
 		HorizontalLayout buttons = new HorizontalLayout();		
@@ -138,8 +137,8 @@ public class SavePopup extends Window implements ClickListener{
 		cancel.removeListener(listener);
 	}
 	
-	public FileType getValue(){
-		return (FileType) filetype.getValue();
+	public ImageType getValue(){
+		return (ImageType) filetype.getValue();
 	}
 	
 	public int getDpi(){		

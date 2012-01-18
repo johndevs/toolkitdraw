@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 public class VFlashCanvas extends HTML implements Paintable {
 
@@ -209,6 +210,8 @@ public class VFlashCanvas extends HTML implements Paintable {
 			String img = value.substring(marker5+1);
 					
 			FlashCanvasNativeUtil.drawImage(id, img, x, y, w, h, alpha);
+			
+			
 		}
 		else if(command.equals("cache-mode")){
 			FlashCanvasNativeUtil.setCacheMode(id, value);

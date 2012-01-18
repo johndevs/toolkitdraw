@@ -131,7 +131,7 @@ public class LeftPanel extends VerticalLayout implements ClickListener {
 		}
 		
 		// Remove anything in the bottom bar
-		ToolkitDrawApplication.getBottomBar().removeAllComponents();
+		((ToolkitDrawWindow)getWindow()).getBottomBar().removeAllComponents();
 	
 		// Select the tool
 		toolsPanel.selectTool(selected);

@@ -24,6 +24,7 @@ import fi.jasoft.flashcanvas.FlashCanvas;
 import fi.jasoft.flashcanvas.FlashCanvas.Interactive;
 import fi.jasoft.flashcanvas.enums.BrushType;
 import fi.jasoft.toolkitdraw.ToolkitDrawApplication;
+import fi.jasoft.toolkitdraw.ToolkitDrawWindow;
 import fi.jasoft.toolkitdraw.components.TwinColorPicker;
 import fi.jasoft.toolkitdraw.util.IconFactory;
 import fi.jasoft.toolkitdraw.util.IconFactory.Icons;
@@ -107,7 +108,7 @@ public class Polygon extends Tool implements ValueChangeListener, ColorChangeLis
 	public Layout createToolOptions(){	
 		
 		// Add the finish tool button
-		HorizontalLayout top = ToolkitDrawApplication.getBottomBar();		
+		HorizontalLayout top = ((ToolkitDrawWindow)getButton().getWindow()).getBottomBar();
 		top.addComponent(endTool);
 		top.setComponentAlignment(endTool, Alignment.MIDDLE_RIGHT);
 		

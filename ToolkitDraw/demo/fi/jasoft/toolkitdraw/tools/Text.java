@@ -29,6 +29,7 @@ import fi.jasoft.flashcanvas.FlashCanvas;
 import fi.jasoft.flashcanvas.FlashCanvas.Interactive;
 import fi.jasoft.flashcanvas.enums.BrushType;
 import fi.jasoft.toolkitdraw.ToolkitDrawApplication;
+import fi.jasoft.toolkitdraw.ToolkitDrawWindow;
 import fi.jasoft.toolkitdraw.components.TwinColorPicker;
 import fi.jasoft.toolkitdraw.util.IconFactory;
 import fi.jasoft.toolkitdraw.util.IconFactory.Icons;
@@ -147,7 +148,7 @@ public class Text extends Tool implements ValueChangeListener, ColorChangeListen
 		font.select(fontNames.get(0));
 		
 		// Add the finish tool button
-		HorizontalLayout bar = ToolkitDrawApplication.getBottomBar();
+		HorizontalLayout bar = ((ToolkitDrawWindow)getButton().getWindow()).getBottomBar();
 				
 		Label lbl = new Label("Text options:");	
 		bar.addComponent(lbl);

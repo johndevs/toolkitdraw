@@ -109,7 +109,7 @@ public class OpenPopup extends Window
 		tab1.addComponent(uploadProgress);
 		
 		upload = new Upload("Image Path",this);
-	//	upload.setImmediate(true);
+		upload.setImmediate(true);
 		upload.addListener((Upload.StartedListener)this);
 		upload.addListener((Upload.ProgressListener)this);
 		upload.addListener((Upload.SucceededListener)this);

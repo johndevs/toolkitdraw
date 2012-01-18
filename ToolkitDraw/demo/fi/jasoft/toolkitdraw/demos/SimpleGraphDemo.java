@@ -24,7 +24,6 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import fi.jasoft.flashcanvas.FlashCanvas;
 import fi.jasoft.flashcanvas.enums.CacheMode;
-import fi.jasoft.flashcanvas.events.ImagePNGRecievedEvent;
 
 public class SimpleGraphDemo extends Window {
 
@@ -90,6 +89,7 @@ public class SimpleGraphDemo extends Window {
 		save.addListener(new Button.ClickListener(){		
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
+				/*-
 				canvas.addListener(new ValueChangeListener(){		
 					private static final long serialVersionUID = 1L;
 					public void valueChange(ValueChangeEvent event) {						
@@ -108,10 +108,13 @@ public class SimpleGraphDemo extends Window {
 							parent.open(res,"img");							
 						}									
 					}					
+					
 				});	
 				
 				//Request XML image 
-				canvas.getImagePNG(0); 				
+				canvas.getImagePNG(0); 	
+				
+				-*/
 			}			
 		});
 				

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -16,10 +17,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.xml.bind.DatatypeConverter;
 
+
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
@@ -28,9 +33,9 @@ import fi.jasoft.flashcanvas.client.ui.VFlashCanvas;
 import fi.jasoft.flashcanvas.enums.BrushType;
 import fi.jasoft.flashcanvas.enums.CacheMode;
 import fi.jasoft.flashcanvas.enums.Plugin;
-import fi.jasoft.flashcanvas.events.ImageJPGRecievedEvent;
-import fi.jasoft.flashcanvas.events.ImagePNGRecievedEvent;
-import fi.jasoft.flashcanvas.events.ImageXMLRecievedEvent;
+import fi.jasoft.flashcanvas.events.ImageUploadEvent;
+import fi.jasoft.flashcanvas.events.ImageUploadEvent.ImageType;
+import fi.jasoft.flashcanvas.events.ImageUploadListener;
 import fi.jasoft.flashcanvas.util.XMLUtil;
 
 
@@ -42,11 +47,8 @@ import fi.jasoft.flashcanvas.util.XMLUtil;
  * @author John Ahlroos, ITMill Oy Ltd 2010
  * @version 0.1
  */
-@SuppressWarnings("unchecked")
 @ClientWidget(VFlashCanvas.class)
-public class FlashCanvas extends AbstractField implements Component, Serializable{
-	
-	private static final long serialVersionUID = 1L;
+public class FlashCanvas extends AbstractComponent{
 	
 	public static final String CLASSNAME = ".v-paintcanvas";
 		
@@ -56,8 +58,6 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 	 * component.
 	 */
 	public class Graphics implements Serializable{
-		
-		private static final long serialVersionUID = 1L;
 
 		//Are we using the batch mode?
 		private boolean batchMode = false;		
@@ -474,10 +474,9 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 	 * actions. It can be used to set current color, undo, redo etc.
 	 * The iteractive object is ONLY available when the canvas is in interactive mode.
 	 */
+	@SuppressWarnings("serial")
 	public class Interactive implements Serializable{
 
-		private static final long serialVersionUID = 1L;
-		
 		private BrushType currentBrush;
 		
 		/**
@@ -826,8 +825,6 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 	private Queue<Map<String, String>> changedValues = new ArrayBlockingQueue<Map<String,String>>(1000);
 	
 	private List<Layer> layers = new ArrayList<Layer>();	
-	
-	private Set<ValueChangeListener> valueGetters = new HashSet<ValueChangeListener>();
 		
 	private Graphics graphics = new Graphics();
 	
@@ -845,9 +842,9 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 	
 	private Layer currentLayer;
 	
-	private Set<ClickListener> clickListeners = new HashSet<ClickListener>();
-	
-	private Set<BrushListener> brushListeners = new HashSet<BrushListener>();
+	private final List<ClickListener> clickListeners = new LinkedList<FlashCanvas.ClickListener>();
+	private final List<BrushListener> brushListeners = new LinkedList<FlashCanvas.BrushListener>();
+	private final List<ImageUploadListener> imageUploadListeners = new LinkedList<ImageUploadListener>();
 				
 	/**
 	 * Default constructor
@@ -1108,14 +1105,6 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
 		return graphics;
 	}	
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.vaadin.ui.AbstractField#getType()
-	 */
-	@Override
-	public Class<?> getType() {		
-		return FlashCanvas.class;
-	}
 	
 	 /** Paint (serialize) the component for the client. */
     public void paintContent(PaintTarget target) throws PaintException {
@@ -1182,47 +1171,28 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
             	
     	//XML image recieved
     	if(variables.containsKey("getImageXML")){
-    		String xml = variables.get("getImageXML").toString();    		
-    		
-    		ImageXMLRecievedEvent event = new ImageXMLRecievedEvent(this,xml);
-    		for(ValueChangeListener listener : valueGetters){
-    			listener.valueChange(event);
-    		}    		
+    		String xml = variables.get("getImageXML").toString();    
+    		for(ImageUploadListener listener : imageUploadListeners){
+    			listener.imageUploaded(new ImageUploadEvent(this, xml.getBytes(), ImageType.XML));
+    		}
     	}
     	    	
     	 //PNG image recieved
     	if(variables.containsKey("getImagePNG")){    		
     		String base64 = variables.get("getImagePNG").toString();
-    		byte[] data = null;
-    		
-    		try{
-    			data = new sun.misc.BASE64Decoder().decodeBuffer(base64);
-    		}catch(IOException io){
-    			System.out.println("Failure converting image from base64 to byte[]");
+			byte[] data = DatatypeConverter.parseBase64Binary(base64);
+    		for(ImageUploadListener listener : imageUploadListeners){
+    			listener.imageUploaded(new ImageUploadEvent(this, data, ImageType.PNG));
     		}
-    		
-    		ImagePNGRecievedEvent event = new ImagePNGRecievedEvent(this,data);
-    		for(ValueChangeListener listener : valueGetters){
-    			listener.valueChange(event);
-    		}    	
     	}    	
     	
     	//JPG image recieved
     	if(variables.containsKey("getImageJPG")){ 
-    		        		
     		String base64 = variables.get("getImageJPG").toString();
-    		byte[] data = null;
-    		
-    		try{
-    			data = new sun.misc.BASE64Decoder().decodeBuffer(base64);
-    		}catch(IOException io){
-    			System.out.println("Failure converting image from base64 to byte[]");
+    		byte[] data = DatatypeConverter.parseBase64Binary(base64);
+    		for(ImageUploadListener listener : imageUploadListeners){
+    			listener.imageUploaded(new ImageUploadEvent(this, data, ImageType.JPG));
     		}
-    		
-    		ImageJPGRecievedEvent event = new ImageJPGRecievedEvent(this,data);
-    		for(ValueChangeListener listener : valueGetters){
-    			listener.valueChange(event);
-    		}    	
     	}    	
     	
     	//Send cached image data
@@ -1314,74 +1284,25 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
     }    
      
 	/**
-	 * Returns the XML representation of the image.
-	 * To get the image attach an ValueChangeListener to the canvas
-	 * and listen for an ImageXMLRecieved event.
-	 * Like this: <pre>
-	 * canvas.addListener(new ValueChangeListener(){
-	 * 		public void valueChange(ValueChangeEvent event) {						
-	 *			if(event instanceof ImageXMLRecievedEvent){							
-	 *				// Process image here
-	 *			}									
-	 *		}					
-	 *	});</pre>
+	 * Get the current image. Triggers an ImageUploadEvent when image has been uploaded to server.
+	 * 
+	 * @param type
+	 * 		The image type to convert the image to
+	 * @param dpi
+	 * 		The dpi of the image (if supported for type)
 	 */
-    public void getImageXML(){
-    	addToQueue("getImageXML", "");
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Returns the image as a PNG image. 
-     * To get the image attach an ValueChangeListener to the canvas
-	 * and listen for an ImagePNGRecieved event.
-	 * Like this: <pre>
-	 * canvas.addListener(new ValueChangeListener(){
-	 * 		public void valueChange(ValueChangeEvent event) {						
-	 *			if(event instanceof ImagePNGRecievedEvent){							
-	 *				// Process image here
-	 *			}									
-	 *		}					
-	 *	});</pre>
-     * @param dpi
-     * 		The dpi of the image
-     */
-    public void getImagePNG(int dpi){
-    	addToQueue("getImagePNG", String.valueOf(dpi));
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Returns the image as a JPG image. 
-     * To get the image attach an ValueChangeListener to the canvas
-	 * and listen for an ImageJPGRecieved event.
-	 * Like this: <pre>
-	 * canvas.addListener(new ValueChangeListener(){
-	 * 		public void valueChange(ValueChangeEvent event) {						
-	 *			if(event instanceof ImageJPGRecievedEvent){							
-	 *				// Process image here
-	 *			}									
-	 *		}					
-	 *	});</pre>
-     * @param dpi
-     * 		The dpi of the image
-     */
-    public void getImageJPG(int dpi){
-    	addToQueue("getImageJPG", String.valueOf(dpi));
-    	if(isImmediate()) requestRepaint();
-    }
-    
-    /**
-     * Adds an value change listener
-     * @param listener
-     * 		The listener
-     */
-    public void addListener(ValueChangeListener listener){
-    	valueGetters.add(listener);
-    }
+	public void getImage(ImageType type, int dpi){
+		switch(type){
+		case XML: addToQueue("getImageXML", ""); break;
+		case JPG : addToQueue("getImageJPG", String.valueOf(dpi)); break;
+		case PNG : addToQueue("getImagePNG", String.valueOf(dpi));
+		}
+		requestRepaint();
+	}
     
     /**
      * Adds a brush listener
+     * 
      * @param listener
      * 		The listener
      */
@@ -1389,13 +1310,26 @@ public class FlashCanvas extends AbstractField implements Component, Serializabl
     	brushListeners.add(listener);
     }
     
+    
     /**
-     * Removes a value change listener
+     * Add image upload listener to listen for image upload events triggered by {@link FlashCanvas#getImage*(int)}
+
+     * @param listener
+     * 		The listener to add
+     */
+    public void addListener (ImageUploadListener listener){
+    	if(!imageUploadListeners.contains(listener)){
+    		imageUploadListeners.add(listener);
+    	}
+    }
+    
+    /**
+     * Removes a image uploaded listener
      *  @param listener
      * 		The listener to remove
      */
-    public void removeListener(ValueChangeListener listener){
-    	valueGetters.remove(listener);
+    public void removeListener(ImageUploadListener listener){
+    	imageUploadListeners.remove(listener);
     }
     
     /**
