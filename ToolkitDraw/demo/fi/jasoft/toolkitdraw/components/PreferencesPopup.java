@@ -19,6 +19,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Slider.ValueOutOfBoundsException;
+import com.vaadin.ui.themes.Reindeer;
 
 import fi.jasoft.flashcanvas.enums.CacheMode;
 import fi.jasoft.flashcanvas.enums.Plugin;
@@ -60,7 +61,8 @@ public class PreferencesPopup extends Window implements ClickListener{
 		setResizable(false);		
 		
 		GridLayout layout = new GridLayout(1,2);
-		layout.setStyleName("preferences-popup-layout");
+		layout.setStyleName(Reindeer.LAYOUT_BLACK);
+		layout.addStyleName("preferences-popup-layout");
 		layout.setSizeFull();
 		setContent(layout);
 		

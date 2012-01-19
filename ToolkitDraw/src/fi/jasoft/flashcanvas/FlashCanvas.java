@@ -49,8 +49,6 @@ import fi.jasoft.flashcanvas.util.XMLUtil;
  */
 @ClientWidget(VFlashCanvas.class)
 public class FlashCanvas extends AbstractComponent{
-	
-	public static final String CLASSNAME = ".v-paintcanvas";
 		
 	/**
 	 * The graphics class is used to draw on the canvas from the server side
@@ -850,7 +848,6 @@ public class FlashCanvas extends AbstractComponent{
 	 * Default constructor
 	 */
 	public FlashCanvas(){	
-		this.addStyleName(CLASSNAME);
 		super.setWidth("100%");
 		super.setHeight("100%");		
 		
@@ -891,7 +888,6 @@ public class FlashCanvas extends AbstractComponent{
 	 * 		The height of the canvas
 	 */
 	public FlashCanvas(String width, String height){		
-		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);	
 		
@@ -921,7 +917,6 @@ public class FlashCanvas extends AbstractComponent{
 	 * 		The background color of the canvas	
 	 */
 	public FlashCanvas(String width, String height, Color color){
-		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);
 		
@@ -957,7 +952,6 @@ public class FlashCanvas extends AbstractComponent{
 	 * 		The height of the image
 	 */
 	public FlashCanvas(String width, String height, int paperWidth, int paperHeight){
-		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);
 		
@@ -994,7 +988,6 @@ public class FlashCanvas extends AbstractComponent{
 	 * 		The background color of the image
 	 */
 	public FlashCanvas(String width, String height, int paperWidth, int paperHeight, Color color){
-		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);	
 		
@@ -1034,7 +1027,6 @@ public class FlashCanvas extends AbstractComponent{
 	 * 		Is the canvas interactive
 	 */	
 	public FlashCanvas(String width, String height, int paperWidth, int paperHeight, boolean interactive){
-		this.addStyleName(CLASSNAME);
 		super.setWidth(width);
 		super.setHeight(height);
 		

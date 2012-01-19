@@ -140,11 +140,7 @@ public class ToolkitDrawWindow extends Window
 	private FlashCanvas addNewFile(){
 		
 		FlashCanvas canvas = new FlashCanvas("100%","100%",300,400, new Color(51,51,51));					
-		if(canvas == null){
-			System.err.println("ERROR: Creating canvas failed!");	
-			return null;
-		}
-				
+		
 		//Set the caching mode of the canvas
 		canvas.setCacheMode(preferences.getCacheMode());
 		
@@ -282,6 +278,7 @@ public class ToolkitDrawWindow extends Window
 				currentCanvas = canvas;
 				
 				leftPanel.setTool(BrushType.PEN);
+				setImageToolsEnabled(true);
 			}			
 		});		
 		
@@ -417,8 +414,8 @@ public class ToolkitDrawWindow extends Window
 							setStatusbarText("New file opened");
 				break;
 				
-				case OPEN:	openFile();
-						
+				case OPEN:	openFile();						
+							
 				break;
 							
 				case CLOSE:{
@@ -426,8 +423,8 @@ public class ToolkitDrawWindow extends Window
 					boolean unsaved = closeCurrentFile();
 					if(unsaved) setStatusbarText("Closing unsaved image?");
 					else setStatusbarText("Image closed");					
-					break;
-				}
+					
+				}break;
 				
 				case SAVE:{
 					if(currentCanvas == null) break;
@@ -442,14 +439,13 @@ public class ToolkitDrawWindow extends Window
 						}						
 					});
 					pop.show();
-					break;
-				}
+					
+				}break;
 				
 				case PREFERENCES:{
 					final PreferencesPopup pop = new PreferencesPopup(this, preferences);
 					pop.show();
-					break;
-				}
+				}break;
 				
 				//Selection releted actions
 				case SELECTION_REMOVE: 	if(currentCanvas == null) break;

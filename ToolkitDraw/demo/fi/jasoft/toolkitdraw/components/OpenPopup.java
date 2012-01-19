@@ -25,6 +25,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.themes.Reindeer;
 
 public class OpenPopup extends Window 
 	implements ClickListener, Receiver, Upload.SucceededListener, Upload.StartedListener, Upload.ProgressListener{
@@ -63,6 +64,7 @@ public class OpenPopup extends Window
 		setHeight("230px");
 		setResizable(false);
 		
+		layout.setStyleName(Reindeer.LAYOUT_BLACK);
 		layout.setSizeFull();		
 				
 		tabs.setSizeFull();
@@ -108,8 +110,10 @@ public class OpenPopup extends Window
 		uploadProgress.setVisible(false);
 		tab1.addComponent(uploadProgress);
 		
-		upload = new Upload("Image Path",this);
+		upload = new Upload(null,this);
 		upload.setImmediate(true);
+		upload.setWidth("100%");
+		upload.setButtonCaption("Select image file to download");
 		upload.addListener((Upload.StartedListener)this);
 		upload.addListener((Upload.ProgressListener)this);
 		upload.addListener((Upload.SucceededListener)this);
@@ -139,17 +143,13 @@ public class OpenPopup extends Window
 		center();
 	}
 	
-	public void hide(){
-		parent.removeWindow(this);
-		fireClose();
-	}
-	
 	
 	public void buttonClick(ClickEvent event) {
 		if(event.getButton() == ok){
 			
 			if(tabs.getSelectedTab() == tab1){
-				hide();
+				close();
+				
 			} else if(tabs.getSelectedTab() == tab2){
 				
 				try {
@@ -171,7 +171,7 @@ public class OpenPopup extends Window
 						byteStream.close();
 						out.close();
 					
-						hide();
+						close();
 					}					
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -183,7 +183,7 @@ public class OpenPopup extends Window
 			
 		}else if(event.getButton() == cancel){
 			image = null;
-			hide();
+			close();
 		}	
 	}
 

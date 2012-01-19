@@ -9,6 +9,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 
 import fi.jasoft.toolkitdraw.util.IconFactory;
 import fi.jasoft.toolkitdraw.util.IconFactory.Icons;
@@ -51,7 +52,8 @@ public class TwinColorPicker extends AbsoluteLayout implements ColorChangeListen
 		
 		setWidth("50px");
 		setHeight("50px");
-		setStyleName("twin-colorpicker");
+		setStyleName(Reindeer.LAYOUT_BLACK);
+		addStyleName("twin-colorpicker");
 				
 		background = new ColorPicker("Background", Color.WHITE);
 		background.addListener(this);

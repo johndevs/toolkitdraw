@@ -2,8 +2,7 @@ package fi.jasoft.flashcanvas.enums;
 
 public enum Plugin {
 	AUTO("plugin-auto", "Automatic"),
-	FLASH("plugin-flash", "Flash plugin"),
-	JAVA("plugin-java", "Java plugin (experimental)");
+	FLASH("plugin-flash", "Flash plugin");
 		
 	private final String caption;
 	private final String id;

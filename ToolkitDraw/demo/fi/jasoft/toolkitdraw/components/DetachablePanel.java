@@ -11,6 +11,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.themes.Reindeer;
 
 import fi.jasoft.toolkitdraw.client.ui.VDetachablePanel;
 
@@ -27,8 +28,8 @@ public class DetachablePanel extends Panel {
 
 	public DetachablePanel(){
 		super();
-		
-		setStyleName("v-detachable-panel");
+		setStyleName(Reindeer.LAYOUT_BLACK);
+		addStyleName("v-detachable-panel");
 	}
 	
 	@Override

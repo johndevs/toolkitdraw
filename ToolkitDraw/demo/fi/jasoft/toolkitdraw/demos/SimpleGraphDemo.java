@@ -21,9 +21,13 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 
 import fi.jasoft.flashcanvas.FlashCanvas;
 import fi.jasoft.flashcanvas.enums.CacheMode;
+import fi.jasoft.flashcanvas.events.ImageUploadEvent;
+import fi.jasoft.flashcanvas.events.ImageUploadEvent.ImageType;
+import fi.jasoft.flashcanvas.events.ImageUploadListener;
 
 public class SimpleGraphDemo extends Window {
 
@@ -51,6 +55,7 @@ public class SimpleGraphDemo extends Window {
 		setResizable(false);
 						
 		GridLayout layout = new GridLayout(2,2);	
+		layout.setStyleName(Reindeer.LAYOUT_BLACK);
 		setContent(layout);
 		
 		//Create a paintcanvas 
@@ -64,6 +69,19 @@ public class SimpleGraphDemo extends Window {
 		
 		//Enable batch mode
 		canvas.getGraphics().setBatchMode(true);
+		
+		canvas.addListener(new ImageUploadListener() {
+			public void imageUploaded(ImageUploadEvent event) {
+				ByteArrayInputStream iStream = new ByteArrayInputStream(event.getBytes());							
+				final DownloadStream stream = new DownloadStream(iStream,"Image/PNG","image"+(new Date()).getTime()+".png");
+				Resource res = new StreamResource(new StreamResource.StreamSource(){			
+					public InputStream getStream() {
+						return stream.getStream();
+					}				
+				}, stream.getFileName(), getApplication());
+				open(res,"img");	
+			}
+		});
 								
 		layout.addComponent(canvas,0,0);
 		
@@ -85,36 +103,10 @@ public class SimpleGraphDemo extends Window {
 		
 		
 		save = new Button("Save");
-		final Window parent = this;
 		save.addListener(new Button.ClickListener(){		
 			private static final long serialVersionUID = 1L;
 			public void buttonClick(ClickEvent event) {
-				/*-
-				canvas.addListener(new ValueChangeListener(){		
-					private static final long serialVersionUID = 1L;
-					public void valueChange(ValueChangeEvent event) {						
-						if(event instanceof ImagePNGRecievedEvent){							
-							canvas.removeListener(this);							
-							ImagePNGRecievedEvent evnt = (ImagePNGRecievedEvent)event;						
-							ByteArrayInputStream iStream = new ByteArrayInputStream(evnt.getData());							
-							final DownloadStream stream = new DownloadStream(iStream,"Image/PNG","image"+(new Date()).getTime()+".png");
-							
-							Resource res = new StreamResource(new StreamResource.StreamSource(){			
-								public InputStream getStream() {
-									return stream.getStream();
-								}				
-							}, stream.getFileName(), parent.getApplication());
-							
-							parent.open(res,"img");							
-						}									
-					}					
-					
-				});	
-				
-				//Request XML image 
-				canvas.getImagePNG(0); 	
-				
-				-*/
+				canvas.getImage(ImageType.PNG, 72);
 			}			
 		});
 				

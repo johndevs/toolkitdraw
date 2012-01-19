@@ -8,8 +8,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
-
+import com.vaadin.ui.themes.Reindeer;
 
 public class ConfirmPopup extends Window implements ClickListener{	
 	private static final long serialVersionUID = 1L;
@@ -30,6 +29,7 @@ public class ConfirmPopup extends Window implements ClickListener{
 		setWidth("300px");
 		setHeight("100px");
 		setResizable(false);
+		getContent().setStyleName(Reindeer.LAYOUT_BLACK);
 		
 		layout.setSizeFull();
 		layout.setMargin(true);

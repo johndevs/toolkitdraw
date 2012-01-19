@@ -13,6 +13,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 
 import fi.jasoft.flashcanvas.events.ImageUploadEvent.ImageType;
 
@@ -40,6 +41,7 @@ public class SavePopup extends Window implements ClickListener{
 		
 		layout.setSizeFull();
 		layout.setMargin(true);
+		layout.setStyleName(Reindeer.LAYOUT_BLACK);
 		
 		GridLayout grid = new GridLayout(2,2);
 				
