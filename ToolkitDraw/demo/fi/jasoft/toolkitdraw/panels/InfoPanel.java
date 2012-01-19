@@ -6,8 +6,10 @@ import java.util.Map;
 
 
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 import fi.jasoft.flashcanvas.FlashCanvas;
 import fi.jasoft.toolkitdraw.Preferences;
@@ -41,8 +43,11 @@ public class InfoPanel extends DetachablePanel {
 			layout.addComponent(c);
 			layout.setComponentAlignment(c, Alignment.MIDDLE_CENTER);
 			layout.setCaption(caption);
+			layout.setMargin(true);
 			
-			System.out.println(caption);
+			Label lbl = new Label("Not implemented yet.");
+			lbl.setStyleName(Reindeer.LABEL_SMALL);
+			layout.addComponent(lbl);
 			
 			tabSheet.addTab(layout);
 		}		
@@ -79,5 +84,6 @@ public class InfoPanel extends DetachablePanel {
 			System.err.println("Cannot set null canvas");
 			return;
 		}
+		
 	}	
 }
